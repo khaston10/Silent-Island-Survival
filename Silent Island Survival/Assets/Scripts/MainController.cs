@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour
 {
+
     #region Variables - Terrain Generation
 
     #region Terrain Generation Pre-Fabs
@@ -11,9 +12,10 @@ public class MainController : MonoBehaviour
     public GameObject[] GroundTilePrefabs;
     #endregion
 
-    int selectedMapIndex = 0; // By default we select 0;
+    int selectedMapIndex = 1; // By default we select 0;
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
+    public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
 
 
     #endregion
@@ -31,10 +33,51 @@ public class MainController : MonoBehaviour
 
     void Update()
     {
-        
+        // Each round will consist of 3 turns.
+
+        // 1 Player Turn
+        PlayerTurn();
+
+        // 2 Zombie's Turn
+        ZombieTurn();
+
+        // Update Turn
+        UpdateTurn();
+
     }
 
     #region Functions
+
+
+    #region Player Turn Functions
+
+    public void PlayerTurn()
+    {
+
+    }
+
+    #endregion
+
+
+    #region Zombie Turn Function
+
+    public void ZombieTurn()
+    {
+
+    }
+
+    #endregion
+
+
+    #region Update Turn Function
+
+    public void UpdateTurn()
+    {
+
+    }
+
+    #endregion
+
 
     #region Terrain Generation Functions
 
@@ -63,6 +106,11 @@ public class MainController : MonoBehaviour
                 {
 
                     groundTiles[LocateIndexOfGroundTile(line, letter)] = Instantiate(GroundTilePrefabs[0], new Vector3(line, 0, letter), Quaternion.identity);
+                    groundTiles[LocateIndexOfGroundTile(line, letter)].transform.SetParent(TerrainBase.transform);
+
+                    // We need to update the location attribute on the instance of the prefab.
+                    groundTiles[LocateIndexOfGroundTile(line, letter)].GetComponent<GroundTileController>().location[0] = line;
+                    groundTiles[LocateIndexOfGroundTile(line, letter)].GetComponent<GroundTileController>().location[1] = letter;
 
                 }
 

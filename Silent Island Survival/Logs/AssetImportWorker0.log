@@ -15,11 +15,11 @@ C:/Users/kevoh/Unity Projects/Silent-Island-Survival/Silent Island Survival
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-62193
+63680
 Successfully changed project path to: C:/Users/kevoh/Unity Projects/Silent-Island-Survival/Silent Island Survival
 C:/Users/kevoh/Unity Projects/Silent-Island-Survival/Silent Island Survival
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 19.31 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 21.16 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.2.6f1 (8a2143876886)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/Resources/UnitySubsystems
@@ -35,350 +35,1294 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56956
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56212
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.2.6f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.002076 seconds.
+Registered in 0.002200 seconds.
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 30.17 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 20.49 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  2.077 seconds
+- Completed reload, in  2.095 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.000572 seconds.
+Registered in 0.000678 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 0.20 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.754 seconds
+- Completed reload, in  0.766 seconds
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 0.23 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Unloading 1105 Unused Serialized files (Serialized files now loaded: 0)
 System memory in use before: 57.1 MB.
 System memory in use after: 57.1 MB.
 
 Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 1546.
-Total: 1.757800 ms (FindLiveObjects: 0.130700 ms CreateObjectMapping: 0.041200 ms MarkObjects: 1.514800 ms  DeleteObjects: 0.070300 ms)
+Total: 1.410200 ms (FindLiveObjects: 0.136800 ms CreateObjectMapping: 0.038800 ms MarkObjects: 1.168900 ms  DeleteObjects: 0.064700 ms)
 
 ========================================================================
 Received Import Request.
-  path: Assets/Mats/Ground.mat
-  artifactKey: Guid(ce963c4832671114287291eb01764922) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Mats/Ground.mat using Guid(ce963c4832671114287291eb01764922) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '94b6f9d165fc7e29159debee1743c9cb') in 0.113620 seconds
-  Import took 0.115321 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 260.369114 seconds.
-  path: Assets/TerrainMap01.txt
-  artifactKey: Guid(7a7f04f124f3c5c4cbc1d1cc7a16363a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap01.txt using Guid(7a7f04f124f3c5c4cbc1d1cc7a16363a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5005c4fb95a44b4c469a6f3b36a0c97c') in 0.011399 seconds
-  Import took 0.013589 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.003819 seconds.
-  path: Assets/TerrainMap01.txt
-  artifactKey: Guid(7a7f04f124f3c5c4cbc1d1cc7a16363a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap01.txt using Guid(7a7f04f124f3c5c4cbc1d1cc7a16363a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5005c4fb95a44b4c469a6f3b36a0c97c') in 0.001904 seconds
-  Import took 0.003529 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 27.147127 seconds.
   path: Assets/TerrainMap02.txt
   artifactKey: Guid(344fe3509d664a24d8bedbea69e208f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap02.txt using Guid(344fe3509d664a24d8bedbea69e208f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '70bf2a86ffc3847301a2bf26b0a73e65') in 0.007180 seconds
-  Import took 0.009334 seconds .
+Start importing Assets/TerrainMap02.txt using Guid(344fe3509d664a24d8bedbea69e208f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f13bfadf2ffdaf054f5b8b290d1d2a79') in 0.038255 seconds
+  Import took 0.040293 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 5.460515 seconds.
-  path: Assets/TerrainMap03.txt
-  artifactKey: Guid(1412661f8ee44a046aeed77fd2f7acd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap03.txt using Guid(1412661f8ee44a046aeed77fd2f7acd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '42bb2a49c09daaf40091d25436905678') in 0.007057 seconds
-  Import took 0.008873 seconds .
+  Time since last request: 879.042795 seconds.
+  path: Assets/TerrainMap02.txt
+  artifactKey: Guid(344fe3509d664a24d8bedbea69e208f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/TerrainMap02.txt using Guid(344fe3509d664a24d8bedbea69e208f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'acae94d18a25774fc03a7618e3f62628') in 0.002524 seconds
+  Import took 0.004814 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.000417 seconds.
-  path: Assets/TerrainMap03.txt
-  artifactKey: Guid(1412661f8ee44a046aeed77fd2f7acd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap03.txt using Guid(1412661f8ee44a046aeed77fd2f7acd4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '42bb2a49c09daaf40091d25436905678') in 0.002083 seconds
-  Import took 0.003786 seconds .
+  Time since last request: 507.712304 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/need.png
+  artifactKey: Guid(36c3c21b71fff3c4b81d9e73b15573d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/need.png using Guid(36c3c21b71fff3c4b81d9e73b15573d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '54205ba18d5cd66d31ddf39c4f9f433f') in 0.108040 seconds
+  Import took 0.110166 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 2.938178 seconds.
-  path: Assets/TerrainMap04.txt
-  artifactKey: Guid(3780a3f264a15974a8392204fca20fbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/TerrainMap04.txt using Guid(3780a3f264a15974a8392204fca20fbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b808480a318fbef5db059400dadbb244') in 0.042390 seconds
-  Import took 0.044094 seconds .
+  Time since last request: 0.000223 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/skill_bar.psd
+  artifactKey: Guid(bdd158f23cd432446a3bddf3cd0fcb66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/skill_bar.psd using Guid(bdd158f23cd432446a3bddf3cd0fcb66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4d12499e75c062c3ac187ff8e799c7b2') in 0.036582 seconds
+  Import took 0.038881 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 27.338066 seconds.
-  path: Assets/Scripts/MainController.cs
-  artifactKey: Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/MainController.cs using Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '14af72c49ddc9bacd059f53f961357d4') in 0.009314 seconds
-  Import took 0.011068 seconds .
+  Time since last request: 0.000197 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/shadowmage_silhouette_man.png
+  artifactKey: Guid(4104ac6b51a4900419940c4375dc0f77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/shadowmage_silhouette_man.png using Guid(4104ac6b51a4900419940c4375dc0f77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7d025309ca95c32da08037e295460bf2') in 0.025318 seconds
+  Import took 0.027087 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 0.024478 seconds.
-  path: Assets/Scripts/MainController.cs
-  artifactKey: Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/MainController.cs using Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '14af72c49ddc9bacd059f53f961357d4') in 0.001814 seconds
-  Import took 0.003868 seconds .
+  Time since last request: 0.000167 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Status_bar.psd
+  artifactKey: Guid(abe4c989a0738c84193ed2e509bbfe80) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Status_bar.psd using Guid(abe4c989a0738c84193ed2e509bbfe80) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f7d1cd612579f0a164e5416ead59b22f') in 0.020310 seconds
+  Import took 0.021971 seconds .
 
 ========================================================================
 Received Import Request.
-  Time since last request: 984.976503 seconds.
-  path: Assets/Scripts/MainController.cs
-  artifactKey: Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scripts/MainController.cs using Guid(42d494bcc9f063646a61b248b382e377) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c41550971605ffba016cbcf26cba48ba') in 0.002341 seconds
-  Import took 0.004276 seconds .
+  Time since last request: 0.000186 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Scull.png
+  artifactKey: Guid(90e99ee31082a974d8fe466a02d2195a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Scull.png using Guid(90e99ee31082a974d8fe466a02d2195a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '424f58ba57f0c223fa72e57978b52d65') in 0.015040 seconds
+  Import took 0.016785 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000225 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/roll_bar.psd
+  artifactKey: Guid(69da209636a6e564795584a67df633ee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/roll_bar.psd using Guid(69da209636a6e564795584a67df633ee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cb5f74829a642afd6d273b9ad27193a6') in 0.018712 seconds
+  Import took 0.020384 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000185 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Shop_bar.psd
+  artifactKey: Guid(96d2ede80a11b6e4b89ff330ad6592e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Shop_bar.psd using Guid(96d2ede80a11b6e4b89ff330ad6592e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5c62ff0f53d8a4dcfda7419d075b6d66') in 0.028947 seconds
+  Import took 0.030682 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000256 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Scull2.png
+  artifactKey: Guid(995d25df5d569054f92db06a05658378) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Scull2.png using Guid(995d25df5d569054f92db06a05658378) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ac77b14514a963bd51b15725d00de284') in 0.014062 seconds
+  Import took 0.015895 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000187 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/skill_bar_background.png
+  artifactKey: Guid(ca9c5ba42398db041977fdd4139d63c4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/skill_bar_background.png using Guid(ca9c5ba42398db041977fdd4139d63c4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '15ba98507c8e52061732bd9f28c5d1b9') in 0.019067 seconds
+  Import took 0.020720 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000224 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Pop_up_dialog.psd
+  artifactKey: Guid(dd54266c9ded3b548b3858e3e40843e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Pop_up_dialog.psd using Guid(dd54266c9ded3b548b3858e3e40843e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '506b6e58a416c5ae9ebe53951b6021a6') in 0.017041 seconds
+  Import took 0.018549 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000199 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Quest_bar.psd
+  artifactKey: Guid(5ce1c7779a249644cbabf369e266eab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Quest_bar.psd using Guid(5ce1c7779a249644cbabf369e266eab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '30f1437d0f2b5fc0f058a583cd86ed5b') in 0.029608 seconds
+  Import took 0.031133 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000200 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/skills.png
+  artifactKey: Guid(81eb7b507d1d84949b52ed597a23243c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/skills.png using Guid(81eb7b507d1d84949b52ed597a23243c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4fcd0124d4f07b47fd8f4c3ba049a3d0') in 0.019997 seconds
+  Import took 0.021533 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000206 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/trade.png
+  artifactKey: Guid(2a0bc5c4ff865a7498182b25a3f99177) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/trade.png using Guid(2a0bc5c4ff865a7498182b25a3f99177) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'df10111418e7a90057b507d63d894bbf') in 0.013672 seconds
+  Import took 0.015218 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000192 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Quest.png
+  artifactKey: Guid(7db1923eb587c3345bdbe7f985d43b60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Quest.png using Guid(7db1923eb587c3345bdbe7f985d43b60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bbc7aa5a1b8334de8e83aa77380e9dba') in 0.019469 seconds
+  Import took 0.021199 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000227 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/warrior_silhouette_woman.png
+  artifactKey: Guid(5892de7c00cc4054cbb3c3bfb3a931ed) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/warrior_silhouette_woman.png using Guid(5892de7c00cc4054cbb3c3bfb3a931ed) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fbdb6093c8309c4db5d5d72788ddff19') in 0.024279 seconds
+  Import took 0.025856 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000188 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/xp_line.png
+  artifactKey: Guid(044f3d4666fd0614aa8028e06e6a196d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/xp_line.png using Guid(044f3d4666fd0614aa8028e06e6a196d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b11ebdf499ad1a81496f7eaa09ddb3df') in 0.015054 seconds
+  Import took 0.016582 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000225 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Profession.png
+  artifactKey: Guid(7d3554b37fffe894fa8504ed7f202a1f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Profession.png using Guid(7d3554b37fffe894fa8504ed7f202a1f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c19ac95e02257e68568606f84ab5b774') in 0.016427 seconds
+  Import took 0.017928 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000211 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/option_button.png
+  artifactKey: Guid(fbe9d9fb14d8f3246a383f126a3b8406) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/option_button.png using Guid(fbe9d9fb14d8f3246a383f126a3b8406) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2c82e4fb30cac2ecc5dcf197a736e9a4') in 0.018637 seconds
+  Import took 0.020279 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000213 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/pattern.png
+  artifactKey: Guid(93462bce95c35434b84fceca9d9150eb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/pattern.png using Guid(93462bce95c35434b84fceca9d9150eb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e6a2f2bfa2a9650177ea5f579dfeabd3') in 0.021823 seconds
+  Import took 0.023563 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000158 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Quest_journal_bar.psd
+  artifactKey: Guid(5da79d9198c4c8845aa196404454e2e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Quest_journal_bar.psd using Guid(5da79d9198c4c8845aa196404454e2e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e7747a21010c85c1f962deb341e32e99') in 0.029250 seconds
+  Import took 0.030757 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000229 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Plus.png
+  artifactKey: Guid(6dfab8addd746fc489010141e01a8153) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Plus.png using Guid(6dfab8addd746fc489010141e01a8153) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '70f56bb10092b9338b51134ed981ca66') in 0.014217 seconds
+  Import took 0.015712 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000164 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/skill_frame.png
+  artifactKey: Guid(2c4a33bc814c7e9469d88822115edfa5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/skill_frame.png using Guid(2c4a33bc814c7e9469d88822115edfa5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fbf7d20e586d0b5eee72f6e1c67f46e7') in 0.015072 seconds
+  Import took 0.016579 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000229 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/option_line.png
+  artifactKey: Guid(3621ed808ad95fc4281cd751cf394324) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/option_line.png using Guid(3621ed808ad95fc4281cd751cf394324) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4da62e4ee3d3e7fa51567b0ae3901d1f') in 0.016518 seconds
+  Import took 0.018336 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000249 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/warrior_silhouette_man.png
+  artifactKey: Guid(09f502b1047044c4282b7dc5595a62cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/warrior_silhouette_man.png using Guid(09f502b1047044c4282b7dc5595a62cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ba91bc2c4bdb8b93eeb982a1b640d3d6') in 0.023277 seconds
+  Import took 0.024788 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000229 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Trade_players_bar.psd
+  artifactKey: Guid(c5341aa34a685464aa94a0ef3e402674) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Trade_players_bar.psd using Guid(c5341aa34a685464aa94a0ef3e402674) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '55867199fd8cb41a2e45d6cfec0a7b80') in 0.019115 seconds
+  Import took 0.020906 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000222 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Options_bar.psd
+  artifactKey: Guid(eb2ccdf21dd1a6b43b7748c41cd9e715) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Options_bar.psd using Guid(eb2ccdf21dd1a6b43b7748c41cd9e715) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '47681db400f453aebf84245c13c6ebc1') in 0.028334 seconds
+  Import took 0.029968 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000257 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Options.png
+  artifactKey: Guid(f9a7dfb458091124490427e10c6bc515) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Options.png using Guid(f9a7dfb458091124490427e10c6bc515) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1eebb97092238e6d6865c5c45210437e') in 0.015849 seconds
+  Import took 0.017695 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000250 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Spell_book.psd
+  artifactKey: Guid(2bcc7b8a26abcfb4a9b33c51585a8708) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Spell_book.psd using Guid(2bcc7b8a26abcfb4a9b33c51585a8708) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '10893f313a908c8527f24853d696e267') in 0.027404 seconds
+  Import took 0.029325 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000220 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Paper_01.png
+  artifactKey: Guid(b68ad85e7013e644792dbadb4e6d0a36) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Paper_01.png using Guid(b68ad85e7013e644792dbadb4e6d0a36) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '11a6a9edcfd18281f8a2694b98c3f125') in 0.032980 seconds
+  Import took 0.034483 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000238 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/xp_bar.png
+  artifactKey: Guid(13cd57ed355123543951185aa02c9ace) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/xp_bar.png using Guid(13cd57ed355123543951185aa02c9ace) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36091cc2247a352a502e24654af4bb70') in 0.014123 seconds
+  Import took 0.015791 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000206 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/shadowmage_silhouette_woman.png
+  artifactKey: Guid(473c87062d2b7c64a8f3f9e829f04ba6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/shadowmage_silhouette_woman.png using Guid(473c87062d2b7c64a8f3f9e829f04ba6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cc3b786087c991816307701f483694ea') in 0.023758 seconds
+  Import took 0.025475 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000197 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Red_vert_panel.png
+  artifactKey: Guid(19324b49447184e4e93981881a7d4c24) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Red_vert_panel.png using Guid(19324b49447184e4e93981881a7d4c24) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dfdf911b5dc0bfd3242b07ff80511603') in 0.019373 seconds
+  Import took 0.020824 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000187 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Venom_line.png
+  artifactKey: Guid(3bea9cb641e68a44cad65973c182e208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Venom_line.png using Guid(3bea9cb641e68a44cad65973c182e208) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bcfec9bbb1943f8ed40dc182acf95bdf') in 0.019652 seconds
+  Import took 0.021157 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000192 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/runes.png
+  artifactKey: Guid(2c9e1e10abb92f34f9a160b63dbe8ff1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/runes.png using Guid(2c9e1e10abb92f34f9a160b63dbe8ff1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b80cfd4758fef97542ffdd5b108033b7') in 0.016676 seconds
+  Import took 0.018230 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000255 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/scroll_frame.png
+  artifactKey: Guid(7de796272e1df454db61ae0fac893899) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/scroll_frame.png using Guid(7de796272e1df454db61ae0fac893899) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9cc11d8656cb57ef9fa91b21447b99d9') in 0.016056 seconds
+  Import took 0.017580 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000249 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/skill_bar2.psd
+  artifactKey: Guid(2b31e5cd5e4eb604fbc83864168e1fe5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/skill_bar2.psd using Guid(2b31e5cd5e4eb604fbc83864168e1fe5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ec09194b408dc29b8386a9fe268dd6c4') in 0.024562 seconds
+  Import took 0.026079 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000229 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/skill_bar.png
+  artifactKey: Guid(d97f10292debcde45a9d53b455e869db) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/skill_bar.png using Guid(d97f10292debcde45a9d53b455e869db) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '188134cbe5ab587c6f4b5fbb04ef5358') in 0.019045 seconds
+  Import took 0.020701 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000245 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Thin_frame.png
+  artifactKey: Guid(95d2337b5b6eac341912623068950715) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Thin_frame.png using Guid(95d2337b5b6eac341912623068950715) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bb8f10886ffa9482e2344dc840cfd427') in 0.016794 seconds
+  Import took 0.018504 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000249 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/xp_background.png
+  artifactKey: Guid(d6398e2606cb39d4381ae2b7b6d50330) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/xp_background.png using Guid(d6398e2606cb39d4381ae2b7b6d50330) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7e14c9e364b343b74603bd04c7548695') in 0.014816 seconds
+  Import took 0.016674 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000203 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Rune_bar.psd
+  artifactKey: Guid(2a6b1fb862a161448a83d99adfc5b223) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Rune_bar.psd using Guid(2a6b1fb862a161448a83d99adfc5b223) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '838946ac885468b7da4eeffbdb9105a3') in 0.029195 seconds
+  Import took 0.030975 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000199 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Round_fr.png
+  artifactKey: Guid(e3da12d1bac54234887ee48b26a11a2f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Round_fr.png using Guid(e3da12d1bac54234887ee48b26a11a2f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4bb1b641df27eecb8fe94787536e31df') in 0.015863 seconds
+  Import took 0.017448 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000193 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Source_fr_color.psd
+  artifactKey: Guid(95218e97b93c31540aa3ce8824dfc829) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Source_fr_color.psd using Guid(95218e97b93c31540aa3ce8824dfc829) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd48bfe8145cc346418b50d97947661b5') in 0.014524 seconds
+  Import took 0.016319 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000247 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Paper_02.png
+  artifactKey: Guid(b1c41124b35af5c438a68317b1ee71ea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Paper_02.png using Guid(b1c41124b35af5c438a68317b1ee71ea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b98c3326879d3789252d5b44b0fb6bc4') in 0.029962 seconds
+  Import took 0.031590 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 142.024386 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_skip_t.png
+  artifactKey: Guid(51d3ba2e0998f8f4ead4d40df2d7b8a1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_skip_t.png using Guid(51d3ba2e0998f8f4ead4d40df2d7b8a1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '964f39c1c2901f4046a149ac318dd759') in 0.025625 seconds
+  Import took 0.028395 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000273 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Minus.png
+  artifactKey: Guid(110bc85fa00c5cb469ffbef7e3daab60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Minus.png using Guid(110bc85fa00c5cb469ffbef7e3daab60) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '878b716f85953511cc64048fd78db58d') in 0.016247 seconds
+  Import took 0.017983 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000168 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/minimap.png
+  artifactKey: Guid(e4c18a8db405c384f91b89085ca3b61e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/minimap.png using Guid(e4c18a8db405c384f91b89085ca3b61e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b1ffbcf2569cdf9c2fa4aaac14096882') in 0.020826 seconds
+  Import took 0.022725 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000196 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_speak_t.png
+  artifactKey: Guid(a23a22ae770364f44b4a54604e882fa7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_speak_t.png using Guid(a23a22ae770364f44b4a54604e882fa7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '37cdc4150cfd97612681233addf8b5fd') in 0.017720 seconds
+  Import took 0.019673 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000179 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_skip.png
+  artifactKey: Guid(9b7bb5737921da1498889a2ecfc60581) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_skip.png using Guid(9b7bb5737921da1498889a2ecfc60581) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '76161ec1942435381504dfa4de993dc6') in 0.018195 seconds
+  Import took 0.020813 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000226 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_top2_t.png
+  artifactKey: Guid(691bb36e2335d5b489cd7453adb9bd77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_top2_t.png using Guid(691bb36e2335d5b489cd7453adb9bd77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a4cfa4db225603153de39492c1d6576e') in 0.018645 seconds
+  Import took 0.021120 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000157 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot.png
+  artifactKey: Guid(1c07298dc091aec4ca8d3d913b1c1092) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot.png using Guid(1c07298dc091aec4ca8d3d913b1c1092) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4824dcfd008aef4f40b7209141670673') in 0.014971 seconds
+  Import took 0.016759 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000179 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_help_t.png
+  artifactKey: Guid(debbf252846b29940a69a2f343bd1c69) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_help_t.png using Guid(debbf252846b29940a69a2f343bd1c69) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ca8ca2b4e40a7119da4086c200de25b8') in 0.018261 seconds
+  Import took 0.020039 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000171 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mini_button.png
+  artifactKey: Guid(8f03a8a721d67c84eb485a11354614c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mini_button.png using Guid(8f03a8a721d67c84eb485a11354614c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '43f0f5e039e5faa0bd380713a5569a35') in 0.016289 seconds
+  Import took 0.018441 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000156 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_right2_t.png
+  artifactKey: Guid(20b2bdeb5ee9944479f9ea6f2a4d4081) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_right2_t.png using Guid(20b2bdeb5ee9944479f9ea6f2a4d4081) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '392a06eacbced750802fd6f80c0dd542') in 0.019000 seconds
+  Import took 0.020769 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000157 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_exit_t.png
+  artifactKey: Guid(628ed39401ae1fb4eacadd3e3aece61b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_exit_t.png using Guid(628ed39401ae1fb4eacadd3e3aece61b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '15faa2c92f2521e8300bcb49046cb38d') in 0.019683 seconds
+  Import took 0.021696 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000163 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_exit.png
+  artifactKey: Guid(9a43ce2f63eaa854c98daae97827b4c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_exit.png using Guid(9a43ce2f63eaa854c98daae97827b4c9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '422fa8cc5e2f98f5d4402ae7087f8bcb') in 0.020055 seconds
+  Import took 0.021806 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000140 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_guild.png
+  artifactKey: Guid(44442b1b876e08c46bf2129b077b3c66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_guild.png using Guid(44442b1b876e08c46bf2129b077b3c66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9a4735d9b2f5ba4e925fc8ae435eb60a') in 0.018039 seconds
+  Import took 0.019668 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000144 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/name_frame_mid_ready.png
+  artifactKey: Guid(fa5c94ee0e63e8643ba4509e10be2e97) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/name_frame_mid_ready.png using Guid(fa5c94ee0e63e8643ba4509e10be2e97) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0b7b201bcc32d71e51a92ae5b105442a') in 0.016984 seconds
+  Import took 0.018810 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000142 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_guild_t.png
+  artifactKey: Guid(44d5db64522a0494aa9e2bf1731136ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_guild_t.png using Guid(44d5db64522a0494aa9e2bf1731136ec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '647665b1e9d3c7eb861f88301562f213') in 0.017829 seconds
+  Import took 0.019561 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000154 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/name_frame_ready.png
+  artifactKey: Guid(dc8b55860d4e8b9418e979aa4e4e18d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/name_frame_ready.png using Guid(dc8b55860d4e8b9418e979aa4e4e18d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2bf911a06090e87187376cb2ba2abfd4') in 0.017089 seconds
+  Import took 0.019153 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000145 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_right2.png
+  artifactKey: Guid(03612ab9181e7be42bec01c07f09947a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_right2.png using Guid(03612ab9181e7be42bec01c07f09947a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '450bd9a8087ed54dff17085bcd0c3242') in 0.018693 seconds
+  Import took 0.020219 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000141 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_top2.png
+  artifactKey: Guid(3d3caea25b70a1d46ac362bf6139680f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_top2.png using Guid(3d3caea25b70a1d46ac362bf6139680f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c14bd3086cbb82ba2c58dd2a5ccb7c26') in 0.017615 seconds
+  Import took 0.019186 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000171 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_left2.png
+  artifactKey: Guid(f8eadc21af65fef4fa2e0f6cad6c70cf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_left2.png using Guid(f8eadc21af65fef4fa2e0f6cad6c70cf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '38c341ffc5e328d31c4478e968902777') in 0.019231 seconds
+  Import took 0.020900 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000178 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_speak.png
+  artifactKey: Guid(7d341234dbc2e854caec9cdeb02f9ed3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_speak.png using Guid(7d341234dbc2e854caec9cdeb02f9ed3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '86fce748455eaf1dc97aced9edb059f5') in 0.018679 seconds
+  Import took 0.020453 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000182 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/name_frame.png
+  artifactKey: Guid(7ed57d01303a580419ef288f356f7708) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/name_frame.png using Guid(7ed57d01303a580419ef288f356f7708) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd588ecc76f5cf69ed23c855fa1e9a06b') in 0.015780 seconds
+  Import took 0.017362 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000158 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot2.png
+  artifactKey: Guid(53960e9a9a2d4014d84fe451519f4e13) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot2.png using Guid(53960e9a9a2d4014d84fe451519f4e13) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '732cb347d69d9a57750e97a0b5607c7b') in 0.018859 seconds
+  Import took 0.020731 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000164 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_left2_t.png
+  artifactKey: Guid(921c75c47302777408ad7f46100c789a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_left2_t.png using Guid(921c75c47302777408ad7f46100c789a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e7ee0aaedbe51aacc832c1cfa9efb573') in 0.017276 seconds
+  Import took 0.018823 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000143 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot2_t.png
+  artifactKey: Guid(be990aa898cf8b24e984f2eea933b217) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_bot2_t.png using Guid(be990aa898cf8b24e984f2eea933b217) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6574c93e546be05a5472aef5d9d29507') in 0.018095 seconds
+  Import took 0.019715 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000217 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_help.png
+  artifactKey: Guid(3b6381a976d2a1c46b8ad6108faf1ff7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_help.png using Guid(3b6381a976d2a1c46b8ad6108faf1ff7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '97cd42abb146c2e1aca99d284d0c3b87') in 0.017465 seconds
+  Import took 0.019360 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000192 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_arrow_top.png
+  artifactKey: Guid(1618cf21c38a2594cb2887358bf9ad55) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_arrow_top.png using Guid(1618cf21c38a2594cb2887358bf9ad55) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fa3c841cbf9f4e92934d0c4ff14f587a') in 0.014820 seconds
+  Import took 0.016449 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.012469 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_help.png
+  artifactKey: Guid(3b6381a976d2a1c46b8ad6108faf1ff7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_help.png using Guid(3b6381a976d2a1c46b8ad6108faf1ff7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '97cd42abb146c2e1aca99d284d0c3b87') in 0.010305 seconds
+  Import took 0.012017 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.635261 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_bar.png
+  artifactKey: Guid(c4c1268eec6a9c545bdc4268955eba95) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_bar.png using Guid(c4c1268eec6a9c545bdc4268955eba95) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '65dde75207a8e47b609dab5c893cfb51') in 0.030806 seconds
+  Import took 0.032450 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000250 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_button_on.png
+  artifactKey: Guid(c8545308151f2f04aac85e488c101d3f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_button_on.png using Guid(c8545308151f2f04aac85e488c101d3f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '70409f237f6c5a896a058d37567cbb3b') in 0.026263 seconds
+  Import took 0.027818 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000227 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_add.png
+  artifactKey: Guid(075b00eda10b04d4399c1331487f385c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_add.png using Guid(075b00eda10b04d4399c1331487f385c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cc233b063721f3c3964d04366a9d43c3') in 0.018194 seconds
+  Import took 0.020490 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000184 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_button.png
+  artifactKey: Guid(eb6e63566bb4fd54887ce087e3fab573) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_button.png using Guid(eb6e63566bb4fd54887ce087e3fab573) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7a4c8ee6c521278df4fe968166f0a48e') in 0.017284 seconds
+  Import took 0.019361 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000216 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mini_add_t.png
+  artifactKey: Guid(7f7f6d71787554d4bbacc9b415a55045) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mini_add_t.png using Guid(7f7f6d71787554d4bbacc9b415a55045) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '14ab8e03d111631442f94a26a4c98d80') in 0.017379 seconds
+  Import took 0.019215 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000175 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_button_vert.png
+  artifactKey: Guid(fc3ae77816b976b46b36f4d611089d63) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_button_vert.png using Guid(fc3ae77816b976b46b36f4d611089d63) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a65c58f06271feecd7b78eeb7106a5e3') in 0.018965 seconds
+  Import took 0.021116 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000164 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/midbutton_frame.png
+  artifactKey: Guid(3a18c666704e41745ac719ada73bcfec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/midbutton_frame.png using Guid(3a18c666704e41745ac719ada73bcfec) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '853a2d680023171b5223f3b69d9548b1') in 0.016822 seconds
+  Import took 0.018524 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000153 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_bar_frame.png
+  artifactKey: Guid(fff5b25afb2cb404693f244718e66371) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_bar_frame.png using Guid(fff5b25afb2cb404693f244718e66371) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '821978df908a0cd90e12056f65155f1b') in 0.022960 seconds
+  Import took 0.024560 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000182 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/mid_button_off.png
+  artifactKey: Guid(1b2925f74ebf13a44baa9bc2c873351f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/mid_button_off.png using Guid(1b2925f74ebf13a44baa9bc2c873351f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f899be32f894d4eedf1349a7a7b34fdd') in 0.024324 seconds
+  Import took 0.026277 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.382201 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/longbutton_frame.png
+  artifactKey: Guid(2b5f6f126e124094e89c4674cf526091) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/longbutton_frame.png using Guid(2b5f6f126e124094e89c4674cf526091) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1ec8b637308374b09e8394902c467c1f') in 0.026945 seconds
+  Import took 0.029783 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000233 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Loot_bar.psd
+  artifactKey: Guid(5dc3e610e704d7043991ffdc257533fc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Loot_bar.psd using Guid(5dc3e610e704d7043991ffdc257533fc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '69aa8d4dbb9afce957fc031f3e154cfb') in 0.021757 seconds
+  Import took 0.023599 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000268 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mana_line2.png
+  artifactKey: Guid(d223cad1239aeb945909cebab6466a27) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mana_line2.png using Guid(d223cad1239aeb945909cebab6466a27) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cbd16fb4317c49a0ea0ef1be874e5126') in 0.016451 seconds
+  Import took 0.018045 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000159 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Lvl_up_bar.psd
+  artifactKey: Guid(650cae30d1c653742a5f31b64f2560e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Lvl_up_bar.psd using Guid(650cae30d1c653742a5f31b64f2560e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '580edcaa0f73ff9fb7b843f30387da30') in 0.018368 seconds
+  Import took 0.020107 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000227 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Menu.png
+  artifactKey: Guid(271ed95940e731f428772b3e59f1762a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Menu.png using Guid(271ed95940e731f428772b3e59f1762a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5e4d36b3823ebb0645edeb0d8c72ccaa') in 0.018805 seconds
+  Import took 0.020562 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000180 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/Mage_silhouette_woman.png
+  artifactKey: Guid(b1853ab6b497f7b498a5f80109a2ea1d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/Mage_silhouette_woman.png using Guid(b1853ab6b497f7b498a5f80109a2ea1d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60a6a6b444f9636d6a28948cb0fd5bcd') in 0.022115 seconds
+  Import took 0.023702 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000171 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Mana_line.png
+  artifactKey: Guid(9d50fceafab3c3c45875004544e7c7e6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Mana_line.png using Guid(9d50fceafab3c3c45875004544e7c7e6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c4446a119ba48442d1cb9349994b3d14') in 0.014972 seconds
+  Import took 0.016472 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000183 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/little_round_frame2.png
+  artifactKey: Guid(1479817b46f87f9428532d529bce2a3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/little_round_frame2.png using Guid(1479817b46f87f9428532d529bce2a3e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cdaf233277b925cd0320a874f50385df') in 0.014138 seconds
+  Import took 0.015650 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000195 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little_long_r.png
+  artifactKey: Guid(f3f5ead99339dba459070da7cc68f134) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little_long_r.png using Guid(f3f5ead99339dba459070da7cc68f134) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd09292c51f204cf413675773226e47d0') in 0.015476 seconds
+  Import took 0.016987 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000187 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little_vert.png
+  artifactKey: Guid(cd710155f7869fa418da6ec8af33e2b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little_vert.png using Guid(cd710155f7869fa418da6ec8af33e2b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '81db46acb4ef0de4e07dfd55d5201b3d') in 0.015303 seconds
+  Import took 0.016805 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000220 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_frame_loading.png
+  artifactKey: Guid(2b47cf25ea308f447ac6dd0fb53ee4d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_frame_loading.png using Guid(2b47cf25ea308f447ac6dd0fb53ee4d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '235d2da52bad23c5c541830f9bbda591') in 0.014590 seconds
+  Import took 0.016161 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000225 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_button_on.png
+  artifactKey: Guid(263f73c3a15560c4198ae6f16cd1df94) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_button_on.png using Guid(263f73c3a15560c4198ae6f16cd1df94) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fa5e9a936801118b9fc22adfe825964e') in 0.014498 seconds
+  Import took 0.016076 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000171 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_button.png
+  artifactKey: Guid(e0fb5412f0cdb7b468c51c6a6207df7b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_button.png using Guid(e0fb5412f0cdb7b468c51c6a6207df7b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '85e0d8d7794f92212c5287505c4c7277') in 0.015322 seconds
+  Import took 0.016815 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000215 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_line.png
+  artifactKey: Guid(1fc36c90f57cd0d418b332d98f42eda0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_line.png using Guid(1fc36c90f57cd0d418b332d98f42eda0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '51ba2f654bcec8c104787b891456d7ee') in 0.014796 seconds
+  Import took 0.016528 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000167 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/little_background_frame.png
+  artifactKey: Guid(c9b00ab864b403f45afb81839c9a68d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/little_background_frame.png using Guid(c9b00ab864b403f45afb81839c9a68d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a1ac68305d4edd1450dc7523345a91ee') in 0.016017 seconds
+  Import took 0.017556 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000194 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_line2_elite.png
+  artifactKey: Guid(0deda20b838acaa48b6650983ed472f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_line2_elite.png using Guid(0deda20b838acaa48b6650983ed472f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29c230a0a118d582339c9972a3a06e0f') in 0.015523 seconds
+  Import took 0.017253 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000225 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little_ready.png
+  artifactKey: Guid(e6a48030e16f9f54fb16517c1e961c75) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little_ready.png using Guid(e6a48030e16f9f54fb16517c1e961c75) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '589be15c323fd988204814b644ebe71d') in 0.015350 seconds
+  Import took 0.016820 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000162 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_line2.png
+  artifactKey: Guid(41d630fe463be704497e95f8c99c8034) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_line2.png using Guid(41d630fe463be704497e95f8c99c8034) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '907909c274f20a850cc4e80695bc6f8c') in 0.016360 seconds
+  Import took 0.017967 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000197 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/lil_bar.png
+  artifactKey: Guid(a5294120d8231a744adc877d297d0d11) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/lil_bar.png using Guid(a5294120d8231a744adc877d297d0d11) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f57afb79045136c52253d78744f00aef') in 0.016786 seconds
+  Import took 0.018381 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000198 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/little_round_frame.png
+  artifactKey: Guid(2dc96f21bc3fd0e498e73a0a1843c9cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/little_round_frame.png using Guid(2dc96f21bc3fd0e498e73a0a1843c9cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9aaa104198b08dd537153ca72b1c1ac6') in 0.013711 seconds
+  Import took 0.015237 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000251 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little_off.png
+  artifactKey: Guid(07e79a2f761ca3b4b802f5ae9276ade7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little_off.png using Guid(07e79a2f761ca3b4b802f5ae9276ade7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '31d0e3d909f7be97474ae35e829517c3') in 0.015449 seconds
+  Import took 0.016942 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000241 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/little_round_frame2_elite.png
+  artifactKey: Guid(7d5a424b35fe8a1469f68e76f2e2d2f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/little_round_frame2_elite.png using Guid(7d5a424b35fe8a1469f68e76f2e2d2f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd3b047b54fdb60ebc658afe0f7208ca0') in 0.013695 seconds
+  Import took 0.015718 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000821 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little_long.png
+  artifactKey: Guid(07df65f23af4bd64790e648054bf4b70) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little_long.png using Guid(07df65f23af4bd64790e648054bf4b70) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ee64cd3812f62c8b1b176a4856c94041') in 0.015753 seconds
+  Import took 0.017352 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000278 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/Mage_silhouette_man.png
+  artifactKey: Guid(ba4ac0fdde716494890d253465921177) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/Mage_silhouette_man.png using Guid(ba4ac0fdde716494890d253465921177) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5435c57bca4f1371456b6c7d5aaae190') in 0.021723 seconds
+  Import took 0.023287 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000251 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/long_button_off.png
+  artifactKey: Guid(202bea269bc20dd42904dca9a0896418) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/long_button_off.png using Guid(202bea269bc20dd42904dca9a0896418) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '73b81660ae0816f79ca65e5b8b3a840e') in 0.015237 seconds
+  Import took 0.016755 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.346905 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Inventory.png
+  artifactKey: Guid(c6372abae4e0907439fea38a0d9a8ef0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Inventory.png using Guid(c6372abae4e0907439fea38a0d9a8ef0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '226839a523f26efe259a8df45fb70323') in 0.025263 seconds
+  Import took 0.027087 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000251 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame.png
+  artifactKey: Guid(1012f58a33331d24882571b8b0c4af2a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame.png using Guid(1012f58a33331d24882571b8b0c4af2a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a35380d83e4f309f32638483d4a3d19b') in 0.014803 seconds
+  Import took 0.016320 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000243 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Inventory_bar.psd
+  artifactKey: Guid(337b5327e812a6c4dacb350c7ee86c19) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Inventory_bar.psd using Guid(337b5327e812a6c4dacb350c7ee86c19) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c019aab59dbee0a5ecc13be2d99b90ef') in 0.027626 seconds
+  Import took 0.029154 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000178 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_frame_little.png
+  artifactKey: Guid(2b0b3110512b68f4796b67f4c9c4f837) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_frame_little.png using Guid(2b0b3110512b68f4796b67f4c9c4f837) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a0d0ade060eabf20254107abcc0999a8') in 0.016427 seconds
+  Import took 0.018350 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000266 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_button.png
+  artifactKey: Guid(aa4fed744a860c24f95a70a49675ea36) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_button.png using Guid(aa4fed744a860c24f95a70a49675ea36) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f7b9b6bc5d91f4b56ded0ff621198e4f') in 0.019098 seconds
+  Import took 0.020761 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000200 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Inventory_bar.png
+  artifactKey: Guid(003830a0d6b64e64f8c86abf272fabaa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Inventory_bar.png using Guid(003830a0d6b64e64f8c86abf272fabaa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f9885ce00fff11d265bad475ced934a8') in 0.029912 seconds
+  Import took 0.031900 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000196 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hp_line.png
+  artifactKey: Guid(63d12ee3823dd774182d3eb97b6e4fc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hp_line.png using Guid(63d12ee3823dd774182d3eb97b6e4fc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '015987f9f581435e31879c4e9306c166') in 0.016224 seconds
+  Import took 0.017956 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000162 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_elite.png
+  artifactKey: Guid(24e437be3137ba742993fbe7a4fa54a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_elite.png using Guid(24e437be3137ba742993fbe7a4fa54a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2342c0b91584ff4177f0f3cad4227dc1') in 0.018530 seconds
+  Import took 0.020254 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000254 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hp_frame.png
+  artifactKey: Guid(1f6f5b56a3a99f7478529369b848eb3f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hp_frame.png using Guid(1f6f5b56a3a99f7478529369b848eb3f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd9f4e3019e1957fed7bfe6f71f8ef71a') in 0.014503 seconds
+  Import took 0.016408 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000251 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hp_line2.png
+  artifactKey: Guid(3ed1a676333f0d64c87f53b206901436) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hp_line2.png using Guid(3ed1a676333f0d64c87f53b206901436) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9969675b19baa8edcfda3a372677c610') in 0.014864 seconds
+  Import took 0.016846 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000221 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Honor.png
+  artifactKey: Guid(aa6156860ed77af4b828c1a7e9388f5d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Honor.png using Guid(aa6156860ed77af4b828c1a7e9388f5d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd4db28441fcc2f7d31304d8a0ba768c1') in 0.016254 seconds
+  Import took 0.018072 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000175 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/info_window.png
+  artifactKey: Guid(4cd9629e210f77e43835d58fe29886f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/info_window.png using Guid(4cd9629e210f77e43835d58fe29886f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2758e4dc4c419f74f51f87086dbf5209') in 0.016807 seconds
+  Import took 0.018388 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000181 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_button2.png
+  artifactKey: Guid(4e972e078639ace409a0fd87e5069d49) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_button2.png using Guid(4e972e078639ace409a0fd87e5069d49) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fb44aa396c90c29bc8b25a741628486d') in 0.015151 seconds
+  Import took 0.016789 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000195 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/info_window_2.png
+  artifactKey: Guid(7eb9b9f702183b9459164ea2894fda6f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/info_window_2.png using Guid(7eb9b9f702183b9459164ea2894fda6f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '064d5287ebc3596541e2221f6c1bfe4b') in 0.017144 seconds
+  Import took 0.018978 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000200 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/inventory_button2_long.png
+  artifactKey: Guid(6ce43faabc627034d803f7208ce26b6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/inventory_button2_long.png using Guid(6ce43faabc627034d803f7208ce26b6e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '122e4042db388bc1a8c55399c9df80cb') in 0.017243 seconds
+  Import took 0.018985 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000199 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_rare.png
+  artifactKey: Guid(ac22fc3e986eb5648a171dc14a1544ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_rare.png using Guid(ac22fc3e986eb5648a171dc14a1544ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '07a8650ac78ba95d1d9f980dc031e7fe') in 0.029039 seconds
+  Import took 0.030722 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000198 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_bg.png
+  artifactKey: Guid(a866319289c5d664a9e56ed71b7030cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hero_icon_frame_bg.png using Guid(a866319289c5d664a9e56ed71b7030cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6a693145c84ada08582c5a7af97fc04e') in 0.017885 seconds
+  Import took 0.019769 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.232479 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Game_Menu.psd
+  artifactKey: Guid(d375e686e6120ac4cbc638a6b444b5c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Game_Menu.psd using Guid(d375e686e6120ac4cbc638a6b444b5c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9306c3b5528f6c71d1dfe6655a793261') in 0.026487 seconds
+  Import took 0.028453 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000173 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/Hero_icon_frame.png
+  artifactKey: Guid(543cacf9550ed8640b7323ba627174b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/Hero_icon_frame.png using Guid(543cacf9550ed8640b7323ba627174b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fb124b20acac6c2ae4469aff057db2ec') in 0.019195 seconds
+  Import took 0.020846 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000259 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/greed.png
+  artifactKey: Guid(111f96d011e41e14781eb984e8c61986) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/greed.png using Guid(111f96d011e41e14781eb984e8c61986) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3b8a0a3305b23de5d9ed290dc58932a1') in 0.016571 seconds
+  Import took 0.018133 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000257 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Game_Menu.psd
+  artifactKey: Guid(d375e686e6120ac4cbc638a6b444b5c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Game_Menu.psd using Guid(d375e686e6120ac4cbc638a6b444b5c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9306c3b5528f6c71d1dfe6655a793261') in 0.010572 seconds
+  Import took 0.012157 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000256 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/greed.png
+  artifactKey: Guid(111f96d011e41e14781eb984e8c61986) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/greed.png using Guid(111f96d011e41e14781eb984e8c61986) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3b8a0a3305b23de5d9ed290dc58932a1') in 0.008382 seconds
+  Import took 0.010296 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.682211 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/energy_line.png
+  artifactKey: Guid(327dba628dfbf684793d4ee4328db9d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/energy_line.png using Guid(327dba628dfbf684793d4ee4328db9d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f8a7a2bc5452613c417defeef1d23871') in 0.025924 seconds
+  Import took 0.028341 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000244 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/exit.png
+  artifactKey: Guid(bdd2216807e1ddb499c08f6fd5760167) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/exit.png using Guid(bdd2216807e1ddb499c08f6fd5760167) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dba0071f4efec19bf006c6895f94cf27') in 0.017362 seconds
+  Import took 0.019016 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000251 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/energy_line2.png
+  artifactKey: Guid(5ce92b6869ff93e4787d8b24d6a0185c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/energy_line2.png using Guid(5ce92b6869ff93e4787d8b24d6a0185c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36f1afeafc17fd032c8a955388ab67d3') in 0.017237 seconds
+  Import took 0.018806 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000183 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Equip.png
+  artifactKey: Guid(fc476c862eab60d4da1e9e2879fcd844) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Equip.png using Guid(fc476c862eab60d4da1e9e2879fcd844) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f82a6b24d3206556f265e495ce5af379') in 0.017564 seconds
+  Import took 0.019220 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000183 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/energy_line2.png
+  artifactKey: Guid(5ce92b6869ff93e4787d8b24d6a0185c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/energy_line2.png using Guid(5ce92b6869ff93e4787d8b24d6a0185c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36f1afeafc17fd032c8a955388ab67d3') in 0.005108 seconds
+  Import took 0.006783 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000148 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/energy_line.png
+  artifactKey: Guid(327dba628dfbf684793d4ee4328db9d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/energy_line.png using Guid(327dba628dfbf684793d4ee4328db9d9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f8a7a2bc5452613c417defeef1d23871') in 0.005255 seconds
+  Import took 0.007024 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000189 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Fight.png
+  artifactKey: Guid(3b0497f5c50d040478fa02e4bfaa9402) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Fight.png using Guid(3b0497f5c50d040478fa02e4bfaa9402) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6e8c0fb0a86f9a6808336be36755cd9c') in 0.014055 seconds
+  Import took 0.016223 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000168 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Chat_bar.psd
+  artifactKey: Guid(3b73966313e3c7c4b91ce00febc0f71f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Chat_bar.psd using Guid(3b73966313e3c7c4b91ce00febc0f71f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9a7d3d4173de37dcea03c494bfa5fffa') in 0.019982 seconds
+  Import took 0.021850 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000142 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/dialoge_frame.png
+  artifactKey: Guid(7f184bf82bb31f04e8352de29428870e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/dialoge_frame.png using Guid(7f184bf82bb31f04e8352de29428870e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'df6c795931fd4e8e78d05e87452e78e4') in 0.014490 seconds
+  Import took 0.016116 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000146 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_man.png
+  artifactKey: Guid(023afbba79b95f347a047c7696110ab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_man.png using Guid(023afbba79b95f347a047c7696110ab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0ba9d6c43331bc51cbc12dde1f9d4730') in 0.021901 seconds
+  Import took 0.023616 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000144 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_woman.png
+  artifactKey: Guid(a5f0838df787bf540a78006e0a1cc308) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_woman.png using Guid(a5f0838df787bf540a78006e0a1cc308) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f56eb414df4d12cc10d196cea600de5') in 0.021560 seconds
+  Import took 0.023121 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000157 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_man.png
+  artifactKey: Guid(023afbba79b95f347a047c7696110ab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_man.png using Guid(023afbba79b95f347a047c7696110ab3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0ba9d6c43331bc51cbc12dde1f9d4730') in 0.009664 seconds
+  Import took 0.011302 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.002688 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_woman.png
+  artifactKey: Guid(a5f0838df787bf540a78006e0a1cc308) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/druid_silhouette_woman.png using Guid(a5f0838df787bf540a78006e0a1cc308) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f56eb414df4d12cc10d196cea600de5') in 0.006960 seconds
+  Import took 0.008572 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.260027 seconds.
+  path: Assets/Classic_RPG_GUI/Photoshop/Bag_bar.psd
+  artifactKey: Guid(5b7b7f05155724a42876420b46820bfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Photoshop/Bag_bar.psd using Guid(5b7b7f05155724a42876420b46820bfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '386e0fc390794ba075d72ebdebf8f8ff') in 0.021867 seconds
+  Import took 0.024568 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000292 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/big_bar_frame.png
+  artifactKey: Guid(89fd731f50e11fc4682618136b80dd27) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/big_bar_frame.png using Guid(89fd731f50e11fc4682618136b80dd27) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2df98b08bdf651cbd2f1bca42595f9a8') in 0.029291 seconds
+  Import took 0.030950 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000157 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/berserk_silhouette_woman.png
+  artifactKey: Guid(b846030fca0c8014b9ca3b55c0713cd3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/berserk_silhouette_woman.png using Guid(b846030fca0c8014b9ca3b55c0713cd3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4afa1be813c1c8c205b9bf3837797ef9') in 0.021274 seconds
+  Import took 0.023007 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000199 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/basic_bar2.png
+  artifactKey: Guid(682f9e88be0c444498d1133e7c89da17) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/basic_bar2.png using Guid(682f9e88be0c444498d1133e7c89da17) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd5a6acb5f256043eb8d10361e46b59a7') in 0.015540 seconds
+  Import took 0.017051 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000263 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/basic_bar.png
+  artifactKey: Guid(9a68034bca55d2e42b4b103983882ec8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/basic_bar.png using Guid(9a68034bca55d2e42b4b103983882ec8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bcc7c67bda22040d1db075f5cab03915') in 0.015822 seconds
+  Import took 0.017333 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000275 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/basic_bar2_elite.png
+  artifactKey: Guid(16b5db57247c1ab4fad59fb49bc94647) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/basic_bar2_elite.png using Guid(16b5db57247c1ab4fad59fb49bc94647) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd524d4fc20cd0d9cc11ac05d3fe56427') in 0.015147 seconds
+  Import took 0.016698 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000257 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/berserk_silhouette_man.png
+  artifactKey: Guid(068a0f5b7f8ae9c42b6373e76c82a7df) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/berserk_silhouette_man.png using Guid(068a0f5b7f8ae9c42b6373e76c82a7df) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0a4de4c184d9a59fc27ca5b276959a4a') in 0.023555 seconds
+  Import took 0.025257 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000184 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/big_bar_bg.png
+  artifactKey: Guid(90ef21589078a9d4aaa982eb1258d332) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/big_bar_bg.png using Guid(90ef21589078a9d4aaa982eb1258d332) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8ed35d2bc2c275c305571b5eb4eb2553') in 0.030219 seconds
+  Import took 0.031754 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000163 seconds.
+  path: Assets/Classic_RPG_GUI/Parts/big_bar.png
+  artifactKey: Guid(e4fa107d50dacb14ca516d0b83ec6624) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Parts/big_bar.png using Guid(e4fa107d50dacb14ca516d0b83ec6624) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6b053248d1fd2d4063f54ee4ebe9dd47') in 0.030583 seconds
+  Import took 0.032368 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.075482 seconds.
+  path: Assets/Classic_RPG_GUI/Icons/Bag.png
+  artifactKey: Guid(88d4d6e205a0bca4182279e9e8630e3b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Icons/Bag.png using Guid(88d4d6e205a0bca4182279e9e8630e3b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f432656fefc8f649ba09294ef516e79') in 0.016606 seconds
+  Import took 0.018290 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.136838 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/archer_silhouette_man.png
+  artifactKey: Guid(6600a6346bb5c554fa36771f0f08d87f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/archer_silhouette_man.png using Guid(6600a6346bb5c554fa36771f0f08d87f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f4e2f45bd3719ce1c66efbd99ae525c6') in 0.030460 seconds
+  Import took 0.032459 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000259 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/archer_silhouette_woman.png
+  artifactKey: Guid(ecab2097994706d469a110f23a9224e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/archer_silhouette_woman.png using Guid(ecab2097994706d469a110f23a9224e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '55c5e526c1a0746a1ec87a7b50af5839') in 0.026599 seconds
+  Import took 0.028684 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000197 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/assassin_silhouette_man.png
+  artifactKey: Guid(c428882e586afef41b6fb4a0e315f800) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/assassin_silhouette_man.png using Guid(c428882e586afef41b6fb4a0e315f800) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c7dfb62375c8b950deb802922f9dcc77') in 0.024770 seconds
+  Import took 0.026324 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000272 seconds.
+  path: Assets/Classic_RPG_GUI/Silhouette/assassin_silhouette_woman.png
+  artifactKey: Guid(67379bdf24016be439341b054328f51b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Classic_RPG_GUI/Silhouette/assassin_silhouette_woman.png using Guid(67379bdf24016be439341b054328f51b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '05e47682c22b8c78a6013f4c13b0a1e6') in 0.023650 seconds
+  Import took 0.025310 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.000557 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.697 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.4 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1588.
-Total: 1.343600 ms (FindLiveObjects: 0.118900 ms CreateObjectMapping: 0.032300 ms MarkObjects: 1.154300 ms  DeleteObjects: 0.036800 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000565 seconds.
+Registered in 0.000663 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 Refreshing native plugins compatible for Editor in 0.19 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.668 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1590.
-Total: 1.653000 ms (FindLiveObjects: 0.138600 ms CreateObjectMapping: 0.033400 ms MarkObjects: 1.436800 ms  DeleteObjects: 0.043600 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000810 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.671 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1592.
-Total: 1.621100 ms (FindLiveObjects: 0.136200 ms CreateObjectMapping: 0.034400 ms MarkObjects: 1.402900 ms  DeleteObjects: 0.046700 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000559 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.698 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1594.
-Total: 1.722900 ms (FindLiveObjects: 0.131500 ms CreateObjectMapping: 0.041500 ms MarkObjects: 1.492500 ms  DeleteObjects: 0.056500 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000649 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.684 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1596.
-Total: 1.477900 ms (FindLiveObjects: 0.146800 ms CreateObjectMapping: 0.031900 ms MarkObjects: 1.248600 ms  DeleteObjects: 0.049500 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000611 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.25 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.727 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.26 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1598.
-Total: 3.732900 ms (FindLiveObjects: 0.273900 ms CreateObjectMapping: 0.090000 ms MarkObjects: 3.293200 ms  DeleteObjects: 0.074300 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000640 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.19 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.762 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.19 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1600.
-Total: 1.573400 ms (FindLiveObjects: 0.113700 ms CreateObjectMapping: 0.033100 ms MarkObjects: 1.382700 ms  DeleteObjects: 0.042900 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000589 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.19 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.744 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.20 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1602.
-Total: 1.529200 ms (FindLiveObjects: 0.134500 ms CreateObjectMapping: 0.034500 ms MarkObjects: 1.315800 ms  DeleteObjects: 0.043500 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000595 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.698 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1604.
-Total: 1.474700 ms (FindLiveObjects: 0.134900 ms CreateObjectMapping: 0.031900 ms MarkObjects: 1.259500 ms  DeleteObjects: 0.046800 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000543 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.20 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
@@ -386,37 +1330,13 @@ RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
 - Completed reload, in  0.694 seconds
 Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.17 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 0.19 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
+System memory in use before: 60.3 MB.
+System memory in use after: 60.4 MB.
 
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1606.
-Total: 1.685200 ms (FindLiveObjects: 0.152300 ms CreateObjectMapping: 0.038000 ms MarkObjects: 1.451200 ms  DeleteObjects: 0.043000 ms)
-
-========================================================================
-Received Prepare
-Registering precompiled user dll's ...
-Registered in 0.000562 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Invoked RoslynAnalysisRunner static constructor.
-RoslynAnalysisRunner will not be running.
-RoslynAnalysisRunner has terminated.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.672 seconds
-Platform modules already initialized, skipping
-Refreshing native plugins compatible for Editor in 0.18 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1100 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 60.4 MB.
-System memory in use after: 60.5 MB.
-
-Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1608.
-Total: 1.733200 ms (FindLiveObjects: 0.136400 ms CreateObjectMapping: 0.032800 ms MarkObjects: 1.506100 ms  DeleteObjects: 0.056700 ms)
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 1594.
+Total: 1.508700 ms (FindLiveObjects: 0.133900 ms CreateObjectMapping: 0.027600 ms MarkObjects: 1.297000 ms  DeleteObjects: 0.048500 ms)
 
 AssetImportWorkerClient::OnTransportError - code=2 error=End of file
