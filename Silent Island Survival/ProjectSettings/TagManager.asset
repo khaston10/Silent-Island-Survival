@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Tree
+  - Rock
+  - Abandoned House
+  - Abandoned Factory
+  - Abandoned Vehicle
+  - Loot Box
+  - GroundTile
   layers:
   - Default
   - TransparentFX

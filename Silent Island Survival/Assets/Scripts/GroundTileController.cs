@@ -9,7 +9,7 @@ public class GroundTileController : MonoBehaviour
     #endregion
 
     public int[] location = new int[2]; // {x - location, z - location}
-    //bool terrainIsPassable = true;
+    public bool terrainIsPassable = true;
     //bool hasPeople = false;
     //bool hasZombie = false;
     //bool hasLoot = false;
