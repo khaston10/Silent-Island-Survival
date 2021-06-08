@@ -11,6 +11,8 @@ TagManager:
   - Abandoned Vehicle
   - Loot Box
   - GroundTile
+  - Trash
+  - Unit
   layers:
   - Default
   - TransparentFX
