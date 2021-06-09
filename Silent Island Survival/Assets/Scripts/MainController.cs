@@ -152,7 +152,7 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 1; // By default we select 0;
+    int selectedMapIndex = 0; // By default we select 0;
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.

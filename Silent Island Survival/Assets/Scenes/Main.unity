@@ -986,6 +986,7 @@ MonoBehaviour:
   - {fileID: 4072606280671256139, guid: fa29b7da8659cfc4f83c80cc0db69caa, type: 3}
   movementOptionPrefab: {fileID: 3896983178891198793, guid: 9aa9c0987a1af8f48bb8d16b44a16b9e, type: 3}
   movementSelectedPrefab: {fileID: 2734100159525995773, guid: ec95638eb95cb214eb0fbce77433f6b5, type: 3}
+  unitIsMoving: 0
   mainCam: {fileID: 963194227}
   mainLightSourceSun: {fileID: 705507994}
   selector: {fileID: 1916051183}
@@ -1028,7 +1029,7 @@ MonoBehaviour:
   upgradeButton: {fileID: 494107593}
   draftOrdinanceButton: {fileID: 2038312357}
   TerrainMaps:
-  - {fileID: 4900000, guid: 7a7f04f124f3c5c4cbc1d1cc7a16363a, type: 3}
+  - {fileID: 4900000, guid: 401bd94dfac016d4687761ff34326db7, type: 3}
   - {fileID: 4900000, guid: d81d262bdf2a95442871fc9207bae47e, type: 3}
   - {fileID: 4900000, guid: 1412661f8ee44a046aeed77fd2f7acd4, type: 3}
   - {fileID: 4900000, guid: 3780a3f264a15974a8392204fca20fbb, type: 3}
