@@ -33,10 +33,17 @@ public class MainController : MonoBehaviour
     List<GameObject> movementOptionTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     bool movementSelectionCanContinue = true; // When a player ends the selection on an object that is not passable then the selection abilty must be disabled.
+    public bool unitIsMoving = false; // When the unit is moving we do not want the player to input any controls.
     GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
     #endregion
 
+    float unitMovementSpeed = 3;
     List<GameObject> unitsInPlay = new List<GameObject>();
+    string[] unitNames = new string[] { "Abe", "Brittany", "Cam", "Dave", "Erin"};
+
+    // Used during movement of unit.
+    int nextPositionIndex = 0;
+    Vector3 NextPosition = Vector3.zero;
 
     #endregion
 
@@ -48,6 +55,7 @@ public class MainController : MonoBehaviour
     RaycastHit hit;
     string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
     string[] acceptableGroundTilesTags = new string[] { "GroundTile"};
+    string[] acceptableUnitTags = new string[] { "Unit" };
     public GameObject selector;
     #region Variables - Movement 
     float camTranslateSpeed = 5f;
@@ -183,30 +191,24 @@ public class MainController : MonoBehaviour
         {
             UpdateCamPosition();
 
+            // If a unit is moving we need to run this function.
+            if (unitIsMoving)
+            {
+                MoveUnit(selectedUnit);
+            }
+
             // This section covers Ray Casting.
-            // If the player clicks on any object other than a unit with the Individual Unit Panel active.
-            if (Input.GetMouseButtonDown(0) && !IndividualUnitPanel.gameObject.activeSelf)
+            // If the player clicks on any object.
+            else if (Input.GetMouseButtonDown(0) && !IndividualUnitPanel.gameObject.activeSelf)
             {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit))
                 {
                     UpdateGameWithMouseClickOnObject();
-
                 }
             }
 
-            // Closes the Individual Unit Panel when the mouse is released.
-            else if (Input.GetMouseButtonUp(0) && IndividualUnitPanel.gameObject.activeSelf)
-            {
-                MoveSelectedUnit(selectedUnit);
-                CloseIndividualUnitPanel();
-
-                // Reset the player's abilty to select movements. 
-                movementSelectionCanContinue = true;
-            }
-
-
-            // To map the unit path when player is selecting where to move.
+            // When the players left mouse button is down and they are mapping a units path.
             else if (Input.GetMouseButton(0) && IndividualUnitPanel)
             {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -215,9 +217,16 @@ public class MainController : MonoBehaviour
                     MapUnitMovementPath();
                 }
             }
+
+            // Closes the Individual Unit Panel when the mouse is released.
+            else if (Input.GetMouseButtonUp(0) && IndividualUnitPanel.gameObject.activeSelf)
+            {
+                MoveSelectedUnit(selectedUnit);
+                CloseIndividualUnitPanel();
+                // Reset the player's abilty to select movements. 
+                movementSelectionCanContinue = true;
+            }
         }
-        
-       
     }
 
     #region Functions
@@ -226,6 +235,8 @@ public class MainController : MonoBehaviour
 
     public void UpdateCamPosition()
     {
+        // This function handles key board inputs.
+
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W) && mainCam.transform.position.z < WorldSize - 10)
         {
             mainCam.transform.Translate(Vector3.forward * camTranslateSpeed *Time.deltaTime, Space.World);
@@ -280,32 +291,34 @@ public class MainController : MonoBehaviour
                 // If the player has selected a ground tile we need to check if it has any children.
                 // If it does we need to open the appropriate menu.
 
-                // Case 1 - The ground tile has a Tree, Rock, Zombie or Structures on it.
-                // In this case we want to open the structure panel and highlight the ground tile.
-
                 var childCount = hit.transform.childCount;
                 for (var i = 0; i < childCount; i++)
                 {
                     var child = hit.transform.GetChild(i);
                     var childTag = child.tag;
 
-                    // Do something based on tag
+                    // Case 1 - The ground tile has a Tree, Rock, Zombie or Structures on it.
+                    // In this case we want to open the structure panel and highlight the ground tile.
                     if (acceptableTags.Contains(childTag))
                     {
                         OpenStructurePanel(childTag);
                     }
 
-                    else Debug.Log("Tag Not Found");
-                }
-
-                // Case 2 - The ground title has a unit on it.
-                
+                    // Case 2 - The ground title has a unit on it.
+                    else if (acceptableUnitTags.Contains(childTag))
+                    {
+                        selectedUnit = child.transform.gameObject;
+                        OpenIndividualUnitPanel(child.transform.gameObject);
+                        PlaceMovementOptionTiles(child.transform.gameObject);
+                    }
+                }           
             }
 
-            // Case 3 - The ground tile is empty.
             // We need to move the selector object to the tile's position.
             selector.transform.position = hit.transform.position;
             selector.transform.position += new Vector3(0f, .1f, 0f);
+
+
         }
     }
     
@@ -353,7 +366,6 @@ public class MainController : MonoBehaviour
                     // Set the starting unit to the selected unit.
                     selectedUnit = unitsInPlay[0];
                 }
-                
             }
         }
 
@@ -363,6 +375,9 @@ public class MainController : MonoBehaviour
     {
         // Create game object.
         var temp = Instantiate(basicUnitPrefabs[0], spawnLoc, Quaternion.identity);
+
+        // Set the random attributes for the unit.
+        SetUnitAttributesAtCreation(temp);
 
         // Make the unit a child of the ground tile.
         var row = Mathf.RoundToInt(spawnLoc.x);
@@ -376,10 +391,55 @@ public class MainController : MonoBehaviour
         unitsInPlay.Add(temp);
     }
 
+    public void SetUnitAttributesAtCreation(GameObject unit)
+    {
+        // Pick a random name for the unit.
+        unit.GetComponent<UnitController>().unitName = unitNames[Random.Range(0, unitNames.Length)];
+
+        // This can be expanded once differnt unit types are created.
+    }
+
     public void updateCameraForPlayerTurn()
     {
         mainCam.transform.position = new Vector3(selectedUnit.transform.position.x, 5f, selectedUnit.transform.position.z - 4);
         mainCam.transform.rotation = Quaternion.Euler(45f, 0f, 0);
+    }
+
+    public void MoveUnit(GameObject unit)
+    {
+        NextPosition = new Vector3(movementSelectedTiles[nextPositionIndex].transform.position.x, 0f, movementSelectedTiles[nextPositionIndex].transform.position.z);
+
+        if (selectedUnit.transform.position == NextPosition)
+        {
+            Debug.Log("Positions are the same" + nextPositionIndex.ToString()) ;
+           
+            nextPositionIndex++;
+
+            if (nextPositionIndex >= movementSelectedTiles.Count)
+            {
+                unitIsMoving = false;
+
+                nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
+
+                // Delete the old movement option titles if they exist.
+                for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
+                {
+                    GameObject.Destroy(movementOptionTiles[listIndex]);
+                }
+                movementOptionTiles.Clear();
+
+                // Delete the old movement selected titles if they exist.
+                for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
+                {
+                    GameObject.Destroy(movementSelectedTiles[listIndex]);
+                }
+                movementSelectedTiles.Clear();
+            }
+
+            
+        }
+
+        else selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, NextPosition, unitMovementSpeed * Time.deltaTime);
     }
 
     #endregion
@@ -466,7 +526,7 @@ public class MainController : MonoBehaviour
         for (int count = 0; count < unitsInPlay.Count; count++)
         {
             if (unitsInPlay[count].GetComponent<UnitController>().actionPoints < unitsInPlay[count].GetComponent<UnitController>().actionPointsLimit)
-                unitsInPlay[count].GetComponent<UnitController>().actionPoints += 2;
+                unitsInPlay[count].GetComponent<UnitController>().actionPoints += 5;
         }
     }
 
@@ -816,19 +876,7 @@ public class MainController : MonoBehaviour
 
     public void CloseIndividualUnitPanel()
     {
-        // Delete the old movement option titles if they exist.
-        for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
-        {
-            GameObject.Destroy(movementOptionTiles[listIndex]);
-        }
-        movementOptionTiles.Clear();
-
-        // Delete the old movement selected titles if they exist.
-        for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
-        {
-            GameObject.Destroy(movementSelectedTiles[listIndex]);
-        }
-        movementSelectedTiles.Clear();
+        
 
         // Close the panel.
         IndividualUnitPanel.gameObject.SetActive(false);
@@ -983,13 +1031,16 @@ public class MainController : MonoBehaviour
         // If the movement selected list is not empty that means we need to move the unit.
         for (int count = 0; count < movementSelectedTiles.Count; count++)
         {
+            // To start moving the unit in the game we just need to set the bool.
+            unitIsMoving = true;
+
             // If the ground title is passable then we can move the unit.
             if (movementSelectedTiles[count].transform.parent.GetComponent<GroundTileController>().terrainIsPassable)
             {
                 // Set the current ground tile back to passable.
                 unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
 
-                unit.transform.position = new Vector3(movementSelectedTiles[count].transform.position.x, 0f, movementSelectedTiles[count].transform.position.z);
+                //unit.transform.position = new Vector3(movementSelectedTiles[count].transform.position.x, 0f, movementSelectedTiles[count].transform.position.z);
                 unit.transform.SetParent(movementSelectedTiles[count].transform.parent);
 
                 // Set the new ground tile to not passable.
