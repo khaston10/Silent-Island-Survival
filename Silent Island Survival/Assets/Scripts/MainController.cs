@@ -54,6 +54,7 @@ public class MainController : MonoBehaviour
     Ray ray;
     RaycastHit hit;
     string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
+    string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Town Hall" };
     string[] acceptableGroundTilesTags = new string[] { "GroundTile"};
     string[] acceptableUnitTags = new string[] { "Unit" };
     public GameObject selector;
@@ -134,6 +135,42 @@ public class MainController : MonoBehaviour
     public Button repairButton;
     public Button upgradeButton;
     public Button draftOrdinanceButton;
+    public Button ExitInteractWithStructurePanel;
+
+    #endregion
+
+    #region Panel - BuildPanel
+
+    #region Structure Prefabs
+
+    public GameObject farmPlotPrefab;
+    public GameObject livingQuartersPrefab;
+    public GameObject medicalFacilityPrefab;
+    public GameObject wallPrefab;
+    public GameObject townHallPrefab;
+
+    #endregion
+
+    public GameObject buildOptionPrefab;
+    bool structureIsBeingBuilt = false;
+    List<GameObject> buildOptionTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
+    GameObject currentStructureSelectedToBuild;
+
+    // The following are selectors.
+    public GameObject farmPlotSelector;
+    public GameObject livingQuartersSelector;
+    public GameObject medicalFacilitySelector;
+    public GameObject wallSelector;
+    public GameObject townHallSelector;
+
+
+    public Button ToggleBuildPanel;
+    public GameObject BuildPanel;
+    public Button createFarmPlotButton;
+    public Button createLivingQuartersButton;
+    public Button createMedicalTentButton;
+    public Button createFenceButton;
+    public Button createTownHallButton;
 
     #endregion
 
@@ -152,7 +189,7 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 0; // By default we select 0;
+    int selectedMapIndex = 1; // By default we select 0;
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
@@ -197,6 +234,25 @@ public class MainController : MonoBehaviour
                 MoveUnit(selectedUnit);
             }
 
+            // If a structure is being built we need to run this function.
+            else if (structureIsBeingBuilt)
+            {
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        BuildStructure(currentStructureSelectedToBuild);
+                    }
+
+                    else UpdateStructureSelector();
+      
+                }
+                
+                
+                
+            }
+
             // This section covers Ray Casting.
             // If the player clicks on any object.
             else if (Input.GetMouseButtonDown(0) && !IndividualUnitPanel.gameObject.activeSelf)
@@ -221,10 +277,14 @@ public class MainController : MonoBehaviour
             // Closes the Individual Unit Panel when the mouse is released.
             else if (Input.GetMouseButtonUp(0) && IndividualUnitPanel.gameObject.activeSelf)
             {
-                MoveSelectedUnit(selectedUnit);
-                CloseIndividualUnitPanel();
+                if (movementSelectedTiles.Count > 0)
+                {
+                    if (UnitInteractsWithNextGroundTileOnMove(selectedUnit, 0)) unitIsMoving = true;
+                }
+                
                 // Reset the player's abilty to select movements. 
                 movementSelectionCanContinue = true;
+                CloseIndividualUnitPanel();
             }
         }
     }
@@ -265,6 +325,15 @@ public class MainController : MonoBehaviour
         if (Input.GetKey(KeyCode.E) && mainCam.transform.position.y > camBottomBounds)
         {
             mainCam.transform.Translate(-Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && structureIsBeingBuilt)
+        {
+            if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
         }
     }
 
@@ -411,11 +480,36 @@ public class MainController : MonoBehaviour
 
         if (selectedUnit.transform.position == NextPosition)
         {
-            Debug.Log("Positions are the same" + nextPositionIndex.ToString()) ;
-           
+            // Increment Index.
             nextPositionIndex++;
 
-            if (nextPositionIndex >= movementSelectedTiles.Count)
+            // Check to see if the next ground tile requires the unit to move on top of it.
+            if (nextPositionIndex < movementSelectedTiles.Count)
+            {
+                if (!UnitInteractsWithNextGroundTileOnMove(selectedUnit, nextPositionIndex))
+                {
+                    unitIsMoving = false;
+
+                    nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
+
+                    // Delete the old movement option titles if they exist.
+                    for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
+                    {
+                        GameObject.Destroy(movementOptionTiles[listIndex]);
+                    }
+                    movementOptionTiles.Clear();
+
+                    // Delete the old movement selected titles if they exist.
+                    for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
+                    {
+                        GameObject.Destroy(movementSelectedTiles[listIndex]);
+                    }
+                    movementSelectedTiles.Clear();
+                }
+            }
+
+            // If the list has no more elements.
+            else if (nextPositionIndex >= movementSelectedTiles.Count)
             {
                 unitIsMoving = false;
 
@@ -436,7 +530,6 @@ public class MainController : MonoBehaviour
                 movementSelectedTiles.Clear();
             }
 
-            
         }
 
         else selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, NextPosition, unitMovementSpeed * Time.deltaTime);
@@ -948,15 +1041,14 @@ public class MainController : MonoBehaviour
             movementSelectionCanContinue = true;
         }
 
-
         // This function is called when the Individual Unit Panel is open and the player is holding the mouse down.
         // 1. Check to see if the object the mouse is over is a ground tile and the selection option is enabled.
         if (acceptableGroundTilesTags.Contains(hit.collider.tag.ToString()) && movementSelectionCanContinue)
         {
-            // 2. If the ground title is the same tile that the player is on, we will do nothing.
+            // a. If the ground title is the same tile that the player is on, we will do nothing.
             if (selectedUnit.transform.IsChildOf(hit.transform)) return;
 
-            // 3. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
+            // b. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
             for (int count = 0; count < movementSelectedTiles.Count; count++)
             {
                 if (hit.transform.position.x == movementSelectedTiles[count].transform.position.x && hit.transform.position.z == movementSelectedTiles[count].transform.position.z)
@@ -965,7 +1057,7 @@ public class MainController : MonoBehaviour
                 }
             }
 
-            // 4. Check to see if the ground tile is adjacent to the last tile in the list, if it is not then we will ignore.
+            // c. Check to see if the ground tile is adjacent to the last tile in the list, if it is not then we will ignore.
             if (movementSelectedTiles.Count > 0) 
             {
                 if ((Mathf.Abs(hit.transform.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 0 &&
@@ -992,8 +1084,7 @@ public class MainController : MonoBehaviour
                 else return;
             }
             
-
-            // 5.  Check to see if the player has the action points and update them.
+            // d.  Check to see if the player has the action points and update them.
             if (hit.transform.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
             {
                 if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
@@ -1005,7 +1096,7 @@ public class MainController : MonoBehaviour
                 else return;
             }
 
-            // 6. Create a movement Selected Tile at the location of the ground tile and add it to the list if the ground tile also has a movement option tile.
+            // e. Create a movement Selected Tile at the location of the ground tile and add it to the list if the ground tile also has a movement option tile.
             // If the ground tile is set to not passable, then the list must end here.
             for (int count = 0; count < movementOptionTiles.Count; count++)
             {
@@ -1019,70 +1110,129 @@ public class MainController : MonoBehaviour
                 if (!hit.transform.gameObject.GetComponent<GroundTileController>().terrainIsPassable) movementSelectionCanContinue = false;
             }
 
-            
+        }
 
-
-
-        } 
-    }
-
-    public void MoveSelectedUnit(GameObject unit)
-    {
-        // If the movement selected list is not empty that means we need to move the unit.
-        for (int count = 0; count < movementSelectedTiles.Count; count++)
+        // 2. Check to see if the object the mouse is over is a structure and the selection option is enabled.
+        if (acceptableTags.Contains(hit.collider.tag.ToString()) && movementSelectionCanContinue)
         {
-            // To start moving the unit in the game we just need to set the bool.
-            unitIsMoving = true;
-
-            // If the ground title is passable then we can move the unit.
-            if (movementSelectedTiles[count].transform.parent.GetComponent<GroundTileController>().terrainIsPassable)
+            // b. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
+            for (int count = 0; count < movementSelectedTiles.Count; count++)
             {
-                // Set the current ground tile back to passable.
-                unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
-
-                //unit.transform.position = new Vector3(movementSelectedTiles[count].transform.position.x, 0f, movementSelectedTiles[count].transform.position.z);
-                unit.transform.SetParent(movementSelectedTiles[count].transform.parent);
-
-                // Set the new ground tile to not passable.
-                unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = false;
-            }
-
-            
-            else
-            {
-                // We need to consider if a player has selected a game object that is not a ground tile.
-                if (hit.transform.tag.ToString() == "Tree" || hit.transform.tag.ToString() == "Rock") Harvest(hit.transform.gameObject);
-
-                else if (hit.transform.tag.ToString() == "Abandoned House" || hit.transform.tag.ToString() == "Abandoned Factory"
-                            || hit.transform.tag.ToString() == "Abandoned Vehicle" || hit.transform.tag.ToString() == "Loot Box") OpenInteractWithStructurePanel(hit.transform.gameObject);
-
-                else
+                if (hit.transform.parent.position.x == movementSelectedTiles[count].transform.position.x && hit.transform.parent.position.z == movementSelectedTiles[count].transform.position.z)
                 {
-                    var childCount = hit.transform.childCount;
-                    for (var i = 0; i < childCount; i++)
-                    {
-                        var child = hit.transform.GetChild(i);
-                        var childTag = child.tag;
-
-                        // If the ground tile contains a tree or rock we will harvest.
-                        if (childTag == "Tree" || childTag == "Rock") Harvest(child.transform.gameObject);
-
-
-                        // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
-                        else if (childTag == "Abandoned House" || childTag == "Abandoned Factory" 
-                            || childTag == "Abandoned Vehicle" || childTag == "Loot Box") OpenInteractWithStructurePanel(child.transform.gameObject);
-
-
-                        // If the ground title contains a zombie we will have the player attack.
-
-                        // If the ground title contains another player then nothing will happen.
-                        // Do something based on tag
-                    }
+                    return;
                 }
             }
 
+            // c. Check to see if the ground tile is adjacent to the last tile in the list, if it is not then we will ignore.
+            if (movementSelectedTiles.Count > 0)
+            {
+                if ((Mathf.Abs(hit.transform.parent.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 0 &&
+                    Mathf.Abs(hit.transform.parent.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 1) ||
+                    (Mathf.Abs(hit.transform.parent.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 1 &&
+                    Mathf.Abs(hit.transform.parent.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 0))
+                {
+
+                }
+
+                else return;
+            }
+
+            else
+            {
+                if ((Mathf.Abs(hit.transform.parent.position.x - selectedUnit.transform.position.x) <= 0 &&
+                    Mathf.Abs(hit.transform.parent.position.z - selectedUnit.transform.position.z) <= 1) ||
+                    (Mathf.Abs(hit.transform.parent.position.x - selectedUnit.transform.position.x) <= 1 &&
+                    Mathf.Abs(hit.transform.parent.position.z - selectedUnit.transform.position.z) <= 0))
+                {
+
+                }
+
+                else return;
+            }
+
+            // d.  Check to see if the player has the action points and update them.
+            if (hit.transform.parent.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
+            {
+                if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+                {
+                    selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
+                    unitActionPointsText.text = selectedUnit.GetComponent<UnitController>().actionPoints.ToString();
+                }
+
+                else return;
+            }
+
+            // e. Create a movement Selected Tile at the location of the ground tile and add it to the list if the ground tile also has a movement option tile.
+            // If the ground tile is set to not passable, then the list must end here.
+            for (int count = 0; count < movementOptionTiles.Count; count++)
+            {
+                if (hit.transform.parent.position.x == movementOptionTiles[count].transform.position.x && hit.transform.parent.position.z == movementOptionTiles[count].transform.position.z)
+                {
+                    var tempTile = Instantiate(movementSelectedPrefab, new Vector3(hit.transform.parent.position.x, .1f, hit.transform.parent.position.z), Quaternion.identity);
+                    tempTile.transform.SetParent(hit.transform.parent);
+                    movementSelectedTiles.Add(tempTile);
+                }
+
+                if (!hit.transform.parent.gameObject.GetComponent<GroundTileController>().terrainIsPassable) movementSelectionCanContinue = false;
+            }
+        }
 
 
+    }
+
+    public bool UnitInteractsWithNextGroundTileOnMove(GameObject unit, int indexForTileArray)
+    {
+        // Returns a bool of true if the unit should move onto the selected ground tile.
+
+        // If the movement selected list is not empty that means we need to move the unit.
+
+        // If the ground title is passable then we can move the unit on to it.
+
+        if (movementSelectedTiles[indexForTileArray].transform.parent.GetComponent<GroundTileController>().terrainIsPassable)
+        {
+
+            unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
+            unit.transform.SetParent(movementSelectedTiles[nextPositionIndex].transform.parent);
+            unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = false;
+
+            return true;
+        }
+
+        
+        else
+        {
+            // We need to consider if a player has selected a game object that is not a ground tile.
+            if (hit.transform.tag.ToString() == "Tree" || hit.transform.tag.ToString() == "Rock") Harvest(hit.transform.gameObject);
+
+            else if (hit.transform.tag.ToString() == "Abandoned House" || hit.transform.tag.ToString() == "Abandoned Factory"
+                        || hit.transform.tag.ToString() == "Abandoned Vehicle" || hit.transform.tag.ToString() == "Loot Box") OpenInteractWithStructurePanel(hit.transform.gameObject);
+
+            else
+            {
+                var childCount = hit.transform.childCount;
+                for (var i = 0; i < childCount; i++)
+                {
+                    var child = hit.transform.GetChild(i);
+                    var childTag = child.tag;
+
+                    // If the ground tile contains a tree or rock we will harvest.
+                    if (childTag == "Tree" || childTag == "Rock") Harvest(child.transform.gameObject);
+
+
+                    // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
+                    else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
+                        || childTag == "Abandoned Vehicle" || childTag == "Loot Box") OpenInteractWithStructurePanel(child.transform.gameObject);
+
+
+                    // If the ground title contains a zombie we will have the player attack.
+
+                    // If the ground title contains another player then nothing will happen.
+                    // Do something based on tag
+                }
+            }
+
+            return false;
         }
     }
 
@@ -1119,7 +1269,6 @@ public class MainController : MonoBehaviour
 
     #region Interact With Structure Panel Function
 
-
     public void OpenInteractWithStructurePanel(GameObject structureObject)
     {
         // Set all buttons to inactive.
@@ -1130,6 +1279,7 @@ public class MainController : MonoBehaviour
         SetButtonToSeeThrough(true, repairButton);
         SetButtonToSeeThrough(true, upgradeButton);
         SetButtonToSeeThrough(true, draftOrdinanceButton);
+        SetButtonToSeeThrough(true, ExitInteractWithStructurePanel);
         
         
         // Open the panel in game.
@@ -1140,6 +1290,14 @@ public class MainController : MonoBehaviour
             || structureObject.transform.tag.ToString() == "Abandoned Vehicle" || structureObject.transform.tag.ToString() == "Loot Box")
         {
             SetButtonToSeeThrough(false, scavangeButton);
+        }
+
+        // If the structure is a Loot Box we need to destory it.
+        if (structureObject.transform.tag.ToString() == "Loot Box")
+        {
+            // Set the parent to passable.
+            structureObject.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
+            Destroy(structureObject);
         }
 
         else plantCropsButton.gameObject.SetActive(true); 
@@ -1183,7 +1341,196 @@ public class MainController : MonoBehaviour
         InteractWithStructureFeedbackText.text = "+ " + amtOfFoodToSavanged.ToString() + " Food";
         InteractWithStructureFeedBackPanel.SetActive(true);
         SetButtonToSeeThrough(true, scavangeButton);
+        SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
         foodText.text = food.ToString();
+    }
+
+    #endregion
+
+    #region Build Panel Functions
+
+    public void OpenCloseBuildPanel()
+    {
+        if (BuildPanel.activeSelf)
+        {
+            BuildPanel.SetActive(false);
+        }
+
+        else
+        {
+            // Center Camera on selected player.
+            updateCameraForPlayerTurn();
+
+            BuildPanel.SetActive(true);
+        } 
+            
+    }
+
+    public void ClickStructureToBuild(string nameOfStructure)
+    {
+        if (acceptableStructureTags.Contains(nameOfStructure))
+        {
+            // Change bool.
+            structureIsBeingBuilt = true;
+
+            // Set the structure to be built.
+            currentStructureSelectedToBuild = PopulateCurrentStructureToBuild(nameOfStructure);
+
+            // Place the build option tiles.
+            PlaceBuildOptionTiles(selectedUnit);
+
+            // Close the Build Panel.
+            OpenCloseBuildPanel();
+        }
+
+        else Debug.Log("Invalid Name Of Structure To Build");
+    }
+
+    public GameObject PopulateCurrentStructureToBuild(string nameOfStructure)
+    {
+        if (nameOfStructure == "Farm Plot") return farmPlotPrefab;
+        else if (nameOfStructure == "Living Quarters") return livingQuartersPrefab;
+        else if (nameOfStructure == "Medical Facility") return medicalFacilityPrefab;
+        else if (nameOfStructure == "Wall") return wallPrefab;
+        else if (nameOfStructure == "Town Hall") return townHallPrefab;
+        else return null;
+    }
+
+    public void PlaceBuildOptionTiles(GameObject unit)
+    {
+        // Delete the old build option titles if they exist.
+        for (int listIndex = 0; listIndex < buildOptionTiles.Count; listIndex++)
+        {
+            GameObject.Destroy(buildOptionTiles[listIndex]);
+        }
+        buildOptionTiles.Clear();
+
+        // We need to check all the tiles in the distance of the unit's action points. These variables help us get there.
+        var moveDistance = unit.GetComponent<UnitController>().actionPoints;
+
+        var unitRow = Mathf.RoundToInt(unit.transform.position.x);
+        var unitCol = Mathf.RoundToInt(unit.transform.position.z);
+
+
+        // Iterate through all the possible tiles and check to see if they are passable.
+        for (int row = (unitRow - moveDistance); row <= (unitRow + moveDistance); row++)
+        {
+            for (int col = (unitCol - moveDistance); col <= (unitCol + moveDistance); col++)
+            {
+                // Check to see if the tile is close enough to be considered in movement distance.
+                if ((Mathf.Abs(unitRow - row) + Mathf.Abs(unitCol - col)) <= moveDistance)
+                {
+                    // Check to see if the row, col is going to be in bounds of the array.
+                    if ((row >= 0) && (col >= 0) && (LocateIndexOfGroundTile(row, col) < groundTiles.Length) && (LocateIndexOfGroundTile(row, col) >= 0))
+                    {
+                        // Check to see if the ground title exists in array.
+                        if (groundTiles[LocateIndexOfGroundTile(row, col)] != null)
+                        {
+                            // Create a movement option tile.
+                            var tempBuildOptionTile = Instantiate(buildOptionPrefab, new Vector3(row, .05f, col), Quaternion.identity);
+
+                            // Add it to the list so we can easily delete them later.
+                            buildOptionTiles.Add(tempBuildOptionTile);
+
+                            // Make it a child of the ground title.
+                            tempBuildOptionTile.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void BuildStructure(GameObject structure)
+    {
+        structureIsBeingBuilt = false;
+
+        // Delete the old build option titles if they exist.
+        for (int listIndex = 0; listIndex < buildOptionTiles.Count; listIndex++)
+        {
+            GameObject.Destroy(buildOptionTiles[listIndex]);
+        }
+        buildOptionTiles.Clear();
+
+        // Check to see if the player has the required material and action points to build.
+        if (CheckToSeeIfPlayerHasRequiredMaterialsToBuild(structure))
+        {
+            // Collect the cost to build.
+            selectedUnit.GetComponent<UnitController>().actionPoints -= structure.GetComponent<StructureContoller>().costToBuild;
+            wood -= structure.GetComponent<StructureContoller>().woodToBuild;
+            stone -= structure.GetComponent<StructureContoller>().stoneToBuild;
+            food -= structure.GetComponent<StructureContoller>().foodToBuild;
+
+            // Create structure.
+            var tempStructure = Instantiate(structure, new Vector3(hit.transform.position.x, 0f, hit.transform.position.z), GetStructureRotation());
+
+            // Make the structure a child of the ground tile.
+            int row = Mathf.RoundToInt(hit.transform.position.x);
+            int col = Mathf.RoundToInt(hit.transform.position.z);
+
+            tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+
+            // Set the title to not passable.
+            groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+            // Hide the selectors
+            HideStructureSelectors();
+        }
+
+        else
+        {
+            Debug.Log("Requirments Not Met");
+            HideStructureSelectors();
+        } 
+            
+
+
+    }
+
+    public bool CheckToSeeIfPlayerHasRequiredMaterialsToBuild(GameObject structure)
+    {
+        var requiredActionPoints = structure.GetComponent<StructureContoller>().costToBuild;
+        var requiredWood = structure.GetComponent<StructureContoller>().woodToBuild;
+        var requiredStone = structure.GetComponent<StructureContoller>().stoneToBuild;
+        var requiredFood = structure.GetComponent<StructureContoller>().foodToBuild;
+
+        if (requiredActionPoints <= selectedUnit.GetComponent<UnitController>().actionPoints && requiredWood <= wood && 
+            requiredStone <= stone && requiredFood <= food) return true;
+
+        else return false;
+        
+    }
+
+    public void UpdateStructureSelector()
+    {
+        if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.position = hit.transform.position;
+        else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.position = hit.transform.position;
+        else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.position = hit.transform.position;
+        else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.position = hit.transform.position;
+        else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.position = hit.transform.position;
+        else Debug.Log("UpdateStructureSelector has bad input.");
+    }
+
+    public Quaternion GetStructureRotation()
+    {
+
+        if (currentStructureSelectedToBuild.name == "Farm Plot") return farmPlotSelector.transform.rotation;
+        else if (currentStructureSelectedToBuild.name == "Living Quarters") return livingQuartersSelector.transform.rotation;
+        else if (currentStructureSelectedToBuild.name == "Medical Facility") return medicalFacilitySelector.transform.rotation;
+        else if (currentStructureSelectedToBuild.name == "Wall") return wallSelector.transform.rotation;
+        else if (currentStructureSelectedToBuild.name == "Town Hall") return townHallSelector.transform.rotation;
+        else return Quaternion.identity;
+    }
+
+    public void HideStructureSelectors()
+    {
+        var hideLocation = new Vector3(WorldSize * 2, 0f, WorldSize * 2);
+
+        farmPlotSelector.transform.position = hideLocation;
+        livingQuartersSelector.transform.position = hideLocation;
+        medicalFacilitySelector.transform.position = hideLocation;
+        wallSelector.transform.position = hideLocation;
+        townHallSelector.transform.position = hideLocation;
     }
 
     #endregion

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3968660237873894750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3968660237873894744}
+  - component: {fileID: 3968660237873894751}
+  m_Layer: 0
+  m_Name: Living Quarters
+  m_TagString: Living Quarters
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3968660237873894744
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968660237873894750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 97, y: 0, z: 72}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3968660237873894751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968660237873894750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4b0c83876d29454196749e7a16b0163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureObjects:
+  - {fileID: 6993636057036868159, guid: 3fcf23a067088644f8e87ab1e1fa323d, type: 3}
+  - {fileID: 5854775000913880112, guid: 866132a4b02dc1e428c46e21d1f73f86, type: 3}
+  - {fileID: 7762240075379487709, guid: 7725494f20628ce45b713d8f5925f447, type: 3}
+  costToBuild: 5
+  woodToBuild: 0
+  stoneToBuild: 0
+  foodToBuild: 0

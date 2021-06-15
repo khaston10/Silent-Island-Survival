@@ -13,6 +13,8 @@ TagManager:
   - GroundTile
   - Trash
   - Unit
+  - Living Quarters
+  - Medical Facility
   layers:
   - Default
   - TransparentFX
