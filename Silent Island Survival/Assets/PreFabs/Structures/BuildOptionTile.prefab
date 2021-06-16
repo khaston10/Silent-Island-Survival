@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4807333193061320755}
   m_Layer: 0
   m_Name: BuildOptionTile
-  m_TagString: Untagged
+  m_TagString: BuildOptionTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

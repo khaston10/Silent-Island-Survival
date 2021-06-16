@@ -15,6 +15,7 @@ TagManager:
   - Unit
   - Living Quarters
   - Medical Facility
+  - BuildOptionTile
   layers:
   - Default
   - TransparentFX

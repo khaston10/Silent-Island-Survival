@@ -5,10 +5,10 @@ using UnityEngine;
 public class StructureContoller : MonoBehaviour
 {
     public GameObject[] structureObjects; // This will hold all the avaliable strutures that this can upgrade into.
-    public int costToBuild = 5; // Action Points Needed to Build.
     public int woodToBuild = 0; // Wood material required to build.
     public int stoneToBuild = 0; // Stone material required to build.
     public int foodToBuild = 0; // Food material required to build.
+    public int currentStructureLevel = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -23,4 +23,30 @@ public class StructureContoller : MonoBehaviour
     {
         
     }
+
+    #region Functions
+
+    public bool UpgradeStructure()
+    {
+        // This function returns a bool as true if it upgraded.
+
+        if (currentStructureLevel < structureObjects.Length)
+        {
+            // Destroy child.
+            Destroy(this.transform.GetChild(0).gameObject);
+
+            // Create new child with the upgraded structure.
+            var temp = Instantiate(structureObjects[currentStructureLevel], this.transform.position, this.transform.rotation);
+            temp.transform.SetParent(this.transform);
+
+            // Increment the current structure level.
+            currentStructureLevel += 1;
+
+            return true;
+        }
+
+        else return false;
+    }
+
+    #endregion
 }

@@ -155,6 +155,10 @@ public class MainController : MonoBehaviour
     bool structureIsBeingBuilt = false;
     List<GameObject> buildOptionTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     GameObject currentStructureSelectedToBuild;
+    public Text structureTitleText;
+    public Text requiredMatsText;
+    public GameObject BuildFeedbackPanel;
+    public Text BuildFeedbackText;
 
     // The following are selectors.
     public GameObject farmPlotSelector;
@@ -162,6 +166,9 @@ public class MainController : MonoBehaviour
     public GameObject medicalFacilitySelector;
     public GameObject wallSelector;
     public GameObject townHallSelector;
+
+    // This variable was created to keep track of the gameObject the player is trying to call methods from.
+    GameObject selectedStructureForUse;
 
 
     public Button ToggleBuildPanel;
@@ -248,8 +255,6 @@ public class MainController : MonoBehaviour
                     else UpdateStructureSelector();
       
                 }
-                
-                
                 
             }
 
@@ -1222,10 +1227,15 @@ public class MainController : MonoBehaviour
 
                     // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
                     else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
-                        || childTag == "Abandoned Vehicle" || childTag == "Loot Box") OpenInteractWithStructurePanel(child.transform.gameObject);
-
+                        || childTag == "Abandoned Vehicle" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Living Quarters"
+                        || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall")
+                    {
+                        selectedStructureForUse = child.transform.gameObject;
+                        OpenInteractWithStructurePanel(child.transform.gameObject);
+                    }
 
                     // If the ground title contains a zombie we will have the player attack.
+
 
                     // If the ground title contains another player then nothing will happen.
                     // Do something based on tag
@@ -1300,6 +1310,14 @@ public class MainController : MonoBehaviour
             Destroy(structureObject);
         }
 
+        if (structureObject.transform.tag.ToString() == "Farm Plot" || structureObject.transform.tag.ToString() == "Living Quarters"
+            || structureObject.transform.tag.ToString() == "Medical Facility" || structureObject.transform.tag.ToString() == "Wall" 
+            || structureObject.transform.tag.ToString() == "Town Hall")
+        {
+            SetButtonToSeeThrough(false, repairButton);
+            SetButtonToSeeThrough(false, upgradeButton);
+        }
+
         else plantCropsButton.gameObject.SetActive(true); 
     }
 
@@ -1345,6 +1363,12 @@ public class MainController : MonoBehaviour
         foodText.text = food.ToString();
     }
 
+    public void ClickUpgrade()
+    {
+        selectedStructureForUse.GetComponent<StructureContoller>().UpgradeStructure();
+        InteractWithStructurePanel.SetActive(false);
+    }
+
     #endregion
 
     #region Build Panel Functions
@@ -1386,6 +1410,65 @@ public class MainController : MonoBehaviour
         else Debug.Log("Invalid Name Of Structure To Build");
     }
 
+    public void HoverStructureToBuildEnter(string nameOfStructure)
+    {
+        structureTitleText.text = nameOfStructure;
+
+        if (nameOfStructure == "Farm Plot")
+        {
+            var requiredMaterialString = "Wood: " + farmPlotPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
+                " Stone: " + farmPlotPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
+                farmPlotPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
+        else if (nameOfStructure == "Living Quarters")
+        {
+            var requiredMaterialString = "Wood: " + livingQuartersPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
+                " Stone: " + livingQuartersPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
+                livingQuartersPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
+        else if (nameOfStructure == "Medical Facility")
+        {
+            var requiredMaterialString = "Wood: " + medicalFacilityPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
+                " Stone: " + medicalFacilityPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
+                medicalFacilityPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
+        else if (nameOfStructure == "Wall")
+        {
+            var requiredMaterialString = "Wood: " + wallPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
+                " Stone: " + wallPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
+                wallPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
+        else if (nameOfStructure == "Town Hall")
+        {
+            var requiredMaterialString = "Wood: " + townHallPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
+                " Stone: " + townHallPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
+                townHallPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
+        else Debug.Log("String put into HoverStructureToBuildEnter is not valid");
+
+    }
+
+    public void HoverStructureToBuildExit()
+    {
+        structureTitleText.text = "Select a structure to build.";
+        requiredMatsText.text = "";
+    }
+
     public GameObject PopulateCurrentStructureToBuild(string nameOfStructure)
     {
         if (nameOfStructure == "Farm Plot") return farmPlotPrefab;
@@ -1405,36 +1488,26 @@ public class MainController : MonoBehaviour
         }
         buildOptionTiles.Clear();
 
-        // We need to check all the tiles in the distance of the unit's action points. These variables help us get there.
-        var moveDistance = unit.GetComponent<UnitController>().actionPoints;
-
-        var unitRow = Mathf.RoundToInt(unit.transform.position.x);
-        var unitCol = Mathf.RoundToInt(unit.transform.position.z);
-
-
-        // Iterate through all the possible tiles and check to see if they are passable.
-        for (int row = (unitRow - moveDistance); row <= (unitRow + moveDistance); row++)
+        for (int row = Mathf.RoundToInt(unit.transform.position.x - 1); row <= Mathf.RoundToInt(unit.transform.position.x + 1); row++)
         {
-            for (int col = (unitCol - moveDistance); col <= (unitCol + moveDistance); col++)
+            for (int col = Mathf.RoundToInt(unit.transform.position.z - 1); col <= Mathf.RoundToInt(unit.transform.position.z + 1); col++)
             {
-                // Check to see if the tile is close enough to be considered in movement distance.
-                if ((Mathf.Abs(unitRow - row) + Mathf.Abs(unitCol - col)) <= moveDistance)
+                // Check to see if the ground title exists in array.
+                if (groundTiles[LocateIndexOfGroundTile(row, col)] != null)
                 {
-                    // Check to see if the row, col is going to be in bounds of the array.
-                    if ((row >= 0) && (col >= 0) && (LocateIndexOfGroundTile(row, col) < groundTiles.Length) && (LocateIndexOfGroundTile(row, col) >= 0))
+
+                    // Check to see if the ground tile is passable.
+
+                    if (groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable)
                     {
-                        // Check to see if the ground title exists in array.
-                        if (groundTiles[LocateIndexOfGroundTile(row, col)] != null)
-                        {
-                            // Create a movement option tile.
-                            var tempBuildOptionTile = Instantiate(buildOptionPrefab, new Vector3(row, .05f, col), Quaternion.identity);
+                        //Create a movement option tile.
+                        var tempBuildOptionTile = Instantiate(buildOptionPrefab, new Vector3(row, .05f, col), Quaternion.identity);
 
-                            // Add it to the list so we can easily delete them later.
-                            buildOptionTiles.Add(tempBuildOptionTile);
+                        // Add it to the list so we can easily delete them later.
+                        buildOptionTiles.Add(tempBuildOptionTile);
 
-                            // Make it a child of the ground title.
-                            tempBuildOptionTile.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
-                        }
+                        // Make it a child of the ground title.
+                        tempBuildOptionTile.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
                     }
                 }
             }
@@ -1452,50 +1525,69 @@ public class MainController : MonoBehaviour
         }
         buildOptionTiles.Clear();
 
-        // Check to see if the player has the required material and action points to build.
+        // Check to see if the player has the required material.
         if (CheckToSeeIfPlayerHasRequiredMaterialsToBuild(structure))
         {
-            // Collect the cost to build.
-            selectedUnit.GetComponent<UnitController>().actionPoints -= structure.GetComponent<StructureContoller>().costToBuild;
-            wood -= structure.GetComponent<StructureContoller>().woodToBuild;
-            stone -= structure.GetComponent<StructureContoller>().stoneToBuild;
-            food -= structure.GetComponent<StructureContoller>().foodToBuild;
-
-            // Create structure.
-            var tempStructure = Instantiate(structure, new Vector3(hit.transform.position.x, 0f, hit.transform.position.z), GetStructureRotation());
-
-            // Make the structure a child of the ground tile.
+            // Check to see if the location is valid to build.
             int row = Mathf.RoundToInt(hit.transform.position.x);
             int col = Mathf.RoundToInt(hit.transform.position.z);
 
-            tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+            bool hasBuildOptionTile = false;
 
-            // Set the title to not passable.
-            groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable = false;
+            for (int child = 0; child < groundTiles[LocateIndexOfGroundTile(row, col)].transform.childCount; child++)
+            {
+                if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(child).tag.ToString() == "BuildOptionTile") hasBuildOptionTile = true;
+            }
 
-            // Hide the selectors
-            HideStructureSelectors();
+            if (hasBuildOptionTile)
+            {
+                // Collect the cost to build.
+                wood -= structure.GetComponent<StructureContoller>().woodToBuild;
+                stone -= structure.GetComponent<StructureContoller>().stoneToBuild;
+                food -= structure.GetComponent<StructureContoller>().foodToBuild;
+
+                // Create structure.
+                var tempStructure = Instantiate(structure, new Vector3(hit.transform.position.x, 0f, hit.transform.position.z), GetStructureRotation());
+
+                // Make the structure a child of the ground tile.
+                tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+
+                // Set the title to not passable.
+                groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+                // Hide the selectors
+                HideStructureSelectors();
+            }
+
+            else
+            {
+                // Make the feedback panel pop up.
+                BuildFeedbackText.text = "Location is out of range.";
+                BuildFeedbackPanel.SetActive(true);
+
+                HideStructureSelectors();
+            }
+
         }
 
         else
         {
-            Debug.Log("Requirments Not Met");
+            // Make the feedback panel pop up.
+            BuildFeedbackText.text = "Requires more materials.";
+            BuildFeedbackPanel.SetActive(true);
+
             HideStructureSelectors();
         } 
             
-
-
     }
 
     public bool CheckToSeeIfPlayerHasRequiredMaterialsToBuild(GameObject structure)
     {
-        var requiredActionPoints = structure.GetComponent<StructureContoller>().costToBuild;
         var requiredWood = structure.GetComponent<StructureContoller>().woodToBuild;
         var requiredStone = structure.GetComponent<StructureContoller>().stoneToBuild;
         var requiredFood = structure.GetComponent<StructureContoller>().foodToBuild;
 
-        if (requiredActionPoints <= selectedUnit.GetComponent<UnitController>().actionPoints && requiredWood <= wood && 
-            requiredStone <= stone && requiredFood <= food) return true;
+        if (requiredWood <= wood && requiredStone <= stone && requiredFood <= food) return true;
 
         else return false;
         

@@ -46,6 +46,6 @@ MonoBehaviour:
   structureObjects:
   - {fileID: 7207136472443670589, guid: c80621d4ce1e9a94e8793f6f052185dc, type: 3}
   costToBuild: 5
-  woodToBuild: 0
-  stoneToBuild: 0
+  woodToBuild: 5
+  stoneToBuild: 2
   foodToBuild: 0

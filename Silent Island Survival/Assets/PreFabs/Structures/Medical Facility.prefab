@@ -48,6 +48,6 @@ MonoBehaviour:
   - {fileID: 6927871363867537659, guid: 87228f16ae7a1944ba6c5a007f413e2e, type: 3}
   - {fileID: 3667730357114449951, guid: 07136ff1429e7dc48884de01364f8a33, type: 3}
   costToBuild: 5
-  woodToBuild: 0
-  stoneToBuild: 0
+  woodToBuild: 2
+  stoneToBuild: 1
   foodToBuild: 0
