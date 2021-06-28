@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3968660237873894744}
   - component: {fileID: 3968660237873894751}
+  - component: {fileID: 1397437164661130319}
   m_Layer: 0
   m_Name: Living Quarters
   m_TagString: Living Quarters
@@ -47,6 +48,29 @@ MonoBehaviour:
   - {fileID: 6993636057036868159, guid: 3fcf23a067088644f8e87ab1e1fa323d, type: 3}
   - {fileID: 5854775000913880112, guid: 866132a4b02dc1e428c46e21d1f73f86, type: 3}
   - {fileID: 7762240075379487709, guid: 7725494f20628ce45b713d8f5925f447, type: 3}
-  woodToBuild: 0
-  stoneToBuild: 0
-  foodToBuild: 0
+  structureType: Living Quarters
+  hitPoints: 100
+  hitPointLimit: 100
+  woodToBuild: 010000000100000002000000
+  stoneToBuild: 000000000100000002000000
+  foodToBuild: 000000000100000002000000
+  currentStructureLevel: 0
+  cropsPlanted: 0
+  cropsReadyForHarvest: 0
+  daysSinceCropsPlanted: 0
+  daysUntilCropsMature: 2
+  cropsAtHarvest: 5
+  actionPointHealRange: 3
+--- !u!65 &1397437164661130319
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968660237873894750}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.34673437, z: 1}
+  m_Center: {x: 0, y: -0.035175815, z: 0}

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1287783341562097236}
   m_Layer: 0
   m_Name: Wall 01
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,7 +93,7 @@ MeshCollider:
   m_GameObject: {fileID: 1241308165467671372}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30

@@ -16,6 +16,9 @@ TagManager:
   - Living Quarters
   - Medical Facility
   - BuildOptionTile
+  - Farm Plot
+  - Town Hall
+  - Wall
   layers:
   - Default
   - TransparentFX

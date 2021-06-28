@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 8081301101356897879}
   m_Layer: 0
   m_Name: Farm Plot 02
-  m_TagString: Untagged
+  m_TagString: Farm Plot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

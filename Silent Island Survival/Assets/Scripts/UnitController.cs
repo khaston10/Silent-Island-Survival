@@ -14,6 +14,7 @@ public class UnitController : MonoBehaviour
     public int attackRange = 3;
     public int defense = 4;
     public int sight = 5;
+    public int repairPoints = 10; // This stat will not deplete but sets the amount of repair in one repair session.
     #endregion
 
     void Start()

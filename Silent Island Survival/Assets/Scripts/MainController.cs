@@ -31,7 +31,7 @@ public class MainController : MonoBehaviour
     public GameObject movementOptionPrefab;
     public GameObject movementSelectedPrefab;
     List<GameObject> movementOptionTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
-    List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
+    public List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     bool movementSelectionCanContinue = true; // When a player ends the selection on an object that is not passable then the selection abilty must be disabled.
     public bool unitIsMoving = false; // When the unit is moving we do not want the player to input any controls.
     GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
@@ -158,7 +158,17 @@ public class MainController : MonoBehaviour
     public Text structureTitleText;
     public Text requiredMatsText;
     public GameObject BuildFeedbackPanel;
+    public GameObject StructureStatsPanel;
     public Text BuildFeedbackText;
+
+    // The following text objects are for the StructureStatsPanel
+    public Text SelectedStructureTitleText;
+    public Text SelectedStructureCurrentLevelText;
+    public Text SelectedStructureMaxLevelText;
+    public Text RequiredWoodForUpgradeText;
+    public Text RequiredStoneForUpgradeText;
+    public Text RequiredFoodForUpgradeText;
+    public Slider structureHitPointsSlider;
 
     // The following are selectors.
     public GameObject farmPlotSelector;
@@ -170,6 +180,8 @@ public class MainController : MonoBehaviour
     // This variable was created to keep track of the gameObject the player is trying to call methods from.
     GameObject selectedStructureForUse;
 
+    // To keep track of structures at update, we need a list to hold them.
+    List<GameObject> currentStructuresInGame = new List<GameObject>();
 
     public Button ToggleBuildPanel;
     public GameObject BuildPanel;
@@ -350,6 +362,12 @@ public class MainController : MonoBehaviour
             if (acceptableTags.Contains(hit.collider.tag.ToString()))
             {
                 OpenStructurePanel(hit.collider.tag.ToString());
+            }
+
+            // If the player has selected a structure, Farm Plot, Living Quarters, ect.
+            else if (acceptableStructureTags.Contains(hit.collider.tag.ToString()))
+            {
+                OpenStructureStatsPanel(hit.transform.gameObject);
             }
 
             // If the player clicks on a unit.
@@ -585,6 +603,9 @@ public class MainController : MonoBehaviour
         // Update Text Objects.
         UpdateAllText();
 
+        // Update structures.
+        UpdateStructuresAtEndOfRound();
+
         // Update Unit attributes.
         UpdateUnitsAtEndOfRound();
 
@@ -624,10 +645,50 @@ public class MainController : MonoBehaviour
         for (int count = 0; count < unitsInPlay.Count; count++)
         {
             if (unitsInPlay[count].GetComponent<UnitController>().actionPoints < unitsInPlay[count].GetComponent<UnitController>().actionPointsLimit)
-                unitsInPlay[count].GetComponent<UnitController>().actionPoints += 5;
+                unitsInPlay[count].GetComponent<UnitController>().actionPoints += 1;
         }
     }
 
+    public void UpdateStructuresAtEndOfRound()
+    {
+        for (int structureIndex = 0; structureIndex < currentStructuresInGame.Count; structureIndex++)
+        {
+            // Update Farm Plots.
+            if (currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().structureType == "Farm Plot")
+            {
+                if (currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().cropsPlanted)
+                {
+                    currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().daysSinceCropsPlanted += 1;
+
+                    // Check to see if crops are ready for harvest.
+                    currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().CropsAreReadyForHarvest();
+
+                }
+            }
+
+            // Update Living Quarters.
+            else if (currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().structureType == "Living Quarters")
+            {
+                // Iterate through the list of units in game and check to see if they are in range.
+                // If they are they will get an action point boost.
+                for (int unitIndex = 0; unitIndex < unitsInPlay.Count; unitIndex++)
+                {
+                    if (Mathf.Abs(currentStructuresInGame[structureIndex].transform.position.x - unitsInPlay[unitIndex].transform.position.x) 
+                        <= currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().actionPointHealRange && 
+                        Mathf.Abs(currentStructuresInGame[structureIndex].transform.position.z - unitsInPlay[unitIndex].transform.position.z) 
+                        <= currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().actionPointHealRange)
+                    {
+                        // Use function on structure to heal action points.
+                        currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().HealActionPoints(unitsInPlay[unitIndex]);
+                    }
+                }
+            }
+
+            // Update Medical Facilities.
+            // Update Walls.
+            // Update Town Hall.
+        }
+    }
 
     #endregion
 
@@ -974,10 +1035,15 @@ public class MainController : MonoBehaviour
 
     public void CloseIndividualUnitPanel()
     {
-        
-
         // Close the panel.
         IndividualUnitPanel.gameObject.SetActive(false);
+
+        // Remove the Movement Option Tiles if they exist.
+        for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
+        {
+            GameObject.Destroy(movementOptionTiles[listIndex]);
+        }
+        movementOptionTiles.Clear();
     }
 
     public void PlaceMovementOptionTiles(GameObject unit)
@@ -1118,7 +1184,7 @@ public class MainController : MonoBehaviour
         }
 
         // 2. Check to see if the object the mouse is over is a structure and the selection option is enabled.
-        if (acceptableTags.Contains(hit.collider.tag.ToString()) && movementSelectionCanContinue)
+        if ((acceptableTags.Contains(hit.collider.tag.ToString()) || acceptableStructureTags.Contains(hit.collider.tag.ToString())) && movementSelectionCanContinue)
         {
             // b. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
             for (int count = 0; count < movementSelectedTiles.Count; count++)
@@ -1207,39 +1273,33 @@ public class MainController : MonoBehaviour
         
         else
         {
-            // We need to consider if a player has selected a game object that is not a ground tile.
-            if (hit.transform.tag.ToString() == "Tree" || hit.transform.tag.ToString() == "Rock") Harvest(hit.transform.gameObject);
-
-            else if (hit.transform.tag.ToString() == "Abandoned House" || hit.transform.tag.ToString() == "Abandoned Factory"
-                        || hit.transform.tag.ToString() == "Abandoned Vehicle" || hit.transform.tag.ToString() == "Loot Box") OpenInteractWithStructurePanel(hit.transform.gameObject);
-
-            else
+            // If the ground tile is not passable it is because the in an object on it.
+            // We need to handle the unit's interation with that object.
+            
+            var childCount = movementSelectedTiles[indexForTileArray].transform.parent.transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                var childCount = hit.transform.childCount;
-                for (var i = 0; i < childCount; i++)
-                {
-                    var child = hit.transform.GetChild(i);
-                    var childTag = child.tag;
+                var child = movementSelectedTiles[indexForTileArray].transform.parent.GetChild(i);
+                var childTag = child.tag;
 
-                    // If the ground tile contains a tree or rock we will harvest.
-                    if (childTag == "Tree" || childTag == "Rock") Harvest(child.transform.gameObject);
+                // If the ground tile contains a tree or rock we will harvest.
+                if (childTag == "Tree" || childTag == "Rock") Harvest(child.transform.gameObject);
 
 
-                    // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
-                    else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
-                        || childTag == "Abandoned Vehicle" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Living Quarters"
-                        || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall")
+                // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
+                else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
+                    || childTag == "Abandoned Vehicle" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Living Quarters"
+                    || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall")
                     {
-                        selectedStructureForUse = child.transform.gameObject;
-                        OpenInteractWithStructurePanel(child.transform.gameObject);
+                    selectedStructureForUse = child.transform.gameObject;
+                    OpenInteractWithStructurePanel(child.transform.gameObject);
                     }
 
-                    // If the ground title contains a zombie we will have the player attack.
+                // If the ground title contains a zombie we will have the player attack.
 
 
-                    // If the ground title contains another player then nothing will happen.
-                    // Do something based on tag
-                }
+                // If the ground title contains another player then nothing will happen.
+                // Do something based on tag
             }
 
             return false;
@@ -1289,28 +1349,55 @@ public class MainController : MonoBehaviour
         SetButtonToSeeThrough(true, repairButton);
         SetButtonToSeeThrough(true, upgradeButton);
         SetButtonToSeeThrough(true, draftOrdinanceButton);
-        SetButtonToSeeThrough(true, ExitInteractWithStructurePanel);
-        
-        
+        SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+
+        // Set the feedback panel to off.
+        InteractWithStructureFeedBackPanel.SetActive(false);
+
         // Open the panel in game.
         InteractWithStructurePanel.SetActive(true);
 
         // Use if statments to open the panel with the correct options displayed.
         if (structureObject.transform.tag.ToString() == "Abandoned House" || structureObject.transform.tag.ToString() == "Abandoned Factory"
-            || structureObject.transform.tag.ToString() == "Abandoned Vehicle" || structureObject.transform.tag.ToString() == "Loot Box")
+            || structureObject.transform.tag.ToString() == "Abandoned Vehicle")
         {
             SetButtonToSeeThrough(false, scavangeButton);
+            
         }
 
         // If the structure is a Loot Box we need to destory it.
-        if (structureObject.transform.tag.ToString() == "Loot Box")
+        else if (structureObject.transform.tag.ToString() == "Loot Box")
         {
             // Set the parent to passable.
             structureObject.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
-            Destroy(structureObject);
+
+            // Set Scavange button to useable.
+            SetButtonToSeeThrough(false, scavangeButton);
+            
+
+            // To destory loot box on scavenge we need to set it to the selected structure.
+            selectedStructureForUse = structureObject;
+            
         }
 
-        if (structureObject.transform.tag.ToString() == "Farm Plot" || structureObject.transform.tag.ToString() == "Living Quarters"
+        else if (structureObject.transform.tag.ToString() == "Farm Plot")
+        {
+            // To set the correct button we need to check if the farm has crops planted.
+            if (structureObject.GetComponent<StructureContoller>().cropsPlanted == false)
+            {
+                SetButtonToSeeThrough(false, plantCropsButton);
+            }
+
+            else if (structureObject.GetComponent<StructureContoller>().cropsReadyForHarvest)
+            {
+                SetButtonToSeeThrough(false, harvestButton);
+            }
+            
+            SetButtonToSeeThrough(false, repairButton);
+            SetButtonToSeeThrough(false, upgradeButton);
+        }
+
+        else if (structureObject.transform.tag.ToString() == "Farm Plot" || structureObject.transform.tag.ToString() == "Living Quarters"
             || structureObject.transform.tag.ToString() == "Medical Facility" || structureObject.transform.tag.ToString() == "Wall" 
             || structureObject.transform.tag.ToString() == "Town Hall")
         {
@@ -1361,12 +1448,195 @@ public class MainController : MonoBehaviour
         SetButtonToSeeThrough(true, scavangeButton);
         SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
         foodText.text = food.ToString();
+
+        if (selectedStructureForUse.transform.tag == "Loot Box") Destroy(selectedStructureForUse.gameObject);
     }
 
     public void ClickUpgrade()
     {
-        selectedStructureForUse.GetComponent<StructureContoller>().UpgradeStructure();
-        InteractWithStructurePanel.SetActive(false);
+        // Check to see if structure is max upgrade.
+        if (selectedStructureForUse.GetComponent<StructureContoller>().currentStructureLevel != selectedStructureForUse.GetComponent<StructureContoller>().structureObjects.Length)
+        {
+            //  Check to see if unit has required materials.
+            if (CheckToSeeIfPlayerHasRequiredMaterialsToBuild(selectedStructureForUse))
+            {
+                selectedStructureForUse.GetComponent<StructureContoller>().UpgradeStructure();
+                InteractWithStructurePanel.SetActive(false);
+            }
+
+            else
+            {
+                InteractWithStructureFeedbackText.text = "Requires More Materials";
+                InteractWithStructureFeedBackPanel.SetActive(true);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+            }
+        }
+
+        else
+        {
+            InteractWithStructureFeedbackText.text = "Max Upgrade Reached.";
+            InteractWithStructureFeedBackPanel.SetActive(true);
+            SetButtonToSeeThrough(true, repairButton);
+            SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+        }
+
+
+    }
+
+    public void ClickRepair()
+    {
+        //  Check to see if unit has at least 1 action point.
+        if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+        {
+
+            // Check to see if structure is already full health.
+            if (selectedStructureForUse.GetComponent<StructureContoller>().hitPoints < selectedStructureForUse.GetComponent<StructureContoller>().hitPointLimit)
+            {
+                var repairsMade = selectedStructureForUse.GetComponent<StructureContoller>().RepairStructure(selectedUnit.GetComponent<UnitController>().repairPoints);
+                InteractWithStructureFeedbackText.text = "Actions Points: -1 \nRepairs Made: +" +  repairsMade.ToString();
+                InteractWithStructureFeedBackPanel.SetActive(true);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+            }
+
+            else 
+            {
+                InteractWithStructureFeedbackText.text = "No Repair Needed";
+                InteractWithStructureFeedBackPanel.SetActive(true);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+            }
+
+        }
+
+        else
+        {
+            InteractWithStructureFeedbackText.text = "Not Enough Action Points";
+            InteractWithStructureFeedBackPanel.SetActive(true);
+            SetButtonToSeeThrough(true, repairButton);
+            SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+        }
+
+        
+    }
+
+    public void ClickPlantCrops()
+    {
+
+        // Check to see if conditions allow crops to be planted.
+        if (food >= 1)
+        {
+            // Check to see if unit has action points.
+            if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+            {
+                // Check to see if crops have already been planted.
+                if (selectedStructureForUse.GetComponent<StructureContoller>().cropsPlanted == false)
+                {
+                    // Set text objects, buttons and panels.
+                    InteractWithStructureFeedbackText.text = "Food: -1 \nCrops Planted: Harvest in " + selectedStructureForUse.GetComponent<StructureContoller>().daysUntilCropsMature.ToString() + " days.";
+                    SetButtonToSeeThrough(true, plantCropsButton);
+                    SetButtonToSeeThrough(true, harvestButton);
+                    SetButtonToSeeThrough(true, repairButton);
+                    SetButtonToSeeThrough(true, upgradeButton);
+                    SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+                    InteractWithStructureFeedBackPanel.SetActive(true);
+
+                    // Plant crops.
+                    selectedStructureForUse.GetComponent<StructureContoller>().PlantCrops();
+
+                    // Remove action points.
+                    selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
+
+                    // Remove Food.
+                    food -= 1;
+                    
+                }
+
+                else
+                {
+                    InteractWithStructureFeedbackText.text = "Crops Have Aready Been Planted Here";
+                    SetButtonToSeeThrough(true, plantCropsButton);
+                    SetButtonToSeeThrough(true, harvestButton);
+                    SetButtonToSeeThrough(true, repairButton);
+                    SetButtonToSeeThrough(true, upgradeButton);
+                    SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+                    InteractWithStructureFeedBackPanel.SetActive(true);
+                }
+            }
+
+            else
+            {
+                InteractWithStructureFeedbackText.text = "Not Enough Action Points";
+                SetButtonToSeeThrough(true, plantCropsButton);
+                SetButtonToSeeThrough(true, harvestButton);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(true, upgradeButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+                InteractWithStructureFeedBackPanel.SetActive(true);
+            }
+        }
+
+        else
+        {
+            InteractWithStructureFeedbackText.text = "Not Enough Food To Plant";
+            SetButtonToSeeThrough(true, plantCropsButton);
+            SetButtonToSeeThrough(true, harvestButton);
+            SetButtonToSeeThrough(true, repairButton);
+            SetButtonToSeeThrough(true, upgradeButton);
+            SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+            InteractWithStructureFeedBackPanel.SetActive(true);
+        }
+        
+    }
+
+    public void ClickHarvestCrops()
+    {
+        // Check to see if conditions allow crops to be harvested.
+        if (selectedStructureForUse.GetComponent<StructureContoller>().cropsReadyForHarvest)
+        {
+            // Check to see if the unit has an action point.
+            if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+            {
+                // Set text objects, buttons and panels.
+                InteractWithStructureFeedbackText.text = "Action Point: -1 \nCrops Harvested: " + selectedStructureForUse.GetComponent<StructureContoller>().cropsAtHarvest.ToString();
+                SetButtonToSeeThrough(true, plantCropsButton);
+                SetButtonToSeeThrough(true, harvestButton);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(true, upgradeButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+                InteractWithStructureFeedBackPanel.SetActive(true);
+
+                // Update food and harvest crops.
+                food += selectedStructureForUse.GetComponent<StructureContoller>().HarvestCrops();
+
+                // Remove action points.
+                selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
+            }
+
+            else
+            {
+                InteractWithStructureFeedbackText.text = "Not Enough Action Points.";
+                SetButtonToSeeThrough(true, plantCropsButton); 
+                SetButtonToSeeThrough(true, harvestButton);
+                SetButtonToSeeThrough(true, repairButton);
+                SetButtonToSeeThrough(true, upgradeButton);
+                SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+                InteractWithStructureFeedBackPanel.SetActive(true);
+            }
+        }
+
+        else
+        {
+            InteractWithStructureFeedbackText.text = "No Crops to Harvest.";
+            SetButtonToSeeThrough(true, plantCropsButton);
+            SetButtonToSeeThrough(true, harvestButton);
+            SetButtonToSeeThrough(true, repairButton);
+            SetButtonToSeeThrough(true, upgradeButton);
+            SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
+            InteractWithStructureFeedBackPanel.SetActive(true);
+        }
+
     }
 
     #endregion
@@ -1416,45 +1686,45 @@ public class MainController : MonoBehaviour
 
         if (nameOfStructure == "Farm Plot")
         {
-            var requiredMaterialString = "Wood: " + farmPlotPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
-                " Stone: " + farmPlotPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
-                farmPlotPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+            var requiredMaterialString = "Wood: " + farmPlotPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + farmPlotPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                farmPlotPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
 
             requiredMatsText.text = requiredMaterialString;
         }
 
         else if (nameOfStructure == "Living Quarters")
         {
-            var requiredMaterialString = "Wood: " + livingQuartersPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
-                " Stone: " + livingQuartersPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
-                livingQuartersPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+            var requiredMaterialString = "Wood: " + livingQuartersPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + livingQuartersPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                livingQuartersPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
 
             requiredMatsText.text = requiredMaterialString;
         }
 
         else if (nameOfStructure == "Medical Facility")
         {
-            var requiredMaterialString = "Wood: " + medicalFacilityPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
-                " Stone: " + medicalFacilityPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
-                medicalFacilityPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+            var requiredMaterialString = "Wood: " + medicalFacilityPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + medicalFacilityPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                medicalFacilityPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
 
             requiredMatsText.text = requiredMaterialString;
         }
 
         else if (nameOfStructure == "Wall")
         {
-            var requiredMaterialString = "Wood: " + wallPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
-                " Stone: " + wallPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
-                wallPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+            var requiredMaterialString = "Wood: " + wallPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + wallPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                wallPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
 
             requiredMatsText.text = requiredMaterialString;
         }
 
         else if (nameOfStructure == "Town Hall")
         {
-            var requiredMaterialString = "Wood: " + townHallPrefab.GetComponent<StructureContoller>().woodToBuild.ToString() +
-                " Stone: " + townHallPrefab.GetComponent<StructureContoller>().stoneToBuild.ToString() + " Food: " +
-                townHallPrefab.GetComponent<StructureContoller>().foodToBuild.ToString();
+            var requiredMaterialString = "Wood: " + townHallPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + townHallPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                townHallPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
 
             requiredMatsText.text = requiredMaterialString;
         }
@@ -1542,12 +1812,15 @@ public class MainController : MonoBehaviour
             if (hasBuildOptionTile)
             {
                 // Collect the cost to build.
-                wood -= structure.GetComponent<StructureContoller>().woodToBuild;
-                stone -= structure.GetComponent<StructureContoller>().stoneToBuild;
-                food -= structure.GetComponent<StructureContoller>().foodToBuild;
+                wood -= structure.GetComponent<StructureContoller>().woodToBuild[structure.GetComponent<StructureContoller>().currentStructureLevel];
+                stone -= structure.GetComponent<StructureContoller>().stoneToBuild[structure.GetComponent<StructureContoller>().currentStructureLevel];
+                food -= structure.GetComponent<StructureContoller>().foodToBuild[structure.GetComponent<StructureContoller>().currentStructureLevel];
 
                 // Create structure.
                 var tempStructure = Instantiate(structure, new Vector3(hit.transform.position.x, 0f, hit.transform.position.z), GetStructureRotation());
+
+                // Add the structure to the current structure list.
+                currentStructuresInGame.Add(tempStructure);
 
                 // Make the structure a child of the ground tile.
                 tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
@@ -1587,10 +1860,17 @@ public class MainController : MonoBehaviour
         var requiredStone = structure.GetComponent<StructureContoller>().stoneToBuild;
         var requiredFood = structure.GetComponent<StructureContoller>().foodToBuild;
 
-        if (requiredWood <= wood && requiredStone <= stone && requiredFood <= food) return true;
+        if (structure.GetComponent<StructureContoller>().currentStructureLevel != structure.GetComponent<StructureContoller>().structureObjects.Length)
+        {
+            if (requiredWood[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= wood &&
+            requiredStone[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= stone &&
+            requiredFood[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= food) return true;
+
+            else return false;
+        }
 
         else return false;
-        
+
     }
 
     public void UpdateStructureSelector()
@@ -1623,6 +1903,28 @@ public class MainController : MonoBehaviour
         medicalFacilitySelector.transform.position = hideLocation;
         wallSelector.transform.position = hideLocation;
         townHallSelector.transform.position = hideLocation;
+    }
+
+    public void OpenStructureStatsPanel(GameObject structure)
+    {
+        // Open panel.
+        StructureStatsPanel.SetActive(true);
+
+        // Update all text objects.
+        SelectedStructureTitleText.text = structure.GetComponentInParent<StructureContoller>().structureType;
+        SelectedStructureCurrentLevelText.text = (structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1).ToString();
+        SelectedStructureMaxLevelText.text = structure.GetComponentInParent<StructureContoller>().structureObjects.Length.ToString();
+        RequiredWoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().woodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+        RequiredStoneForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().stoneToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+        RequiredFoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().foodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+        structureHitPointsSlider.value =  ((float) structure.GetComponentInParent<StructureContoller>().hitPoints / (float) structure.GetComponentInParent<StructureContoller>().hitPointLimit);
+        Debug.Log((structure.GetComponentInParent<StructureContoller>().hitPoints / structure.GetComponentInParent<StructureContoller>().hitPointLimit));
+
+    }
+
+    public void ClickExitStructureStatsPanel()
+    {
+        StructureStatsPanel.SetActive(false);
     }
 
     #endregion

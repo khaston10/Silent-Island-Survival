@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3532556852504239276}
   - component: {fileID: 3532556852504239275}
+  - component: {fileID: 8845537464684317351}
   m_Layer: 0
   m_Name: Medical Facility
   m_TagString: Medical Facility
@@ -47,7 +48,29 @@ MonoBehaviour:
   - {fileID: 658465285727807156, guid: 2dccefc21556e9a4fa3039160481cd17, type: 3}
   - {fileID: 6927871363867537659, guid: 87228f16ae7a1944ba6c5a007f413e2e, type: 3}
   - {fileID: 3667730357114449951, guid: 07136ff1429e7dc48884de01364f8a33, type: 3}
-  costToBuild: 5
-  woodToBuild: 2
-  stoneToBuild: 1
-  foodToBuild: 0
+  structureType: Medical Facility
+  hitPoints: 100
+  hitPointLimit: 100
+  woodToBuild: 000000000100000002000000
+  stoneToBuild: 000000000100000002000000
+  foodToBuild: 000000000100000002000000
+  currentStructureLevel: 0
+  cropsPlanted: 0
+  cropsReadyForHarvest: 0
+  daysSinceCropsPlanted: 0
+  daysUntilCropsMature: 2
+  cropsAtHarvest: 5
+  actionPointHealRange: 3
+--- !u!65 &8845537464684317351
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3532556852504239274}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.25420102, z: 1}
+  m_Center: {x: 0, y: -0.0020677596, z: 0}
