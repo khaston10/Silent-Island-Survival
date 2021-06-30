@@ -19,24 +19,21 @@ public class StructureContoller : MonoBehaviour
     public bool cropsPlanted = false;
     public bool cropsReadyForHarvest = false;
     public int daysSinceCropsPlanted = 0;
-    public int daysUntilCropsMature = 2;
+    public int daysUntilCropsMature = 3;
     public int cropsAtHarvest = 5;
 
     #endregion
 
     #region Variables for Living Quarters
-
     // Living Quarters heal action points for units in range.
     int amountOfActionPointsHealed = 3;
     public int actionPointHealRange = 3;
-
-
     #endregion
 
     #region Variables for Medical Facilities
-
-
-
+    // Medical Facilities heal hit points for units in range.
+    int amountOfHitPointsHealed = 10;
+    public int hitPointHealRange = 2;
     #endregion
 
     // Start is called before the first frame update
@@ -80,12 +77,33 @@ public class StructureContoller : MonoBehaviour
             // Increment the current structure level.
             currentStructureLevel += 1;
 
+            #region Upgrades for specific structure type.
+
+            if (structureType == "Farm Plot")
+            {
+                daysUntilCropsMature -= 1;
+                cropsAtHarvest += 1;
+            }
+
+            else if (structureType == "Living Quarters")
+            {
+                amountOfActionPointsHealed += 1;
+                actionPointHealRange += 1;
+}
+
+            else if (structureType == "Medical Facility")
+            {
+                amountOfHitPointsHealed += 10;
+                hitPointHealRange += 1;
+}
+
+            #endregion
+
             return true;
         }
 
         else return false;
     }
-
 
     public int RepairStructure(int repairAmount)
     {
@@ -149,7 +167,7 @@ public class StructureContoller : MonoBehaviour
 
     public void HealActionPoints(GameObject unit)
     {
-        // Only Living Quarters can heal.
+        // Only Living Quarters can heal action points.
         if (structureType == "Living Quarters")
         {
             if ((unit.transform.GetComponent<UnitController>().actionPointsLimit - unit.transform.GetComponent<UnitController>().actionPoints) > amountOfActionPointsHealed)
@@ -158,9 +176,21 @@ public class StructureContoller : MonoBehaviour
             }
 
             else unit.transform.GetComponent<UnitController>().actionPoints = unit.transform.GetComponent<UnitController>().actionPointsLimit;
-        }
+        } 
+    }
 
-        
+    public void HealHitPoints(GameObject unit)
+    {
+        // Only Medical facilities can heal hit points.
+        if (structureType == "Medical Facility")
+        {
+            if ((unit.transform.GetComponent<UnitController>().hitPointLimit - unit.transform.GetComponent<UnitController>().hitPoints) > amountOfHitPointsHealed)
+            {
+                unit.transform.GetComponent<UnitController>().hitPoints += amountOfHitPointsHealed;
+            }
+
+            else unit.transform.GetComponent<UnitController>().hitPoints = unit.transform.GetComponent<UnitController>().hitPointLimit;
+        }
     }
     #endregion
 }

@@ -46,14 +46,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Jake
-  actionPoints: 5
+  actionPoints: 30
   actionPointsLimit: 10
-  hitPoints: 100
+  hitPoints: 50
   hitPointLimit: 100
   attack: 5
   attackRange: 3
   defense: 4
   sight: 5
+  repairPoints: 10
 --- !u!65 &1551297253485701020
 BoxCollider:
   m_ObjectHideFlags: 0

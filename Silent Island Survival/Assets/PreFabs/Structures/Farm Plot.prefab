@@ -88,16 +88,17 @@ MonoBehaviour:
   structureType: Farm Plot
   hitPoints: 50
   hitPointLimit: 100
-  woodToBuild: 000000000100000002000000
-  stoneToBuild: 000000000000000002000000
-  foodToBuild: 000000000000000002000000
+  woodToBuild: 010000000200000003000000
+  stoneToBuild: 000000000000000000000000
+  foodToBuild: 000000000000000000000000
   currentStructureLevel: 0
   cropsPlanted: 0
   cropsReadyForHarvest: 0
   daysSinceCropsPlanted: 0
-  daysUntilCropsMature: 2
+  daysUntilCropsMature: 3
   cropsAtHarvest: 5
   actionPointHealRange: 3
+  hitPointHealRange: 2
 --- !u!65 &334137262147226701
 BoxCollider:
   m_ObjectHideFlags: 0

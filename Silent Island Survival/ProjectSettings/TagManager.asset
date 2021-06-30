@@ -19,6 +19,7 @@ TagManager:
   - Farm Plot
   - Town Hall
   - Wall
+  - Holding Factory
   layers:
   - Default
   - TransparentFX

@@ -23,10 +23,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 911, y: 342}
-  m_MaxSize: {x: 22006, y: 10021}
+  m_MinSize: {x: 908, y: 321}
+  m_MaxSize: {x: 22005, y: 10021}
   vertical: 0
-  controlID: 16419
+  controlID: 17400
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -137,10 +137,10 @@ MonoBehaviour:
     y: 0
     width: 715
     height: 947
-  m_MinSize: {x: 201, y: 342}
-  m_MaxSize: {x: 4001, y: 8042}
+  m_MinSize: {x: 201, y: 321}
+  m_MaxSize: {x: 4001, y: 8021}
   vertical: 1
-  controlID: 16387
+  controlID: 17308
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -203,9 +203,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 357.2357, y: 142.6648, z: -25.506985}
+    m_Target: {x: 63.157963, y: 4.6122546, z: 53.89524}
     speed: 2
-    m_Value: {x: 357.2357, y: 142.6648, z: -25.506985}
+    m_Value: {x: 63.157963, y: 4.6122546, z: 53.89524}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -252,13 +252,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.36101916, y: -0.080430254, z: 0.031270634, w: -0.92855984}
+    m_Target: {x: 0.46519083, y: 0.011949681, z: -0.006280458, w: 0.8851077}
     speed: 2
-    m_Value: {x: -0.36101827, y: -0.08043005, z: 0.031270556, w: -0.9285575}
+    m_Value: {x: 0.46519077, y: 0.011949679, z: -0.006280457, w: 0.8851076}
   m_Size:
-    m_Target: 97.23186
+    m_Target: 4.6008596
     speed: 2
-    m_Value: 97.23186
+    m_Value: 4.6008596
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -330,10 +330,10 @@ MonoBehaviour:
     y: 0
     width: 282
     height: 947
-  m_MinSize: {x: 202, y: 342}
-  m_MaxSize: {x: 4002, y: 8042}
+  m_MinSize: {x: 200, y: 321}
+  m_MaxSize: {x: 4002, y: 8021}
   vertical: 1
-  controlID: 16356
+  controlID: 17401
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -353,8 +353,8 @@ MonoBehaviour:
     y: 0
     width: 282
     height: 530
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 9}
   m_Panes:
   - {fileID: 9}
@@ -390,7 +390,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 60af67ff7ab167ff6e376bff86376bffde3f6bff308f86ff680187ff504d8eff1ca68eff54fbffffc63b0000
+      m_ExpandedIDs: 5e7225ff767225ffc87b25ffe07b25fff87b25ff2e7739ffee543dff329f9eff84a89eff5425bdff26f5c0fff808c1ff28bdc4ff62c6c4ff92c6c4ff3040c8ff4a40c8ff6440c8ff7e40c8ff3e4ac8ff584ac8ff704ac8ff228cc8ff3a8cc8ff528cc8ffa495c8ff54fbffff6e3d0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -529,13 +529,13 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/PreFabs/Structures
+    - Assets/PreFabs/Terrain
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 67
   m_LastFolders:
-  - Assets/PreFabs/Structures
+  - Assets/PreFabs/Terrain
   m_LastFoldersGridSize: 67
   m_LastProjectPath: C:\Users\kevoh\Unity Projects\Silent-Island-Survival\Silent
     Island Survival
@@ -543,9 +543,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 82430000
-    m_LastClickedID: 17282
-    m_ExpandedIDs: 000000005443000056430000584300005a4300005c4300005e43000060430000624300006443000066430000684300006a4300006c4300007a430000ac8e000000ca9a3b
+    m_SelectedIDs: 4c440000
+    m_LastClickedID: 17484
+    m_ExpandedIDs: 000000001e44000020440000224400002444000026440000284400002a4400002c4400002e44000030440000324400003444000036440000384400003a44000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -573,7 +573,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000005443000056430000584300005a4300005c4300005e43000060430000624300006443000066430000684300006a4300006c4300007a430000ac8e000000ca9a3b
+    m_ExpandedIDs: 000000001e44000020440000224400002444000026440000284400002a4400002c4400002e44000030440000324400003444000036440000384400003a44000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -598,8 +598,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 843c0000
-    m_LastClickedInstanceID: 15492
+    m_SelectedInstanceIDs: 083b0000
+    m_LastClickedInstanceID: 15112
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: 
     m_RenameOverlay:
@@ -625,7 +625,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 296}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 67
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 239
@@ -648,8 +648,8 @@ MonoBehaviour:
     y: 0
     width: 552
     height: 947
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -686,7 +686,7 @@ MonoBehaviour:
     m_CachedPref: -160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 15492
+  m_LastInspectedObjectInstanceID: 15112
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_LockTracker:

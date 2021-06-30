@@ -55,7 +55,7 @@ public class MainController : MonoBehaviour
     RaycastHit hit;
     string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
     string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Town Hall" };
-    string[] acceptableGroundTilesTags = new string[] { "GroundTile"};
+    string[] acceptableGroundTilesTags = new string[] { "GroundTile", "Holding Factory"};
     string[] acceptableUnitTags = new string[] { "Unit" };
     public GameObject selector;
     #region Variables - Movement 
@@ -63,6 +63,7 @@ public class MainController : MonoBehaviour
     float camZoomSpeed = 2f;
     float camBottomBounds = 2f;
     float camTopBound = 10f;
+    float camRotateSpeed = 20f;
 
     #endregion
 
@@ -314,34 +315,58 @@ public class MainController : MonoBehaviour
     {
         // This function handles key board inputs.
 
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W) && mainCam.transform.position.z < WorldSize - 10)
+        if (Input.GetKey(KeyCode.W))
         {
-            mainCam.transform.Translate(Vector3.forward * camTranslateSpeed *Time.deltaTime, Space.World);
+            mainCam.transform.Translate(new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed *Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S) && mainCam.transform.position.z > 10)
+        if (Input.GetKey(KeyCode.S))
         {
-            mainCam.transform.Translate(-Vector3.forward * camTranslateSpeed * Time.deltaTime, Space.World);
+            mainCam.transform.Translate(-new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A) && mainCam.transform.position.x > 10)
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
-            mainCam.transform.Translate(-Vector3.right * camTranslateSpeed * Time.deltaTime, Space.World);
+            mainCam.transform.Translate(-new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D) && mainCam.transform.position.x < WorldSize - 10)
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         {
-            mainCam.transform.Translate(Vector3.right * camTranslateSpeed * Time.deltaTime, Space.World);
+            mainCam.transform.Translate(new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.Q) && mainCam.transform.position.y < camTopBound)
+        if (Input.GetKey(KeyCode.UpArrow) && mainCam.transform.position.y < camTopBound)
         {
             mainCam.transform.Translate(Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.E) && mainCam.transform.position.y > camBottomBounds)
+        if (Input.GetKey(KeyCode.DownArrow) && mainCam.transform.position.y > camBottomBounds)
         {
             mainCam.transform.Translate(-Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
+        }
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            mainCam.transform.Rotate(-Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
+        }
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            mainCam.transform.Rotate(Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            // Tab will select the next unit, 
+            int currentIndex = unitsInPlay.IndexOf(selectedUnit);
+
+            if (currentIndex < unitsInPlay.Count - 1) selectedUnit = unitsInPlay[currentIndex + 1];
+            else selectedUnit = unitsInPlay[0];
+
+            // and update the camera.
+            updateCameraForPlayerTurn();
+
+
         }
 
         if (Input.GetKeyDown(KeyCode.R) && structureIsBeingBuilt)
@@ -685,6 +710,23 @@ public class MainController : MonoBehaviour
             }
 
             // Update Medical Facilities.
+            else if (currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().structureType == "Medical Facility")
+            {
+                // Iterate through the list of units in game and check to see if they are in range.
+                // If they are they will get an action point boost.
+                for (int unitIndex = 0; unitIndex < unitsInPlay.Count; unitIndex++)
+                {
+                    if (Mathf.Abs(currentStructuresInGame[structureIndex].transform.position.x - unitsInPlay[unitIndex].transform.position.x)
+                        <= currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().hitPointHealRange &&
+                        Mathf.Abs(currentStructuresInGame[structureIndex].transform.position.z - unitsInPlay[unitIndex].transform.position.z)
+                        <= currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().hitPointHealRange)
+                    {
+                        // Use function on structure to heal action points.
+                        currentStructuresInGame[structureIndex].gameObject.GetComponent<StructureContoller>().HealHitPoints(unitsInPlay[unitIndex]);
+                    }
+                }
+            }
+
             // Update Walls.
             // Update Town Hall.
         }
@@ -897,6 +939,8 @@ public class MainController : MonoBehaviour
                         Instantiate(AbandonedFactoryPrefabs[0], new Vector3(line, 0, letter), Quaternion.Euler(0f, GetRandomOrthogonalRotation(), 0f)).transform.SetParent(groundTiles[LocateIndexOfGroundTile(line, letter)].transform);
 
                         // Set the ground tile's attribute terrainIsPassable to false, this includes all adjacent tiles there are 9 tiles in all.
+                        // The adjacent tiles will also be made childen of the center tile and tagged so that they can be identified when unit moving.
+                        // The function we need this in is UnitInteractsWithNextGroundTileOnMove
 
                         for (int row = -1; row < 2; row++)
                         {
@@ -905,6 +949,15 @@ public class MainController : MonoBehaviour
                                 if (groundTiles[LocateIndexOfGroundTile(line + row, letter + col)] != null)
                                 {
                                     groundTiles[LocateIndexOfGroundTile(line + row, letter + col)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+                                    // Set tag to 'Holding Factory'
+                                    groundTiles[LocateIndexOfGroundTile(line + row, letter + col)].transform.tag = "Holding Factory";
+
+                                    // Make adjacent tiles children.
+                                    if (row != 0 || col != 0)
+                                    {
+                                        groundTiles[LocateIndexOfGroundTile(line + row, letter + col)].transform.SetParent(groundTiles[LocateIndexOfGroundTile(line, letter)].transform);
+                                    }
                                 }
                             }
                         }
@@ -1084,6 +1137,8 @@ public class MainController : MonoBehaviour
 
                             // Make it a child of the ground title.
                             tempMovementOptionTile.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+
+
                         }
                     }
                 }
@@ -1270,10 +1325,30 @@ public class MainController : MonoBehaviour
             return true;
         }
 
-        
+        // If the ground tile is not passable it is because the in an object on it.
+        // Factories work differently because there are 9 tiles in all that the factory sits on and the factory is only the child of the center.
+        else if (movementSelectedTiles[indexForTileArray].transform.parent.tag.ToString() == "Holding Factory")
+        {
+            var childCount = movementSelectedTiles[indexForTileArray].transform.parent.parent.transform.childCount;
+            for (var i = 0; i < childCount; i++)
+            {
+                var child = movementSelectedTiles[indexForTileArray].transform.parent.parent.GetChild(i);
+                var childTag = child.tag;
+
+                if (childTag == "Abandoned Factory")
+                {
+                    selectedStructureForUse = child.transform.gameObject;
+                    OpenInteractWithStructurePanel(child.transform.gameObject);
+                }
+
+            }
+
+            return false;
+        }
+
         else
         {
-            // If the ground tile is not passable it is because the in an object on it.
+            
             // We need to handle the unit's interation with that object.
             
             var childCount = movementSelectedTiles[indexForTileArray].transform.parent.transform.childCount;
@@ -1301,6 +1376,8 @@ public class MainController : MonoBehaviour
                 // If the ground title contains another player then nothing will happen.
                 // Do something based on tag
             }
+
+            
 
             return false;
         }
@@ -1449,7 +1526,50 @@ public class MainController : MonoBehaviour
         SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
         foodText.text = food.ToString();
 
+        // And if the structure is a house or factory there is a chance we can get another survivor.
+        if (Random.Range(0, 10) < 9) DiscoverSurvivorOnScavenge();
+
         if (selectedStructureForUse.transform.tag == "Loot Box") Destroy(selectedStructureForUse.gameObject);
+    }
+
+    public bool DiscoverSurvivorOnScavenge()
+    {
+        Debug.Log("Survivor Discover");
+
+        // Find a location to place survivor.
+        // Check all tiles around selected unit, if there is a clear one we will place the unit there.
+        // Otherwise we will not discover a unit.
+
+        bool positionSelected = false;
+        int xPos = 0;
+        int zPos = 0;
+
+        for (int row = Mathf.RoundToInt(selectedUnit.transform.position.x - 1); row < selectedUnit.transform.position.x + 1; row++)
+        {
+            for(int col = Mathf.RoundToInt(selectedUnit.transform.position.z - 1); col < selectedUnit.transform.position.z + 1; col++)
+            {
+                // check to see if the ground tile is empty.
+                if (groundTiles[LocateIndexOfGroundTile(row, col)] != null)
+                {
+                    if (groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable)
+                    {
+                        xPos = row;
+                        zPos = col;
+                        positionSelected = true;
+                    }
+                }
+            }
+        }
+
+        if (positionSelected)
+        {
+            createUnitAtLocation(new Vector3(xPos, 0f, zPos));
+
+            return true;
+        }
+
+        else return false;
+
     }
 
     public void ClickUpgrade()
@@ -1462,6 +1582,11 @@ public class MainController : MonoBehaviour
             {
                 selectedStructureForUse.GetComponent<StructureContoller>().UpgradeStructure();
                 InteractWithStructurePanel.SetActive(false);
+
+                // Remove materials from player.
+                wood -= selectedStructureForUse.GetComponent<StructureContoller>().woodToBuild[selectedStructureForUse.GetComponent<StructureContoller>().currentStructureLevel];
+                stone -= selectedStructureForUse.GetComponent<StructureContoller>().stoneToBuild[selectedStructureForUse.GetComponent<StructureContoller>().currentStructureLevel];
+                food -= selectedStructureForUse.GetComponent<StructureContoller>().foodToBuild[selectedStructureForUse.GetComponent<StructureContoller>().currentStructureLevel];
             }
 
             else
@@ -1862,9 +1987,9 @@ public class MainController : MonoBehaviour
 
         if (structure.GetComponent<StructureContoller>().currentStructureLevel != structure.GetComponent<StructureContoller>().structureObjects.Length)
         {
-            if (requiredWood[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= wood &&
-            requiredStone[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= stone &&
-            requiredFood[structure.GetComponent<StructureContoller>().currentStructureLevel + 1] <= food) return true;
+            if (requiredWood[structure.GetComponent<StructureContoller>().currentStructureLevel] <= wood &&
+            requiredStone[structure.GetComponent<StructureContoller>().currentStructureLevel] <= stone &&
+            requiredFood[structure.GetComponent<StructureContoller>().currentStructureLevel] <= food) return true;
 
             else return false;
         }
