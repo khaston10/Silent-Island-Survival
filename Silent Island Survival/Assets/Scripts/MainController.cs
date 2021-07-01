@@ -117,11 +117,7 @@ public class MainController : MonoBehaviour
 
     public GameObject IndividualUnitPanel;
     public Text unitNameText;
-    public Text unitHealthText;
-    public Text unitActionPointsText;
-    public Text unitAttackText;
-    public Text unitAttackRangeText;
-    public Text unitDefenseText;
+    public Slider HealthUnitSlider;
 
     #endregion
 
@@ -364,7 +360,10 @@ public class MainController : MonoBehaviour
             else selectedUnit = unitsInPlay[0];
 
             // and update the camera.
-            updateCameraForPlayerTurn();
+            UpdateCamPositionOnUnitSelection();
+
+            // Set text to match unit's attributes.
+            unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
 
 
         }
@@ -377,6 +376,23 @@ public class MainController : MonoBehaviour
             else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
             else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
         }
+    }
+
+    public void UpdateCamPositionOnUnitSelection()
+    {
+        // This function position the camera on the selected unit.
+        // It is used when the player selects a unit with the TAB key, the camera will move and rotate.
+        
+        mainCam.transform.position = new Vector3(selectedUnit.transform.position.x, 5f, selectedUnit.transform.position.z - 4);
+        mainCam.transform.rotation = Quaternion.Euler(45f, 0f, 0);
+
+        // Move the selector tile to the position.
+        // We need to move the selector object to the tile's position.
+        selector.transform.position = selectedUnit.transform.position;
+        selector.transform.position += new Vector3(0f, .1f, 0f);
+
+
+
     }
 
     public void UpdateGameWithMouseClickOnObject()
@@ -482,9 +498,14 @@ public class MainController : MonoBehaviour
 
                     // Set the starting unit to the selected unit.
                     selectedUnit = unitsInPlay[0];
+
+                    // Set text to match unit's attributes.
+                    unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
                 }
             }
         }
+
+        UpdateCamPositionOnUnitSelection();
 
     }
 
@@ -1077,11 +1098,9 @@ public class MainController : MonoBehaviour
     {
         // Set text to match unit's attributes.
         unitNameText.text = unit.GetComponent<UnitController>().unitName;
-        unitHealthText.text = unit.GetComponent<UnitController>().hitPoints.ToString();
-        unitActionPointsText.text = unit.GetComponent<UnitController>().actionPoints.ToString();
-        unitAttackText.text = unit.GetComponent<UnitController>().attack.ToString();
-        unitAttackRangeText.text = unit.GetComponent<UnitController>().attackRange.ToString();
-        unitDefenseText.text = unit.GetComponent<UnitController>().defense.ToString();
+
+        // Update the unit health slider.
+        HealthUnitSlider.value = ((float)selectedUnit.GetComponent<UnitController>().hitPoints / (float)selectedUnit.GetComponent<UnitController>().hitPointLimit);
 
         IndividualUnitPanel.gameObject.SetActive(true);
     }
@@ -1216,7 +1235,6 @@ public class MainController : MonoBehaviour
                 if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
                 {
                     selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
-                    unitActionPointsText.text = selectedUnit.GetComponent<UnitController>().actionPoints.ToString();
                 }
 
                 else return;
@@ -1283,7 +1301,6 @@ public class MainController : MonoBehaviour
                 if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
                 {
                     selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
-                    unitActionPointsText.text = selectedUnit.GetComponent<UnitController>().actionPoints.ToString();
                 }
 
                 else return;

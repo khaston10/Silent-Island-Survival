@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Jake
-  actionPoints: 30
+  actionPoints: 5
   actionPointsLimit: 10
   hitPoints: 50
   hitPointLimit: 100

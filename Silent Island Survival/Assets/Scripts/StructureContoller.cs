@@ -43,6 +43,12 @@ public class StructureContoller : MonoBehaviour
         var temp = Instantiate(structureObjects[0], this.transform.position, this.transform.rotation);
         temp.transform.SetParent(this.transform);
 
+        // Set radius of effect for Living Quarters and Medical Facilities.
+        if (structureType == "Living Quarters" || structureType == "Medical Facility")
+        {
+            // Update the radius of effect.
+            this.transform.GetChild(0).transform.localScale = Vector3.one * actionPointHealRange * .3f;
+        }
 
     }
 
@@ -61,22 +67,6 @@ public class StructureContoller : MonoBehaviour
         if (currentStructureLevel < structureObjects.Length - 1)
         {
 
-            // Because certain structures are setup differently we need to split by case to destory the old prefab.
-            if (structureType == "Farm Plot")
-            {
-                Destroy(this.transform.GetChild(2).gameObject);
-            }
-
-            else Destroy(this.transform.GetChild(0).gameObject);
-
-
-            // Create new child with the upgraded structure.
-            var temp = Instantiate(structureObjects[currentStructureLevel + 1], this.transform.position, this.transform.rotation);
-            temp.transform.SetParent(this.transform);
-
-            // Increment the current structure level.
-            currentStructureLevel += 1;
-
             #region Upgrades for specific structure type.
 
             if (structureType == "Farm Plot")
@@ -89,15 +79,41 @@ public class StructureContoller : MonoBehaviour
             {
                 amountOfActionPointsHealed += 1;
                 actionPointHealRange += 1;
-}
+            }
 
             else if (structureType == "Medical Facility")
             {
                 amountOfHitPointsHealed += 10;
                 hitPointHealRange += 1;
-}
+            }
 
             #endregion
+
+            // Because certain structures are setup differently we need to split by case to destory the old prefab.
+            if (structureType == "Farm Plot")
+            {
+                Destroy(this.transform.GetChild(2).gameObject);
+            }
+
+            else if (structureType == "Living Quarters" || structureType == "Medical Facility")
+            {
+                Destroy(this.transform.GetChild(1).gameObject);
+
+                // Update the radius of effect.
+                this.transform.GetChild(0).transform.localScale = Vector3.one * actionPointHealRange * .3f;
+            }
+
+            else Destroy(this.transform.GetChild(0).gameObject);
+
+
+            // Create new child with the upgraded structure.
+            var temp = Instantiate(structureObjects[currentStructureLevel + 1], this.transform.position, this.transform.rotation);
+            temp.transform.SetParent(this.transform);
+
+            // Increment the current structure level.
+            currentStructureLevel += 1;
+
+            
 
             return true;
         }
