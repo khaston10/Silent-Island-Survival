@@ -7,6 +7,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using utils;
 
 public class MainController : MonoBehaviour
 {
@@ -39,7 +40,6 @@ public class MainController : MonoBehaviour
 
     float unitMovementSpeed = 3;
     List<GameObject> unitsInPlay = new List<GameObject>();
-    string[] unitNames = new string[] { "Abe", "Brittany", "Cam", "Dave", "Erin"};
 
     // Used during movement of unit.
     int nextPositionIndex = 0;
@@ -511,7 +511,7 @@ public class MainController : MonoBehaviour
     public void SetUnitAttributesAtCreation(GameObject unit)
     {
         // Pick a random name for the unit.
-        unit.GetComponent<UnitController>().unitName = unitNames[Random.Range(0, unitNames.Length)];
+        unit.GetComponent<UnitController>().unitName = Utils.GetName();
 
         // This can be expanded once differnt unit types are created.
     }
