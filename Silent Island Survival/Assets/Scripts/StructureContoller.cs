@@ -19,7 +19,7 @@ public class StructureContoller : MonoBehaviour
     public bool cropsPlanted = false;
     public bool cropsReadyForHarvest = false;
     public int daysSinceCropsPlanted = 0;
-    public int daysUntilCropsMature = 3;
+    public int turnsUntilCropsMature = 0;
     public int cropsAtHarvest = 5;
 
     #endregion
@@ -71,7 +71,7 @@ public class StructureContoller : MonoBehaviour
 
             if (structureType == "Farm Plot")
             {
-                daysUntilCropsMature -= 1;
+                //UntilCropsMature -= 1;
                 cropsAtHarvest += 1;
             }
 
@@ -145,12 +145,14 @@ public class StructureContoller : MonoBehaviour
 
         cropsPlanted = true;
         daysSinceCropsPlanted = 0;
+
+        turnsUntilCropsMature = GameObject.Find("MainController").GetComponent<MainController>().selectedUnit.GetComponent<UnitController>().turnsUntilCropsMature;
     }
 
     public void CropsAreReadyForHarvest()
     {
         // This function returns true if crops have matured and are ready for harvest.
-        if (daysSinceCropsPlanted >= daysUntilCropsMature)
+        if (daysSinceCropsPlanted >= turnsUntilCropsMature)
         {
             cropsReadyForHarvest = true;
 
@@ -173,7 +175,7 @@ public class StructureContoller : MonoBehaviour
             daysSinceCropsPlanted = 0;
             cropsPlanted = false;
             cropsReadyForHarvest = false;
-            return cropsAtHarvest;
+            return cropsAtHarvest * GameObject.Find("MainController").GetComponent<MainController>().selectedUnit.GetComponent<UnitController>().cropsAtHarvestMultiplier;
 
         }
 

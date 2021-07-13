@@ -6,6 +6,13 @@ public class UnitController : MonoBehaviour
 {
     #region Variables Attributes
     public string unitName = "Default Unit";
+    public enum Class
+    {
+        Basic,     // == 0
+        Farmer,    // == 1
+        Soldier,   // == 2
+    }
+    public Class unitClass;
     public int actionPoints = 1;
     public int actionPointsLimit = 10;
     public int hitPoints = 100;
@@ -15,11 +22,18 @@ public class UnitController : MonoBehaviour
     public int defense = 4;
     public int sight = 5;
     public int repairPoints = 10; // This stat will not deplete but sets the amount of repair in one repair session.
+    public float criticalHitPercentage = .1f; // This value will be between 0 - and 1.
+    public int cropsAtHarvestMultiplier = 1; // This will be used for upgrades and will either have a value of 1 or 2.
+    public int turnsUntilCropsMature = 5; // This will only be updated on farmers.
     #endregion
 
     void Start()
     {
-        
+        // Set the unit Class
+        if (this.name == "Basic Unit(Clone)") unitClass = Class.Basic;
+        else if (this.name == "Farmer Unit(Clone)") unitClass = Class.Farmer;
+        else if (this.name == "Soldier Unit(Clone)") unitClass = Class.Soldier;
+        else Debug.Log("Invalid Unit Type. No Class assigned.");
     }
 
 

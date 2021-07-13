@@ -1,9 +1,6 @@
-﻿using Packages.Rider.Editor.UnitTesting;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Collections.LowLevel.Unsafe;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,7 +11,7 @@ public class MainController : MonoBehaviour
 
     public int currentDay = 1;
     int currentHour = 15; // This can have values of 0 - 23.
-    int skillPointsAvailable = 0;
+    float skillPointsAvailable = 2;
     int food = 10;
     int population = 1;
     int populationCap = 5;
@@ -35,7 +32,7 @@ public class MainController : MonoBehaviour
     public List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     bool movementSelectionCanContinue = true; // When a player ends the selection on an object that is not passable then the selection abilty must be disabled.
     public bool unitIsMoving = false; // When the unit is moving we do not want the player to input any controls.
-    GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
+    public GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
     #endregion
 
     float unitMovementSpeed = 3;
@@ -187,6 +184,24 @@ public class MainController : MonoBehaviour
     public Button createMedicalTentButton;
     public Button createFenceButton;
     public Button createTownHallButton;
+
+    #endregion
+
+    #region Panel - SkillsPanel
+
+    public GameObject skillsPanel;
+    public Slider skillPointsSlider;
+    public Text skillsUpgradeTitleText;
+    public Text skillsInformationText;
+    public Image skillsPointsToSpendImage;
+    public Button[] AttackIncreaseButtons;
+    public Button[] DefenseIncreaseButtons;
+    public Button[] SightIncreaseButtons;
+    public Button[] RepairIncreaseButtons;
+    public Button HarvestIncreaseButtons;
+    public Button HarvestTimeDecreaseButton;
+    public Button RangeIncreaseButton;
+    public Button CriticalHitIncreaseButton;
 
     #endregion
 
@@ -485,7 +500,7 @@ public class MainController : MonoBehaviour
 
         while (!groundTileFound)
         {
-            var randomIndex = Random.Range(0, groundTiles.Length);
+            var randomIndex = UnityEngine.Random.Range(0, groundTiles.Length);
 
             if (groundTiles[randomIndex] != null && groundTiles[randomIndex].tag == "GroundTile")
             {
@@ -511,8 +526,11 @@ public class MainController : MonoBehaviour
 
     public void createUnitAtLocation(Vector3 spawnLoc)
     {
+        // Pick a unit type: Basic, Farmer, Soldier.
+        var randomType = UnityEngine.Random.Range(0, 3);
+
         // Create game object.
-        var temp = Instantiate(basicUnitPrefabs[0], spawnLoc, Quaternion.identity);
+        var temp = Instantiate(basicUnitPrefabs[randomType], spawnLoc, Quaternion.identity);
 
         // Set the random attributes for the unit.
         SetUnitAttributesAtCreation(temp);
@@ -527,6 +545,9 @@ public class MainController : MonoBehaviour
 
         // Add the unit to the list of units in play.
         unitsInPlay.Add(temp);
+
+        // Update text.
+        populationText.text = unitsInPlay.Count.ToString();
     }
 
     public void SetUnitAttributesAtCreation(GameObject unit)
@@ -655,6 +676,9 @@ public class MainController : MonoBehaviour
         // Update Unit attributes.
         UpdateUnitsAtEndOfRound();
 
+        // Update skills points.
+        UpdateSkillPointsAtEndOfRound();
+
         // End Update and Start Player Turn, we also need to set the player's turn bool to true to allow player input.
         playersTurn = true;
         PlayerTurn();
@@ -753,6 +777,14 @@ public class MainController : MonoBehaviour
         }
     }
 
+
+    public void UpdateSkillPointsAtEndOfRound()
+    {
+        // The player will receive 0.1 skill point for every unit that is in play at the end of each round.
+        skillPointsAvailable += unitsInPlay.Count * 0.1f;
+
+        UpdateSkillsPointSliderAndText();
+    }
     #endregion
 
 
@@ -1000,13 +1032,13 @@ public class MainController : MonoBehaviour
     public float GetRandomRotation()
     {
         float[] rotations = { 0f, 90f, -90f, 180f, 45f, -45f};
-        return rotations[Random.Range(0, 6)];
+        return rotations[UnityEngine.Random.Range(0, 6)];
     }
 
     public float GetRandomOrthogonalRotation()
     {
         float[] rotations = { 0f, 90f, -90f, 180f};
-        return rotations[Random.Range(0, 4)];
+        return rotations[UnityEngine.Random.Range(0, 4)];
     }
 
     #endregion
@@ -1039,6 +1071,7 @@ public class MainController : MonoBehaviour
         foodText.text = food.ToString();
         populationText.text = population.ToString();
         populationCapText.text = populationCap.ToString();
+        UpdateSkillsPointSliderAndText();
     }
 
     public void ClickInventoryInformationButton() 
@@ -1535,7 +1568,7 @@ public class MainController : MonoBehaviour
     public void ClickScavange()
     {
         // This can get more complicated but for now we will just randomly award food.
-        var amtOfFoodToSavanged = Random.Range(0, 5);
+        var amtOfFoodToSavanged = UnityEngine.Random.Range(1, 5);
         food += amtOfFoodToSavanged;
         InteractWithStructureFeedbackText.text = "+ " + amtOfFoodToSavanged.ToString() + " Food";
         InteractWithStructureFeedBackPanel.SetActive(true);
@@ -1544,9 +1577,14 @@ public class MainController : MonoBehaviour
         foodText.text = food.ToString();
 
         // And if the structure is a house or factory there is a chance we can get another survivor.
-        if (Random.Range(0, 10) < 9) DiscoverSurvivorOnScavenge();
-
-        if (selectedStructureForUse.transform.tag == "Loot Box") Destroy(selectedStructureForUse.gameObject);
+        if(selectedStructureForUse.tag == "Abandoned House" || selectedStructureForUse.tag == "Abandoned Factory")
+        {
+            if (UnityEngine.Random.Range(0, 10) < 9 && unitsInPlay.Count < populationCap) DiscoverSurvivorOnScavenge();
+            {
+                InteractWithStructureFeedbackText.text += "\nSurvivor Found!";
+            }
+        }
+        
     }
 
     public bool DiscoverSurvivorOnScavenge()
@@ -1575,6 +1613,7 @@ public class MainController : MonoBehaviour
                         positionSelected = true;
                     }
                 }
+
             }
         }
 
@@ -1675,17 +1714,17 @@ public class MainController : MonoBehaviour
                 // Check to see if crops have already been planted.
                 if (selectedStructureForUse.GetComponent<StructureContoller>().cropsPlanted == false)
                 {
+                    // Plant crops.
+                    selectedStructureForUse.GetComponent<StructureContoller>().PlantCrops();
+
                     // Set text objects, buttons and panels.
-                    InteractWithStructureFeedbackText.text = "Food: -1 \nCrops Planted: Harvest in " + selectedStructureForUse.GetComponent<StructureContoller>().daysUntilCropsMature.ToString() + " days.";
+                    InteractWithStructureFeedbackText.text = "Food: -1 \nCrops Planted: Harvest in " + selectedStructureForUse.GetComponent<StructureContoller>().turnsUntilCropsMature.ToString() + " turns.";
                     SetButtonToSeeThrough(true, plantCropsButton);
                     SetButtonToSeeThrough(true, harvestButton);
                     SetButtonToSeeThrough(true, repairButton);
                     SetButtonToSeeThrough(true, upgradeButton);
                     SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
                     InteractWithStructureFeedBackPanel.SetActive(true);
-
-                    // Plant crops.
-                    selectedStructureForUse.GetComponent<StructureContoller>().PlantCrops();
 
                     // Remove action points.
                     selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
@@ -1741,7 +1780,8 @@ public class MainController : MonoBehaviour
             if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
             {
                 // Set text objects, buttons and panels.
-                InteractWithStructureFeedbackText.text = "Action Point: -1 \nCrops Harvested: " + selectedStructureForUse.GetComponent<StructureContoller>().cropsAtHarvest.ToString();
+                InteractWithStructureFeedbackText.text = "Action Point: -1 \nCrops Harvested: " + 
+                    (selectedStructureForUse.GetComponent<StructureContoller>().cropsAtHarvest * selectedUnit.GetComponent<UnitController>().cropsAtHarvestMultiplier).ToString();
                 SetButtonToSeeThrough(true, plantCropsButton);
                 SetButtonToSeeThrough(true, harvestButton);
                 SetButtonToSeeThrough(true, repairButton);
@@ -2069,6 +2109,427 @@ public class MainController : MonoBehaviour
         StructureStatsPanel.SetActive(false);
     }
 
+    #endregion
+
+    #region Skills Panel Functions
+
+    public void OpenCloseSkillsPanel()
+    {
+        if (skillsPanel.activeInHierarchy) skillsPanel.SetActive(false);
+        else skillsPanel.SetActive(true);
+    }
+
+    public void UpdateSkillsTextOnHover(string upgradeTitle)
+    {
+        if (upgradeTitle == "AttackIncreaseBasic" || upgradeTitle == "AttackIncreaseFarmer" || upgradeTitle == "AttackIncreaseSoldier")
+        {
+            skillsUpgradeTitleText.text = "Attack Increase";
+            skillsInformationText.text = "Unit attack will increase to 200%.";
+        }
+
+        else if (upgradeTitle == "DefenseIncreaseBasic" || upgradeTitle == "DefenseIncreaseFarmer" || upgradeTitle == "DefenseIncreaseSoldier")
+        {
+            skillsUpgradeTitleText.text = "Defense Increase";
+            skillsInformationText.text = "Unit defense will increase to 200%.";
+        }
+
+        else if (upgradeTitle == "SightIncreaseBasic" || upgradeTitle == "SightIncreaseFarmer" || upgradeTitle == "SightIncreaseSoldier")
+        {
+            skillsUpgradeTitleText.text = "Sight Distance Increase";
+            skillsInformationText.text = "Unit sight distance will increase to 200%.";
+        }
+
+        else if (upgradeTitle == "RepairIncreaseBasic" || upgradeTitle == "RepairIncreaseFarmer" || upgradeTitle == "RepairIncreaseSoldier")
+        {
+            skillsUpgradeTitleText.text = "Repair Increase";
+            skillsInformationText.text = "Unit repair will increase to 200%.";
+        }
+
+        else if (upgradeTitle == "HarvestIncrease")
+        {
+            skillsUpgradeTitleText.text = "Harvest Increase";
+            skillsInformationText.text = "Farmer's harvest will increase to 200%.";
+        }
+
+        else if (upgradeTitle == "HarvestTimeDecrease")
+        {
+            skillsUpgradeTitleText.text = "Time Until Harvest Decrease";
+            skillsInformationText.text = "Time until crops are ready to harvest will decrease by one day.";
+        }
+
+        else if (upgradeTitle == "HarvestTimeDecrease")
+        {
+            skillsUpgradeTitleText.text = "Time Until Harvest Decrease";
+            skillsInformationText.text = "Time until crops are ready to harvest will decrease by one day.";
+        }
+
+        else if (upgradeTitle == "RangeIncrease")
+        {
+            skillsUpgradeTitleText.text = "Range Increase";
+            skillsInformationText.text = "Soldier's attack range will increase by 200%.";
+        }
+
+        else if (upgradeTitle == "CriticalHitIncrease")
+        {
+            skillsUpgradeTitleText.text = "Critical Hit Increase";
+            skillsInformationText.text = "The chance of a soldier getting a critical hit increases by 50%.";
+        }
+
+        else if (upgradeTitle == "BasicUnit")
+        {
+            skillsUpgradeTitleText.text = "Basic Unit";
+            var tempString = "Hit Point Limit: ";
+            tempString += basicUnitPrefabs[0].GetComponent<UnitController>().hitPointLimit.ToString();
+            tempString += "\nAttack: " + basicUnitPrefabs[0].GetComponent<UnitController>().attack.ToString();
+            tempString += "\nAttack Range: " + basicUnitPrefabs[0].GetComponent<UnitController>().attackRange.ToString();
+            tempString += "\nDefense: " + basicUnitPrefabs[0].GetComponent<UnitController>().defense.ToString();
+            tempString += "\nRepair: " + basicUnitPrefabs[0].GetComponent<UnitController>().repairPoints.ToString();
+            tempString += "\nCrops Yield: " + (basicUnitPrefabs[0].GetComponent<UnitController>().cropsAtHarvestMultiplier * 100).ToString() + "%";
+            tempString += "\nCrops Harvest: " + basicUnitPrefabs[0].GetComponent<UnitController>().turnsUntilCropsMature.ToString() + " days.";
+            tempString += "\nCritical Hit %: " + basicUnitPrefabs[0].GetComponent<UnitController>().criticalHitPercentage.ToString();
+            skillsInformationText.text = tempString;
+        }
+
+        else if (upgradeTitle == "FarmerUnit")
+        {
+            skillsUpgradeTitleText.text = "Farmer Unit";
+            var tempString = "Hit Point Limit: ";
+            tempString += basicUnitPrefabs[1].GetComponent<UnitController>().hitPointLimit.ToString();
+            tempString += "\nAttack: " + basicUnitPrefabs[1].GetComponent<UnitController>().attack.ToString();
+            tempString += "\nAttack Range: " + basicUnitPrefabs[1].GetComponent<UnitController>().attackRange.ToString();
+            tempString += "\nDefense: " + basicUnitPrefabs[1].GetComponent<UnitController>().defense.ToString();
+            tempString += "\nRepair: " + basicUnitPrefabs[1].GetComponent<UnitController>().repairPoints.ToString();
+            tempString += "\nCrops Yield: " + (basicUnitPrefabs[1].GetComponent<UnitController>().cropsAtHarvestMultiplier * 100).ToString() + "%";
+            tempString += "\nCrops Harvest: " + basicUnitPrefabs[1].GetComponent<UnitController>().turnsUntilCropsMature.ToString() + " days.";
+            tempString += "\nCritical Hit %: " + basicUnitPrefabs[1].GetComponent<UnitController>().criticalHitPercentage.ToString();
+            skillsInformationText.text = tempString;
+        }
+
+        else if (upgradeTitle == "SoldierUnit")
+        {
+            skillsUpgradeTitleText.text = "Soldier Unit";
+            var tempString = "Hit Point Limit: ";
+            tempString += basicUnitPrefabs[2].GetComponent<UnitController>().hitPointLimit.ToString();
+            tempString += "\nAttack: " + basicUnitPrefabs[2].GetComponent<UnitController>().attack.ToString();
+            tempString += "\nAttack Range: " + basicUnitPrefabs[2].GetComponent<UnitController>().attackRange.ToString();
+            tempString += "\nDefense: " + basicUnitPrefabs[2].GetComponent<UnitController>().defense.ToString();
+            tempString += "\nRepair: " + basicUnitPrefabs[2].GetComponent<UnitController>().repairPoints.ToString();
+            tempString += "\nCrops Yield: " + (basicUnitPrefabs[2].GetComponent<UnitController>().cropsAtHarvestMultiplier * 100).ToString() + "%";
+            tempString += "\nCrops Harvest: " + basicUnitPrefabs[2].GetComponent<UnitController>().turnsUntilCropsMature.ToString() + " days.";
+            tempString += "\nCritical Hit %: " + basicUnitPrefabs[2].GetComponent<UnitController>().criticalHitPercentage.ToString();
+            skillsInformationText.text = tempString;
+        }
+
+
+        else Debug.Log("Upgrade Title Invalid.");
+    }
+
+    public void UpdateSkillsOnClick(string upgradeTitle)
+    {
+        // Check to see if there is a skill point to spend.
+        if (skillPointsAvailable >= 1)
+        {
+            // Cash the skill point and update text.
+            skillPointsAvailable -= 1;
+            UpdateSkillsPointSliderAndText();
+
+            #region This section holds all the possible upgrades.
+            // This function is not complete.
+            // Currently all it does it turn the button solid.
+            if (upgradeTitle == "AttackIncreaseBasic")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(AttackIncreaseButtons[0]))
+                {
+                    // Need to Increase Attack for Basic Units.
+                    basicUnitPrefabs[0].GetComponent<UnitController>().attack *= 2;
+
+                    SetButtonToOpaque(AttackIncreaseButtons[0]);
+                }
+            }
+
+            else if (upgradeTitle == "AttackIncreaseFarmer")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(AttackIncreaseButtons[1]))
+                {
+                    // Need to Increase Attack for Basic Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().attack *= 2;
+
+                    SetButtonToOpaque(AttackIncreaseButtons[1]);
+                }
+            }
+
+            else if (upgradeTitle == "AttackIncreaseSoldier")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(AttackIncreaseButtons[2]))
+                {
+                    // Need to Increase Attack for Basic Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().attack *= 2;
+
+                    SetButtonToOpaque(AttackIncreaseButtons[2]);
+                }
+            }
+
+            else if (upgradeTitle == "DefenseIncreaseBasic")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(DefenseIncreaseButtons[0]))
+                {
+                    // Need to Increase Defense for Basic Units.
+                    basicUnitPrefabs[0].GetComponent<UnitController>().defense *= 2;
+
+                    SetButtonToOpaque(DefenseIncreaseButtons[0]);
+                }
+            }
+
+            else if (upgradeTitle == "DefenseIncreaseFarmer")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(DefenseIncreaseButtons[1]))
+                {
+                    // Need to Increase Defense for Basic Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().defense *= 2;
+
+                    SetButtonToOpaque(DefenseIncreaseButtons[1]);
+                }
+            }
+
+            else if (upgradeTitle == "DefenseIncreaseSoldier")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(DefenseIncreaseButtons[2]))
+                {
+                    // Need to Increase Defense for Basic Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().defense *= 2;
+
+                    SetButtonToOpaque(DefenseIncreaseButtons[2]);
+                }
+            }
+
+            else if (upgradeTitle == "SightIncreaseBasic")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(SightIncreaseButtons[0]))
+                {
+                    // Need to Increase Sight for Basic Units.
+                    basicUnitPrefabs[0].GetComponent<UnitController>().sight *= 2;
+
+                    SetButtonToOpaque(SightIncreaseButtons[0]);
+                }
+            }
+
+            else if (upgradeTitle == "SightIncreaseFarmer")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(SightIncreaseButtons[1]))
+                {
+                    // Need to Increase Sight for Basic Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().sight *= 2;
+
+                    SetButtonToOpaque(SightIncreaseButtons[1]);
+                }
+            }
+
+            else if (upgradeTitle == "SightIncreaseSoldier")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(SightIncreaseButtons[2]))
+                {
+                    // Need to Increase Sight for Basic Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().sight *= 2;
+
+                    SetButtonToOpaque(SightIncreaseButtons[2]);
+                }
+            }
+
+            else if (upgradeTitle == "RepairIncreaseBasic")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(RepairIncreaseButtons[0]))
+                {
+                    // Need to Increase Repair for Basic Units.
+                    basicUnitPrefabs[0].GetComponent<UnitController>().repairPoints *= 2;
+
+                    SetButtonToOpaque(RepairIncreaseButtons[0]);
+                }
+            }
+
+            else if (upgradeTitle == "RepairIncreaseFarmer")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(RepairIncreaseButtons[1]))
+                {
+                    // Need to Increase Repair for Basic Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().repairPoints *= 2;
+
+                    SetButtonToOpaque(RepairIncreaseButtons[1]);
+                }
+            }
+
+            else if (upgradeTitle == "RepairIncreaseSoldier")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(RepairIncreaseButtons[2]))
+                {
+                    // Need to Increase Repair for Basic Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().repairPoints *= 2;
+
+                    SetButtonToOpaque(RepairIncreaseButtons[2]);
+                }
+            }
+
+            else if (upgradeTitle == "HarvestIncrease")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(HarvestIncreaseButtons))
+                {
+                    // Need to Increase Harvest for Farmer Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().cropsAtHarvestMultiplier *= 2;
+
+                    SetButtonToOpaque(HarvestIncreaseButtons);
+                }
+            }
+
+            else if (upgradeTitle == "HarvestTimeDecrease")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(HarvestTimeDecreaseButton))
+                {
+                    // Need to Increase Attack for Basic Units.
+                    basicUnitPrefabs[1].GetComponent<UnitController>().turnsUntilCropsMature -= 1;
+
+                    SetButtonToOpaque(HarvestTimeDecreaseButton);
+                }
+            }
+
+            else if (upgradeTitle == "RangeIncrease")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(RangeIncreaseButton))
+                {
+                    // Need to Increase AttackRange for Soldier Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().attackRange *= 2;
+
+                    SetButtonToOpaque(RangeIncreaseButton);
+                }
+            }
+
+            else if (upgradeTitle == "CriticalHitIncrease")
+            {
+
+                // Check to see if the button that was pushed has been activated already.
+                if (SkillsUpgradeButtonHasNotBeenActivated(CriticalHitIncreaseButton))
+                {
+                    // Need to Increase Critical Hit for Soldiers Units.
+                    basicUnitPrefabs[2].GetComponent<UnitController>().criticalHitPercentage += .5f;
+
+                    SetButtonToOpaque(CriticalHitIncreaseButton);
+                }
+            }
+            #endregion
+
+            #region This section updates all current units after upgrade.
+
+            for (int indexOfUnit = 0; indexOfUnit < unitsInPlay.Count; indexOfUnit++)
+            {
+                if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().unitClass == UnitController.Class.Basic)
+                {
+                    // Make the update for the basic unit.
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().attack = basicUnitPrefabs[0].GetComponent<UnitController>().attack;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().defense = basicUnitPrefabs[0].GetComponent<UnitController>().defense;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().sight = basicUnitPrefabs[0].GetComponent<UnitController>().sight;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().repairPoints = basicUnitPrefabs[0].GetComponent<UnitController>().repairPoints;
+                }
+
+                else if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().unitClass == UnitController.Class.Farmer)
+                {
+                    // Make the update for the Farmer unit.
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().attack = basicUnitPrefabs[1].GetComponent<UnitController>().attack;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().defense = basicUnitPrefabs[1].GetComponent<UnitController>().defense;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().sight = basicUnitPrefabs[1].GetComponent<UnitController>().sight;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().repairPoints = basicUnitPrefabs[1].GetComponent<UnitController>().repairPoints;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().cropsAtHarvestMultiplier = basicUnitPrefabs[1].GetComponent<UnitController>().cropsAtHarvestMultiplier;
+                }
+
+                else if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().unitClass == UnitController.Class.Soldier)
+                {
+                    // Make the update for the Soldier unit.
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().attack = basicUnitPrefabs[2].GetComponent<UnitController>().attack;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().defense = basicUnitPrefabs[2].GetComponent<UnitController>().defense;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().sight = basicUnitPrefabs[2].GetComponent<UnitController>().sight;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().repairPoints = basicUnitPrefabs[2].GetComponent<UnitController>().repairPoints;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().attackRange = basicUnitPrefabs[2].GetComponent<UnitController>().attackRange;
+                    unitsInPlay[indexOfUnit].GetComponent<UnitController>().criticalHitPercentage = basicUnitPrefabs[2].GetComponent<UnitController>().criticalHitPercentage;
+                }
+            }
+
+            #endregion
+        }
+
+        else skillsUpgradeTitleText.text = "No Skill Points Available.";
+        skillsInformationText.text = "";
+
+
+    }
+
+    public bool SkillsUpgradeButtonHasNotBeenActivated(Button button)
+    {
+        
+        Color temp = button.image.color;
+
+        if (temp.a != 1) return true;
+        else
+        {
+            Debug.Log("Button Is already Opaque");
+            return false;
+        }
+
+    }
+
+    public void SetButtonToOpaque(Button button)
+    {
+        Color temp = button.image.color;
+        temp.a = 1f;
+        button.image.color = temp;
+    }
+
+    public void ClearSkillsTextOnHoverExit()
+    {
+        skillsUpgradeTitleText.text = "";
+        skillsInformationText.text = "";
+    }
+
+
+    public void UpdateSkillsPointSliderAndText()
+    {
+        // Take the whole number off the available skill points and update the text.
+        var wholeNumber = Mathf.Floor(skillPointsAvailable);
+        skillPointsAvailableText.text = wholeNumber.ToString();
+
+        // Now update the slider with the tenths place.
+        skillPointsSlider.value = skillPointsAvailable - (float) wholeNumber;
+
+        // If the skills points available is above 1 we will want to show the skill points to spend icon.
+        if (wholeNumber > 0) skillsPointsToSpendImage.gameObject.SetActive(true);
+        else skillsPointsToSpendImage.gameObject.SetActive(false);
+    }
     #endregion
 
     #endregion

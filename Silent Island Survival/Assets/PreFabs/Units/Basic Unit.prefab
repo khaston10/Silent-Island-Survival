@@ -48,11 +48,11 @@ MonoBehaviour:
   unitName: Jake
   actionPoints: 5
   actionPointsLimit: 10
-  hitPoints: 50
-  hitPointLimit: 100
-  attack: 5
-  attackRange: 3
-  defense: 4
+  hitPoints: 10
+  hitPointLimit: 30
+  attack: 2
+  attackRange: 1
+  defense: 2
   sight: 5
   repairPoints: 10
 --- !u!65 &1551297253485701020
