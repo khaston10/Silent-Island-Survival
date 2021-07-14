@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using utils;
 
 public class StartController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class StartController : MonoBehaviour
 
     public void ClickNewGame()
     {
+        Utils.GenerateNewWorldMap();
         SceneManager.LoadScene(1);
     }
 

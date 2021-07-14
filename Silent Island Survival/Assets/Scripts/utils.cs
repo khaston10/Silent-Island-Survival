@@ -29,5 +29,12 @@ namespace utils
                                "Louis", "Charlotte", "Bobby", "Rose", "Philip", "Alexis", "Johnny", "Kayla" };
             return names[Random.Range(0,names.Length)];
         }
+
+        public static void GenerateNewWorldMap()
+        {
+            Debug.Log("Do the stuff!");
+        }
     }
+
+    
 }
