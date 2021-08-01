@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -36,11 +37,20 @@ public class MainController : MonoBehaviour
     #endregion
 
     float unitMovementSpeed = 3;
-    List<GameObject> unitsInPlay = new List<GameObject>();
+    public List<GameObject> unitsInPlay = new List<GameObject>();
 
     // Used during movement of unit.
     int nextPositionIndex = 0;
     Vector3 NextPosition = Vector3.zero;
+
+    #endregion
+
+    #region Variables - Zombies
+    public GameObject zombiePrefab;
+    public List<GameObject> zombiesInPlay = new List<GameObject>();
+    public GameObject selectedZombie;
+    private int zombieCap = 2; // There can only be 3 zombies in game at one time.
+
 
     #endregion
 
@@ -242,6 +252,8 @@ public class MainController : MonoBehaviour
         #endregion
 
         SpawnUnitsAtStartOfGame();
+        CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
+        CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
 
         // Start Player's Turn.
         PlayerTurn();
@@ -277,7 +289,6 @@ public class MainController : MonoBehaviour
                     }
 
                     else UpdateStructureSelector();
-      
                 }
                 
             }
@@ -550,6 +561,16 @@ public class MainController : MonoBehaviour
         populationText.text = unitsInPlay.Count.ToString();
     }
 
+    public void RemoveDeceasedUnit(GameObject unit)
+    {
+        // This function is called from the unit's script to remove the unit once it has been killed.
+        // Remove it from unitsInPlay.
+        unitsInPlay.Remove(unit);
+
+        // Destory Unit.
+        Destroy(unit);
+    }
+
     public void SetUnitAttributesAtCreation(GameObject unit)
     {
         // Pick a random name for the unit.
@@ -635,25 +656,83 @@ public class MainController : MonoBehaviour
         // Set the players turn to false to disable player inputs.
         playersTurn = false;
 
-        // Set camera for zombie turn.
-        updateCameraForZombieTurn();
+        // Set the current zombie to the first zombie on the list, if there is at least 1 zombie on the list.
+        if (zombiesInPlay.Count >= 1)
+        {
+            selectedZombie = zombiesInPlay[0];
 
-        // Currently we are just waiting 2 seconds.
-        StartCoroutine("WaitForZombieTurn", 2);
+            // Set camera for zombie turn.
+            updateCameraForZombieTurn();
+
+            // Set the bool on the current zombie to true to start zombie process.
+            selectedZombie.GetComponent<ZombieController>().startTurn = true;
+        }
+
+        else UpdateTurn();
+
     }
 
     public void updateCameraForZombieTurn()
     {
-        mainCam.transform.position = new Vector3(WorldSize / 2, WorldSize, WorldSize / 2);
-        mainCam.transform.rotation = Quaternion.Euler(90f, 0f, 0);
+        mainCam.transform.position = new Vector3(selectedZombie.transform.position.x, 12f, selectedZombie.transform.position.z - 10);
+        mainCam.transform.rotation = Quaternion.Euler(45f, 0f, 0);
     }
 
-    IEnumerator WaitForZombieTurn(float waitTime)
+
+    public Vector3 FindClearLocationForZombieSpawn()
     {
-        Debug.Log("Zombie Turn Start");
-        yield return new WaitForSeconds(waitTime);
-        Debug.Log("Zombie Turn End");
-        UpdateTurn();
+        bool locationFound = false;
+        int attemptNumber = 20;
+
+        while(locationFound != true)
+        {
+            if (attemptNumber <= 0) return Vector3.zero;
+
+            attemptNumber -= 1;
+
+            // We take a guess at the location.
+            var guessLocationX = UnityEngine.Random.Range(0, WorldSize);
+            var guessLocationZ = UnityEngine.Random.Range(0, WorldSize);
+
+            // Check to see if the location is clear.
+            if (groundTiles[LocateIndexOfGroundTile(guessLocationX, guessLocationZ)] != null)
+            {
+                if (groundTiles[LocateIndexOfGroundTile(guessLocationX, guessLocationZ)].GetComponent<GroundTileController>().terrainIsPassable)
+                {
+                    return new Vector3(guessLocationX, 0f, guessLocationZ);
+                }
+            }
+        }
+
+        return Vector3.zero;
+    }
+
+    public void CreateZombieAtRandomLocation()
+    {
+        var locationForSpawn = FindClearLocationForZombieSpawn();
+
+        // If no location was found we will not spawn the zombie and send a message to Debug.
+        if (locationForSpawn == Vector3.zero)
+        {
+            Debug.Log("No zombie spawn location could be found.");
+        }
+
+        else
+        {
+            // Create game object.
+            var temp = Instantiate(zombiePrefab, locationForSpawn, Quaternion.identity);
+
+            // Make the unit a child of the ground tile.
+            var row = Mathf.RoundToInt(locationForSpawn.x);
+            var col = Mathf.RoundToInt(locationForSpawn.z);
+            temp.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
+
+            // Set the ground tiles attribute so that the terrain is no longer passable.
+            groundTiles[LocateIndexOfGroundTile(row, col)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+            // Add the unit to the list of units in play.
+            zombiesInPlay.Add(temp);
+        }
     }
 
     #endregion
@@ -678,6 +757,15 @@ public class MainController : MonoBehaviour
 
         // Update skills points.
         UpdateSkillPointsAtEndOfRound();
+
+        if(zombiesInPlay.Count < zombieCap)
+        {
+            CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the update.
+        }
+        
+
+        // Update Current Zombies in Play.
+        UpdateZombiesAtEndOfRound();
 
         // End Update and Start Player Turn, we also need to set the player's turn bool to true to allow player input.
         playersTurn = true;
@@ -777,13 +865,20 @@ public class MainController : MonoBehaviour
         }
     }
 
-
     public void UpdateSkillPointsAtEndOfRound()
     {
         // The player will receive 0.1 skill point for every unit that is in play at the end of each round.
         skillPointsAvailable += unitsInPlay.Count * 0.1f;
 
         UpdateSkillsPointSliderAndText();
+    }
+
+    public void UpdateZombiesAtEndOfRound()
+    {
+        for (int indexOfZombie = 0; indexOfZombie < zombiesInPlay.Count; indexOfZombie++)
+        {
+            zombiesInPlay[indexOfZombie].GetComponent<ZombieController>().actionPoints = 5;
+        }
     }
     #endregion
 
@@ -1057,11 +1152,11 @@ public class MainController : MonoBehaviour
 
     public void ClickEndTurn()
     {
-        // Start the zombie's turn.
-        ZombieTurn();
-
         // Make this button disappear.
         EndOfDayTurnButton.gameObject.SetActive(false);
+
+        // Start the zombie's turn.
+        ZombieTurn();
     }
 
     public void UpdateBasicInformationText()

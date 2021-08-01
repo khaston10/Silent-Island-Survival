@@ -1724,6 +1724,10 @@ MonoBehaviour:
   movementSelectedTiles: []
   unitIsMoving: 0
   selectedUnit: {fileID: 0}
+  unitsInPlay: []
+  zombiePrefab: {fileID: 1237046989571852138, guid: b171facb35d37a747ba0049528164cf0, type: 3}
+  zombiesInPlay: []
+  selectedZombie: {fileID: 0}
   mainCam: {fileID: 963194227}
   mainLightSourceSun: {fileID: 705507994}
   selector: {fileID: 1916051183}
@@ -1821,7 +1825,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 401bd94dfac016d4687761ff34326db7, type: 3}
   - {fileID: 4900000, guid: d81d262bdf2a95442871fc9207bae47e, type: 3}
   - {fileID: 4900000, guid: 480a254ebd09cdc43aafdd93f852311d, type: 3}
-  - {fileID: 4900000, guid: 3780a3f264a15974a8392204fca20fbb, type: 3}
+  - {fileID: 4900000, guid: 679fda332356448458ed71e0e87a8f7d, type: 3}
   GroundTilePrefabs:
   - {fileID: 5947478251097242804, guid: 5ab06f3c9b402b945a8a1d6028419637, type: 3}
   - {fileID: 3379442497421558948, guid: 0e1e70deff80cae40a82f254342127cc, type: 3}

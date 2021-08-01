@@ -41,4 +41,47 @@ public class UnitController : MonoBehaviour
     {
         
     }
+
+    #region Functions
+
+    public void TakeDamage(int damageAmount)
+    {
+        // Decided if the unit will die from damage.
+        if (damageAmount >= hitPoints)
+        {
+            StartCoroutine(DieAnimation());
+        }
+
+        else
+        {
+            StartCoroutine(TakeDamageAnimation(damageAmount));
+        }
+    }
+
+    #region Coroutines For Animations
+
+    IEnumerator TakeDamageAnimation(int damageAmount)
+    {
+        Debug.Log("Play Take Damage Animation");
+
+        // suspend execution the length of animations
+        yield return new WaitForSeconds(2);
+
+        hitPoints -= damageAmount;
+    }
+
+    IEnumerator DieAnimation()
+    {
+        Debug.Log("Play Die Animation");
+
+        // suspend execution the length of animations
+        yield return new WaitForSeconds(2);
+
+        GameObject.Find("MainController").GetComponent<MainController>().RemoveDeceasedUnit(gameObject);
+    }
+
+
+    #endregion
+
+    #endregion
 }
