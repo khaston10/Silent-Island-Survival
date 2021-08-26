@@ -1,0 +1,857 @@
+fileFormatVersion: 2
+guid: a1aade9bc7779e24b8219a8ceb948e08
+timeCreated: 1504910319
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Backpack_container
+    100002: Bip001
+    100004: Bip001 Footsteps
+    100006: Bip001 Head
+    100008: Bip001 HeadNub
+    100010: Bip001 L Calf
+    100012: Bip001 L Clavicle
+    100014: Bip001 L Foot
+    100016: Bip001 L Forearm
+    100018: Bip001 L Hand
+    100020: Bip001 L Thigh
+    100022: Bip001 L Toe0
+    100024: Bip001 L Toe0Nub
+    100026: Bip001 L UpperArm
+    100028: Bip001 Neck
+    100030: Bip001 Pelvis
+    100032: Bip001 R Calf
+    100034: Bip001 R Clavicle
+    100036: Bip001 R Foot
+    100038: Bip001 R Forearm
+    100040: Bip001 R Hand
+    100042: Bip001 R Thigh
+    100044: Bip001 R Toe0
+    100046: Bip001 R Toe0Nub
+    100048: Bip001 R UpperArm
+    100050: Bip001 Spine
+    100052: Body_01_blackjacket
+    100054: HEAD_CONTAINER
+    100056: L_hand_container
+    100058: //RootNode
+    100060: R_hand_container
+    100062: Z_m_head_003
+    100064: Z_m_head_004
+    100066: Z_m_head_005
+    100068: Z_m_head_02
+    100070: Body_01_standard
+    100072: Body_02_skinny
+    100074: w_cleaver
+    100076: w_club
+    100078: w_hatchet
+    100080: w_knife
+    100082: w_machete
+    100084: w_bone
+    100086: Body_01
+    100088: Body_03_jacket
+    100090: Body_03_nude
+    100092: Body_fat
+    100094: Body_suit
+    100096: Body_suit_grey
+    100098: Body_Tshirt
+    100100: Body_whiteTshirt
+    100102: Body_shirt_tie
+    100104: Body_T_shirt
+    100106: Body_gore_01
+    100108: Body_gore_02
+    100110: Body_butcher
+    100112: Body_doctor
+    100114: Body_farmer_A
+    100116: Body_farmer_B
+    100118: Body_nurse
+    100120: Body_police_A
+    100122: Body_police_B
+    100124: Body_priest
+    100126: Body_punk_A
+    100128: Body_punk_B
+    100130: Body_RiotPolice
+    100132: Z_head_police
+    100134: Z_m_head_Riot
+    100136: Body_01_tanktop
+    100138: Body_02_Tshirt
+    100140: Body_03_whiteTshirt
+    100142: Body_04_torso
+    100144: Body_05_redTie
+    100146: Body_06_blackSuit
+    100148: Body_07_greysuit
+    100150: Body_08_robust
+    100152: Body_09_no-arm
+    100154: Body_10_farmer_A
+    100156: Body_11_farmer_B
+    100158: Body_12_police_A
+    100160: Body_13_police_B
+    100162: Body_14_RiotPolice
+    100164: Body_15_punk_A
+    100166: Body_16_punk_B
+    100168: Body_17_doctor
+    100170: Body_18_nurse
+    100172: Body_19_butcher
+    100174: Body_20_priest
+    100176: Z_m_head_006
+    100178: Z_m_head_007
+    100180: Z_m_head_008
+    100182: Z_m_head_009
+    100184: Z_m_head_010
+    100186: Z_m_head_011
+    100188: head_65_punk_D
+    100190: Z_head_01
+    100192: Z_head_02
+    100194: Z_head_03
+    100196: Z_head_04
+    100198: Z_head_05
+    100200: Z_head_06
+    100202: Z_head_07_cap
+    100204: Z_head_08_cap
+    100206: Z_head_09_cap
+    100208: Z_head_10_hat
+    100210: Z_head_11_hat
+    100212: Z_head_12_hat
+    100214: Z_head_13_brains
+    100216: Z_head_14_punk
+    100218: Z_head_15_punk
+    100220: Z_head_16_punk
+    100222: Z_head_17_police
+    100224: Z_head_18_police_helmet
+    100226: Z_head_19_nurse
+    100228: Z_head_20_butcher
+    100230: Body_21_soldier
+    100232: Z_head_21_soldier
+    400000: Backpack_container
+    400002: Bip001
+    400004: Bip001 Footsteps
+    400006: Bip001 Head
+    400008: Bip001 HeadNub
+    400010: Bip001 L Calf
+    400012: Bip001 L Clavicle
+    400014: Bip001 L Foot
+    400016: Bip001 L Forearm
+    400018: Bip001 L Hand
+    400020: Bip001 L Thigh
+    400022: Bip001 L Toe0
+    400024: Bip001 L Toe0Nub
+    400026: Bip001 L UpperArm
+    400028: Bip001 Neck
+    400030: Bip001 Pelvis
+    400032: Bip001 R Calf
+    400034: Bip001 R Clavicle
+    400036: Bip001 R Foot
+    400038: Bip001 R Forearm
+    400040: Bip001 R Hand
+    400042: Bip001 R Thigh
+    400044: Bip001 R Toe0
+    400046: Bip001 R Toe0Nub
+    400048: Bip001 R UpperArm
+    400050: Bip001 Spine
+    400052: Body_01_blackjacket
+    400054: HEAD_CONTAINER
+    400056: L_hand_container
+    400058: //RootNode
+    400060: R_hand_container
+    400062: Z_m_head_003
+    400064: Z_m_head_004
+    400066: Z_m_head_005
+    400068: Z_m_head_02
+    400070: Body_01_standard
+    400072: Body_02_skinny
+    400074: w_cleaver
+    400076: w_club
+    400078: w_hatchet
+    400080: w_knife
+    400082: w_machete
+    400084: w_bone
+    400086: Body_01
+    400088: Body_03_jacket
+    400090: Body_03_nude
+    400092: Body_fat
+    400094: Body_suit
+    400096: Body_suit_grey
+    400098: Body_Tshirt
+    400100: Body_whiteTshirt
+    400102: Body_shirt_tie
+    400104: Body_T_shirt
+    400106: Body_gore_01
+    400108: Body_gore_02
+    400110: Body_butcher
+    400112: Body_doctor
+    400114: Body_farmer_A
+    400116: Body_farmer_B
+    400118: Body_nurse
+    400120: Body_police_A
+    400122: Body_police_B
+    400124: Body_priest
+    400126: Body_punk_A
+    400128: Body_punk_B
+    400130: Body_RiotPolice
+    400132: Z_head_police
+    400134: Z_m_head_Riot
+    400136: Body_01_tanktop
+    400138: Body_02_Tshirt
+    400140: Body_03_whiteTshirt
+    400142: Body_04_torso
+    400144: Body_05_redTie
+    400146: Body_06_blackSuit
+    400148: Body_07_greysuit
+    400150: Body_08_robust
+    400152: Body_09_no-arm
+    400154: Body_10_farmer_A
+    400156: Body_11_farmer_B
+    400158: Body_12_police_A
+    400160: Body_13_police_B
+    400162: Body_14_RiotPolice
+    400164: Body_15_punk_A
+    400166: Body_16_punk_B
+    400168: Body_17_doctor
+    400170: Body_18_nurse
+    400172: Body_19_butcher
+    400174: Body_20_priest
+    400176: Z_m_head_006
+    400178: Z_m_head_007
+    400180: Z_m_head_008
+    400182: Z_m_head_009
+    400184: Z_m_head_010
+    400186: Z_m_head_011
+    400188: head_65_punk_D
+    400190: Z_head_01
+    400192: Z_head_02
+    400194: Z_head_03
+    400196: Z_head_04
+    400198: Z_head_05
+    400200: Z_head_06
+    400202: Z_head_07_cap
+    400204: Z_head_08_cap
+    400206: Z_head_09_cap
+    400208: Z_head_10_hat
+    400210: Z_head_11_hat
+    400212: Z_head_12_hat
+    400214: Z_head_13_brains
+    400216: Z_head_14_punk
+    400218: Z_head_15_punk
+    400220: Z_head_16_punk
+    400222: Z_head_17_police
+    400224: Z_head_18_police_helmet
+    400226: Z_head_19_nurse
+    400228: Z_head_20_butcher
+    400230: Body_21_soldier
+    400232: Z_head_21_soldier
+    2300000: Z_m_head_003
+    2300002: Z_m_head_004
+    2300004: Z_m_head_005
+    2300006: Z_m_head_02
+    2300008: Body_01_blackjacket
+    2300010: w_cleaver
+    2300012: w_club
+    2300014: w_hatchet
+    2300016: w_knife
+    2300018: w_machete
+    2300020: w_bone
+    2300022: Z_head_police
+    2300024: Z_m_head_Riot
+    2300026: Z_m_head_006
+    2300028: Z_m_head_007
+    2300030: Z_m_head_008
+    2300032: Z_m_head_009
+    2300034: Z_m_head_010
+    2300036: Z_m_head_011
+    2300038: head_65_punk_D
+    2300040: Z_head_01
+    2300042: Z_head_02
+    2300044: Z_head_03
+    2300046: Z_head_04
+    2300048: Z_head_05
+    2300050: Z_head_06
+    2300052: Z_head_07_cap
+    2300054: Z_head_08_cap
+    2300056: Z_head_09_cap
+    2300058: Z_head_10_hat
+    2300060: Z_head_11_hat
+    2300062: Z_head_12_hat
+    2300064: Z_head_13_brains
+    2300066: Z_head_14_punk
+    2300068: Z_head_15_punk
+    2300070: Z_head_16_punk
+    2300072: Z_head_17_police
+    2300074: Z_head_18_police_helmet
+    2300076: Z_head_19_nurse
+    2300078: Z_head_20_butcher
+    2300080: Z_head_21_soldier
+    3300000: Z_m_head_003
+    3300002: Z_m_head_004
+    3300004: Z_m_head_005
+    3300006: Z_m_head_02
+    3300008: Body_01_blackjacket
+    3300010: w_cleaver
+    3300012: w_club
+    3300014: w_hatchet
+    3300016: w_knife
+    3300018: w_machete
+    3300020: w_bone
+    3300022: Z_head_police
+    3300024: Z_m_head_Riot
+    3300026: Z_m_head_006
+    3300028: Z_m_head_007
+    3300030: Z_m_head_008
+    3300032: Z_m_head_009
+    3300034: Z_m_head_010
+    3300036: Z_m_head_011
+    3300038: head_65_punk_D
+    3300040: Z_head_01
+    3300042: Z_head_02
+    3300044: Z_head_03
+    3300046: Z_head_04
+    3300048: Z_head_05
+    3300050: Z_head_06
+    3300052: Z_head_07_cap
+    3300054: Z_head_08_cap
+    3300056: Z_head_09_cap
+    3300058: Z_head_10_hat
+    3300060: Z_head_11_hat
+    3300062: Z_head_12_hat
+    3300064: Z_head_13_brains
+    3300066: Z_head_14_punk
+    3300068: Z_head_15_punk
+    3300070: Z_head_16_punk
+    3300072: Z_head_17_police
+    3300074: Z_head_18_police_helmet
+    3300076: Z_head_19_nurse
+    3300078: Z_head_20_butcher
+    3300080: Z_head_21_soldier
+    4300000: Z_m_head_02
+    4300002: Z_m_head_003
+    4300004: Z_m_head_004
+    4300006: Z_m_head_005
+    4300008: Body_01_blackjacket
+    4300010: Body_01_standard
+    4300012: Body_02_skinny
+    4300014: w_knife
+    4300016: w_cleaver
+    4300018: w_club
+    4300020: w_machete
+    4300022: w_hatchet
+    4300024: w_bone
+    4300026: Body_fat
+    4300028: Body_01
+    4300030: Body_03_nude
+    4300032: Body_03_jacket
+    4300034: Body_suit
+    4300036: Body_Tshirt
+    4300038: Body_whiteTshirt
+    4300040: Body_suit_grey
+    4300042: Body_shirt_tie
+    4300044: Body_T_shirt
+    4300046: Body_gore_01
+    4300048: Body_gore_02
+    4300050: Z_head_police
+    4300052: Z_m_head_Riot
+    4300054: Body_farmer_A
+    4300056: Body_priest
+    4300058: Body_farmer_B
+    4300060: Body_punk_A
+    4300062: Body_punk_B
+    4300064: Body_police_A
+    4300066: Body_police_B
+    4300068: Body_RiotPolice
+    4300070: Body_butcher
+    4300072: Body_doctor
+    4300074: Body_nurse
+    4300076: Z_m_head_006
+    4300078: Z_m_head_007
+    4300080: Z_m_head_008
+    4300082: Z_m_head_009
+    4300084: Z_m_head_010
+    4300086: Z_m_head_011
+    4300088: Body_08_robust
+    4300090: Body_01_tanktop
+    4300092: Body_04_torso
+    4300094: Body_06_blackSuit
+    4300096: Body_05_redTie
+    4300098: Body_03_whiteTshirt
+    4300100: Body_10_farmer_A
+    4300102: Body_02_Tshirt
+    4300104: Body_09_no-arm
+    4300106: Body_20_priest
+    4300108: Body_11_farmer_B
+    4300110: Body_15_punk_A
+    4300112: Body_16_punk_B
+    4300114: Body_12_police_A
+    4300116: Body_13_police_B
+    4300118: Body_14_RiotPolice
+    4300120: Body_19_butcher
+    4300122: Body_17_doctor
+    4300124: Body_18_nurse
+    4300126: Body_07_greysuit
+    4300128: Z_head_04
+    4300130: Z_head_01
+    4300132: Z_head_02
+    4300134: Z_head_13_brains
+    4300136: Z_head_17_police
+    4300138: Z_head_18_police_helmet
+    4300140: Z_head_03
+    4300142: Z_head_05
+    4300144: head_65_punk_D
+    4300146: Z_head_06
+    4300148: Z_head_12_hat
+    4300150: Z_head_11_hat
+    4300152: Z_head_10_hat
+    4300154: Z_head_19_nurse
+    4300156: Z_head_20_butcher
+    4300158: Z_head_07_cap
+    4300160: Z_head_08_cap
+    4300162: Z_head_09_cap
+    4300164: Z_head_14_punk
+    4300166: Z_head_15_punk
+    4300168: Z_head_16_punk
+    4300170: Z_head_21_soldier
+    4300172: Body_21_soldier
+    9500000: //RootNode
+    13700000: Body_01_blackjacket
+    13700002: Body_01_standard
+    13700004: Body_02_skinny
+    13700006: Body_01
+    13700008: Body_03_jacket
+    13700010: Body_03_nude
+    13700012: Body_fat
+    13700014: Body_suit
+    13700016: Body_suit_grey
+    13700018: Body_Tshirt
+    13700020: Body_whiteTshirt
+    13700022: Body_shirt_tie
+    13700024: Body_T_shirt
+    13700026: Body_gore_01
+    13700028: Body_gore_02
+    13700030: Body_butcher
+    13700032: Body_doctor
+    13700034: Body_farmer_A
+    13700036: Body_farmer_B
+    13700038: Body_nurse
+    13700040: Body_police_A
+    13700042: Body_police_B
+    13700044: Body_priest
+    13700046: Body_punk_A
+    13700048: Body_punk_B
+    13700050: Body_RiotPolice
+    13700052: Body_01_tanktop
+    13700054: Body_02_Tshirt
+    13700056: Body_03_whiteTshirt
+    13700058: Body_04_torso
+    13700060: Body_05_redTie
+    13700062: Body_06_blackSuit
+    13700064: Body_07_greysuit
+    13700066: Body_08_robust
+    13700068: Body_09_no-arm
+    13700070: Body_10_farmer_A
+    13700072: Body_11_farmer_B
+    13700074: Body_12_police_A
+    13700076: Body_13_police_B
+    13700078: Body_14_RiotPolice
+    13700080: Body_15_punk_A
+    13700082: Body_16_punk_B
+    13700084: Body_17_doctor
+    13700086: Body_18_nurse
+    13700088: Body_19_butcher
+    13700090: Body_20_priest
+    13700092: Body_21_soldier
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human:
+    - boneName: Bip001 Pelvis
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Thigh
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Thigh
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Calf
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Calf
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Foot
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Foot
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 Spine
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 Neck
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 Head
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Clavicle
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Clavicle
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L UpperArm
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R UpperArm
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Forearm
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Forearm
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Hand
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Hand
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 L Toe0
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Bip001 R Toe0
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: m_zombie_test_01(Clone)
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001
+      position: {x: 0, y: 0.45108902, z: -0.036125187}
+      rotation: {x: -0.50000036, y: 0.49999964, z: 0.49999964, w: 0.50000036}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+      transformModified: 1
+    - name: Bip001 Footsteps
+      position: {x: -0, y: 0, z: -0.43992063}
+      rotation: {x: 0, y: 0, z: -0.7071063, w: 0.70710725}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 Pelvis
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0.5, y: 0.5, z: 0.4999993, w: 0.5000007}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 L Thigh
+      position: {x: 0.00000024223328, y: 0.0000002664566, z: 0.17689882}
+      rotation: {x: -0.021307006, y: 0.99977297, z: -0.00000067674466, w: -0.00000078515063}
+      scale: {x: 1.0000001, y: 1, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 L Calf
+      position: {x: -0.21324629, y: -0.000000004541874, z: 0}
+      rotation: {x: 2.1740764e-14, y: 1.6203627e-14, z: 0.08872142, w: 0.9960565}
+      scale: {x: 0.9999999, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 L Foot
+      position: {x: -0.10479825, y: 0, z: 0}
+      rotation: {x: -0.0000000051264695, y: -0.00000007698254, z: -0.067478254, w: 0.9977208}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 L Toe0
+      position: {x: -0.123024076, y: 0.2732259, z: 0}
+      rotation: {x: 0.000000015454312, y: -0.000000015454312, z: -0.7071068, w: 0.7071068}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 L Toe0Nub
+      position: {x: -0.006900354, y: 0, z: 0}
+      rotation: {x: 9.553441e-16, y: 1.75553e-30, z: 1, w: -1.8375893e-15}
+      scale: {x: -0.99999994, y: -1, z: -0.99999994}
+      transformModified: 1
+    - name: Bip001 R Thigh
+      position: {x: -0.00000024223328, y: -0.00000022406577, z: -0.17689882}
+      rotation: {x: -0.021307006, y: 0.99977297, z: -0.0000006783294, w: -0.000000718286}
+      scale: {x: 1.0000001, y: 1, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 R Calf
+      position: {x: -0.2132463, y: -0.000000001513958, z: -0.000000012111664}
+      rotation: {x: 1.5907614e-14, y: -2.149846e-15, z: 0.08872142, w: 0.9960565}
+      scale: {x: 0.9999999, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 R Foot
+      position: {x: -0.10479823, y: 0, z: 0}
+      rotation: {x: -7.726713e-10, y: -0.000000010241, z: -0.067478254, w: 0.9977208}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 R Toe0
+      position: {x: -0.123024076, y: 0.2732259, z: 0}
+      rotation: {x: -0.00000001545431, y: 0.00000001545431, z: -0.7071068, w: 0.7071068}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 R Toe0Nub
+      position: {x: -0.006900354, y: 0, z: 0}
+      rotation: {x: 1.6970273e-30, y: -9.553415e-16, z: 1.776357e-15, w: 1}
+      scale: {x: 0.99999994, y: 1, z: 0.99999994}
+      transformModified: 1
+    - name: Bip001 Spine
+      position: {x: -0.08668395, y: -0.0003778294, z: 0.00000012073723}
+      rotation: {x: -0.000002080476, y: 0.000000693676, z: -0.000398159, w: 0.99999994}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+      transformModified: 1
+    - name: Backpack_container
+      position: {x: -0.2635248, y: -0.22322838, z: -0.0000003391266}
+      rotation: {x: 0.4998006, y: 0.50019944, z: -0.50019866, w: -0.4998012}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+      transformModified: 1
+    - name: Bip001 L Clavicle
+      position: {x: -0.3317789, y: 0.000112889786, z: 0.21894683}
+      rotation: {x: -0.6404204, y: -0.00025605707, z: 0.76802444, w: -0.00030490497}
+      scale: {x: 1.0000001, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 L UpperArm
+      position: {x: -0.10956235, y: 0.000000003027916, z: 0.00000009689331}
+      rotation: {x: 0.049928, y: 0.06534875, z: -0.0033975544, w: 0.9966069}
+      scale: {x: 1, y: 0.99999994, z: 1}
+      transformModified: 1
+    - name: Bip001 L Forearm
+      position: {x: -0.1928595, y: -0.000000012111664, z: 0}
+      rotation: {x: -0.0015809367, y: 0.015756717, z: 0.03496801, w: 0.999263}
+      scale: {x: 0.99999994, y: 1.0000001, z: 1}
+      transformModified: 1
+    - name: Bip001 L Hand
+      position: {x: -0.13800707, y: 0, z: -0.00000009689331}
+      rotation: {x: -0.7061923, y: 0.032636087, z: 0.026926648, w: 0.7067547}
+      scale: {x: 1, y: 0.99999994, z: 1}
+      transformModified: 1
+    - name: L_hand_container
+      position: {x: -0.07401365, y: 0.009859088, z: -0.09225297}
+      rotation: {x: -0.038029067, y: -0.6707644, z: 0.02341121, w: 0.74032485}
+      scale: {x: 0.9999999, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 Neck
+      position: {x: -0.4422119, y: 0.0018946155, z: 0.0000000025954159}
+      rotation: {x: -3.0117673e-14, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 Head
+      position: {x: -0.08924581, y: 0, z: 0}
+      rotation: {x: -7.2656e-14, y: -0.0000000011042733, z: 0.00039883057, w: 0.99999994}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 HeadNub
+      position: {x: -0.5598671, y: 0.000000003027916, z: 0}
+      rotation: {x: -4.1174657e-20, y: -3.3881318e-21, z: -1.39505e-40, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+      transformModified: 1
+    - name: HEAD_CONTAINER
+      position: {x: -0.16768356, y: 0.06229271, z: 0.00000029067994}
+      rotation: {x: 0.70710725, y: -0.00000051700005, z: -0.70710635, w: -0.0000005170007}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Z_m_head_02
+      position: {x: 0.00000009689331, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 5.439261e-20, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Z_m_head_003
+      position: {x: 0.00000009689331, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 5.439261e-20, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Z_m_head_004
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 5.439261e-20, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Z_m_head_005
+      position: {x: 0.0000002906799, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 5.439261e-20, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 R Clavicle
+      position: {x: -0.3317789, y: 0.000114100956, z: -0.21894683}
+      rotation: {x: 0.6404204, y: 0.00025392688, z: 0.76802444, w: -0.00030668126}
+      scale: {x: 1.0000001, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 R UpperArm
+      position: {x: -0.10956235, y: 0, z: -0.00000009689331}
+      rotation: {x: -0.04992804, y: -0.06534749, z: -0.003397461, w: 0.99660695}
+      scale: {x: 1, y: 0.99999994, z: 1}
+      transformModified: 1
+    - name: Bip001 R Forearm
+      position: {x: -0.1928595, y: -0.000000012111664, z: 0.00000009689331}
+      rotation: {x: 0.0015808642, y: -0.015756428, z: 0.034968, w: 0.99926305}
+      scale: {x: 0.99999994, y: 1, z: 1}
+      transformModified: 1
+    - name: Bip001 R Hand
+      position: {x: -0.1380071, y: 0, z: 0.00000009689331}
+      rotation: {x: 0.70616627, y: -0.03329963, z: 0.02747406, w: 0.70672876}
+      scale: {x: 1, y: 0.99999994, z: 1}
+      transformModified: 1
+    - name: R_hand_container
+      position: {x: -0.073909394, y: 0.009959373, z: 0.092282094}
+      rotation: {x: 0.74032545, y: 0.023411764, z: -0.6707637, w: -0.03802957}
+      scale: {x: 0.99999994, y: 0.9999999, z: 1}
+      transformModified: 1
+    - name: Body_01_blackjacket
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+      transformModified: 1
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 3
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

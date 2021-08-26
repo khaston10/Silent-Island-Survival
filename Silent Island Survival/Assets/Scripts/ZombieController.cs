@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,12 +54,14 @@ public class ZombieController : MonoBehaviour
     Vector3 NextPosition = Vector3.zero;
     float zombieMovementSpeed = 1f;
 
+    private Animator anim;
     #endregion
 
 
     void Start()
     {
-        
+        // Get animator contoller from unit.
+        anim = GetComponentInChildren<Animator>();
     }
 
 
@@ -67,15 +70,41 @@ public class ZombieController : MonoBehaviour
         // The zombie will get switched to start Turn by the main controller scripts or the previous zombie on the current zombie list.
         if (startTurn)
         {
+            startTurn = false;
             target = AcquireTarget();
             CreateZombieMovementPath();
-            startTurn = false;
             zombieIsMoving = true;
         }
 
-        else if (zombieIsMoving)
+        else if (zombieIsMoving && !zombieIsAttacking)
         {
-            MoveZombie();
+            // Check to see if the zombie is already next to the target.
+            // If this is the case, then we want to skip straight to the attack.
+            // The best way to check this is to look at the distance between the startGridElm and the endGridElm
+
+            if (Vector3.Distance(startGridElement.transform.position, endGridElement.transform.position) <= 1)
+            {
+                zombieIsMoving = false;
+
+                // Check to see if the zombie still has an action point.
+                if (actionPoints > 0)
+                {
+                    // Reduce this zombie's action points by one.
+                    actionPoints -= 1;
+
+                    // Play the attack animation.
+                    ZombieAttack(target);
+
+                    print("Target is close");
+                }
+
+                else
+                {
+                    ActivateNextZombie();
+                }
+            }
+
+            else MoveZombie();
         }
     }
 
@@ -263,8 +292,9 @@ public class ZombieController : MonoBehaviour
         // If the ground title is not passable then the zombie will use action points to destroy it.
         // We should not have the case that the ground tile has a non destructable object on it, but if we do get that case the zombie will forfiet their turn.
 
-
+        
         NextPosition = new Vector3(tempPath01[nextPositionIndex].transform.position.x, 0f, tempPath01[nextPositionIndex].transform.position.z);
+
 
         if (this.transform.position == NextPosition)
         {
@@ -274,9 +304,13 @@ public class ZombieController : MonoBehaviour
             // Increment Index.
             nextPositionIndex++;
 
-            // Check to see if the next ground tile requires the unit to move on top of it.
+            // Play the walk animation.
+            PlayWalk();
+
+            // Check to see if there are still tiles left in the mapped tile list.
             if (nextPositionIndex < tempPath01.Count && zombieIsAttacking == false)
             {
+                // Check to see if the next ground tile requires the unit to move on top of it.
                 if (!ZombieInteractsWithNextGroundTileOnMove(this.gameObject, GameObject.Find("MainController").GetComponent<MainController>().LocateIndexOfGroundTile(Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.x), Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.z))))
                 {
                     zombieIsMoving = false;
@@ -294,10 +328,7 @@ public class ZombieController : MonoBehaviour
                     {
                         // The zombie will again create a path and move.
                         CreateZombieMovementPath();
-                        zombieIsMoving = true;
                     }
-
-                    else ActivateNextZombie();
                 }
             }
 
@@ -319,7 +350,6 @@ public class ZombieController : MonoBehaviour
                 {
                     // The zombie will again create a path and move.
                     CreateZombieMovementPath();
-                    //zombieIsMoving = true;
                 }
 
                 else ActivateNextZombie();
@@ -327,7 +357,11 @@ public class ZombieController : MonoBehaviour
 
         }
 
-        else if (zombieIsAttacking == false) this.transform.position = Vector3.MoveTowards(this.transform.position, NextPosition, zombieMovementSpeed * Time.deltaTime);
+        else if (zombieIsAttacking == false)
+        {
+            this.transform.LookAt(NextPosition);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, NextPosition, zombieMovementSpeed * Time.deltaTime);
+        }
     }
 
     public bool ZombieInteractsWithNextGroundTileOnMove(GameObject unit, int indexForTileArray)
@@ -336,20 +370,32 @@ public class ZombieController : MonoBehaviour
 
         // If the movement selected list is not empty that means we need to move the unit.
 
+        if (GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray] == null)
+        {
+            print("Null Ground Tile Found");
+            StartCoroutine(DumbWalkAnimation());
+            return false;
+        }
+
         // If the ground title is passable then we can move the unit on to it.
 
-        if (GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray].transform.GetComponent<GroundTileController>().terrainIsPassable)
+        else if (GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray].transform.GetComponent<GroundTileController>().terrainIsPassable)
         {
-            //unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
-            //unit.transform.SetParent(movementSelectedTiles[nextPositionIndex].transform.parent);
-            //unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = false;
+            // Set the old ground tile to passable.
+            unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
+
+
+            // Set the new ground tiles to be the parent.
+            unit.transform.SetParent(GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray].transform);
+
+            // Set the new ground tile to unpassable.
+            unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = false;
 
             return true;
         }
 
         else
         {
-
             // We need to handle the unit's interation with that object.
 
             var childCount = GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray].transform.transform.childCount;
@@ -377,8 +423,6 @@ public class ZombieController : MonoBehaviour
                 // If the ground title contains another player then nothing will happen.
             }
 
-
-
             return false;
         }
     }
@@ -389,13 +433,15 @@ public class ZombieController : MonoBehaviour
         zombieIsMoving = false;
         zombieIsAttacking = true;
 
+        // Have the zombie look at the target.
+        this.transform.LookAt(target.transform);
+
         if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
         {
             // Set the ground title to passable and destory the tree, or rock.
             target.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
 
-            Destroy(target);
-            zombieIsAttacking = false;
+            StartCoroutine(AttackUnitAnimation(target));
         }
 
         else if (target.transform.tag == "Unit")
@@ -427,7 +473,7 @@ public class ZombieController : MonoBehaviour
         Debug.Log("Play Take Damage Animation");
 
         // suspend execution the length of animations
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
         hitPoints -= damageAmount;
     }
@@ -437,25 +483,64 @@ public class ZombieController : MonoBehaviour
         Debug.Log("Play Die Animation");
 
         // suspend execution the length of animations
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
         //GameObject.Find("MainController").GetComponent<MainController>().RemoveDeceasedUnit(gameObject);
     }
 
     IEnumerator AttackUnitAnimation(GameObject target)
     {
+        if (target.transform.tag == "Unit")
+        {
+            anim.Play("Z_attack_A");
+        }
+
+        else if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
+        {
+            anim.Play("Z_attack_A");
+        }
         
 
-        Debug.Log("Play Attack Animation");
-
         // suspend execution the length of animations
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
-        // Call the take damage function on the unit script.
-        target.GetComponent<UnitController>().TakeDamage(attack);
+
+        if (target.transform.tag == "Unit")
+        {
+            // Call the take damage function on the unit script.
+            target.GetComponent<UnitController>().TakeDamage(attack);
+        }
+
+        else if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
+        {
+            Destroy(target);
+        }
+        
 
         // Set bools.
         zombieIsAttacking = false;
+        zombieIsMoving = true;
+    }
+
+    IEnumerator DumbWalkAnimation()
+    {
+        anim.Play("Z_dumb_walk_A");
+        zombieIsMoving = false;
+        zombieIsAttacking = true;
+
+        // suspend execution the length of animations
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
+
+        // Set bools.
+        zombieIsAttacking = false;
+        zombieIsMoving = false;
+        actionPoints = 0;
+        ActivateNextZombie();
+    }
+
+    public void PlayWalk()
+    {
+        anim.Play("Z_walk");
     }
 
     #endregion

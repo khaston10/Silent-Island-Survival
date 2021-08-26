@@ -25,6 +25,7 @@ public class UnitController : MonoBehaviour
     public float criticalHitPercentage = .1f; // This value will be between 0 - and 1.
     public int cropsAtHarvestMultiplier = 1; // This will be used for upgrades and will either have a value of 1 or 2.
     public int turnsUntilCropsMature = 5; // This will only be updated on farmers.
+    private Animator anim;
     #endregion
 
     void Start()
@@ -34,6 +35,10 @@ public class UnitController : MonoBehaviour
         else if (this.name == "Farmer Unit(Clone)") unitClass = Class.Farmer;
         else if (this.name == "Soldier Unit(Clone)") unitClass = Class.Soldier;
         else Debug.Log("Invalid Unit Type. No Class assigned.");
+
+        // Get animator contoller from unit.
+        anim = GetComponentInChildren<Animator>();
+
     }
 
 
@@ -62,24 +67,41 @@ public class UnitController : MonoBehaviour
 
     IEnumerator TakeDamageAnimation(int damageAmount)
     {
-        Debug.Log("Play Take Damage Animation");
+        anim.Play("m_fight_damage");
 
         // suspend execution the length of animations
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
         hitPoints -= damageAmount;
     }
 
     IEnumerator DieAnimation()
     {
-        Debug.Log("Play Die Animation");
+        anim.Play("m_death_A");
 
         // suspend execution the length of animations
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
-        GameObject.Find("MainController").GetComponent<MainController>().RemoveDeceasedUnit(gameObject);
+        //GameObject.Find("MainController").GetComponent<MainController>().RemoveDeceasedUnit(gameObject);
     }
 
+    public void PlayIdle()
+    {
+        // This function should only get called from the main contoller.
+        anim.Play("m_idle_A");
+    }
+
+    public void PlayRun()
+    {
+        // This function should only get called from the main contoller.
+        anim.Play("m_run");
+    }
+
+    public void PlayInteract()
+    {
+        // This function should only get called from the main contoller.
+        anim.Play("m_interact_A");
+    }
 
     #endregion
 

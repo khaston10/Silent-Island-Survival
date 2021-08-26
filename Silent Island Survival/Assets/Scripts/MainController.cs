@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditorInternal;
@@ -49,7 +50,7 @@ public class MainController : MonoBehaviour
     public GameObject zombiePrefab;
     public List<GameObject> zombiesInPlay = new List<GameObject>();
     public GameObject selectedZombie;
-    private int zombieCap = 2; // There can only be 3 zombies in game at one time.
+    private int zombieCap = 1; // There can only be 3 zombies in game at one time.
 
 
     #endregion
@@ -230,11 +231,17 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 1; // By default we select 0;
+    int selectedMapIndex = 0; // By default we select 0;
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
 
+
+    #endregion
+
+    #region Variables - FXs
+
+    public GameObject dirtSplatterFX;
 
     #endregion
 
@@ -319,7 +326,19 @@ public class MainController : MonoBehaviour
             {
                 if (movementSelectedTiles.Count > 0)
                 {
-                    if (UnitInteractsWithNextGroundTileOnMove(selectedUnit, 0)) unitIsMoving = true;
+                    if (UnitInteractsWithNextGroundTileOnMove(selectedUnit, 0))
+                    {
+                     
+                        unitIsMoving = true;
+                        PlayUnitRun(selectedUnit); // Play the run animation.
+
+                    }
+
+                    else
+                    {
+                        selectedUnit.transform.LookAt(movementSelectedTiles[0].transform.position);
+                        PlayUnitInteract(selectedUnit);
+                    }
                 }
                 
                 // Reset the player's abilty to select movements. 
@@ -589,19 +608,25 @@ public class MainController : MonoBehaviour
     {
         NextPosition = new Vector3(movementSelectedTiles[nextPositionIndex].transform.position.x, 0f, movementSelectedTiles[nextPositionIndex].transform.position.z);
 
+
         if (selectedUnit.transform.position == NextPosition)
         {
             // Increment Index.
             nextPositionIndex++;
+            PlayUnitRun(unit); //Play the run animation.
+
 
             // Check to see if the next ground tile requires the unit to move on top of it.
             if (nextPositionIndex < movementSelectedTiles.Count)
             {
                 if (!UnitInteractsWithNextGroundTileOnMove(selectedUnit, nextPositionIndex))
                 {
+                    selectedUnit.transform.LookAt(movementSelectedTiles[nextPositionIndex].transform.position);
+                    PlayUnitInteract(unit); // Play the interact with animation.
                     unitIsMoving = false;
 
                     nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
+
 
                     // Delete the old movement option titles if they exist.
                     for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
@@ -624,6 +649,8 @@ public class MainController : MonoBehaviour
             {
                 unitIsMoving = false;
 
+                PlayUnitIdle(unit); // Play the idle animation because unit has stopped.
+
                 nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
 
                 // Delete the old movement option titles if they exist.
@@ -643,7 +670,30 @@ public class MainController : MonoBehaviour
 
         }
 
-        else selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, NextPosition, unitMovementSpeed * Time.deltaTime);
+        else
+        {
+            selectedUnit.transform.LookAt(NextPosition);
+            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, NextPosition, unitMovementSpeed * Time.deltaTime);
+        }
+    }
+
+    public void PlayUnitIdle(GameObject unit)
+    {
+        // Call this function once when the unit needs to be set to idle.
+        unit.GetComponent<UnitController>().PlayIdle();
+    }
+
+    public void PlayUnitRun(GameObject unit)
+    {
+        // Call this function once when the unit needs to be set to run.
+        unit.GetComponent<UnitController>().PlayRun();
+        //m_interact_A
+    }
+
+    public void PlayUnitInteract(GameObject unit)
+    {
+        // Call this function once when the unit needs to be set to interact.
+        unit.GetComponent<UnitController>().PlayInteract();
     }
 
     #endregion
@@ -1535,10 +1585,14 @@ public class MainController : MonoBehaviour
         {
             if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
             {
+                
+
                 selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
                 wood += 1;
                 itemToHarvest.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
-                Destroy(itemToHarvest);
+
+                // Play splatter fx.
+                StartCoroutine(PlayDirtSplatterFX(itemToHarvest.transform.position, itemToHarvest));
             }
         }
 
@@ -1547,10 +1601,15 @@ public class MainController : MonoBehaviour
         {
             if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
             {
+                // Play splatter fx.
+                PlayDirtSplatterFX(itemToHarvest.transform.position);
+
                 selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
                 stone += 1;
                 itemToHarvest.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
-                Destroy(itemToHarvest);
+
+                // Play splatter fx.
+                StartCoroutine(PlayDirtSplatterFX(itemToHarvest.transform.position, itemToHarvest));
             }
         }
 
@@ -1580,15 +1639,14 @@ public class MainController : MonoBehaviour
         InteractWithStructurePanel.SetActive(true);
 
         // Use if statments to open the panel with the correct options displayed.
-        if (structureObject.transform.tag.ToString() == "Abandoned House" || structureObject.transform.tag.ToString() == "Abandoned Factory"
-            || structureObject.transform.tag.ToString() == "Abandoned Vehicle")
+        if (structureObject.transform.tag.ToString() == "Abandoned House" || structureObject.transform.tag.ToString() == "Abandoned Factory")
         {
             SetButtonToSeeThrough(false, scavangeButton);
             
         }
 
         // If the structure is a Loot Box we need to destory it.
-        else if (structureObject.transform.tag.ToString() == "Loot Box")
+        else if (structureObject.transform.tag.ToString() == "Loot Box" || structureObject.transform.tag.ToString() == "Abandoned Vehicle")
         {
             // Set the parent to passable.
             structureObject.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
@@ -1599,7 +1657,7 @@ public class MainController : MonoBehaviour
 
             // To destory loot box on scavenge we need to set it to the selected structure.
             selectedStructureForUse = structureObject;
-            
+
         }
 
         else if (structureObject.transform.tag.ToString() == "Farm Plot")
@@ -1678,6 +1736,13 @@ public class MainController : MonoBehaviour
             {
                 InteractWithStructureFeedbackText.text += "\nSurvivor Found!";
             }
+        }
+
+        // Destroy objects that should get destroyed.
+        else if(selectedStructureForUse.tag == "Loot Box" || selectedStructureForUse.tag == "Abandoned Vehicle")
+        {
+            // Play splatter fx.
+            StartCoroutine(PlayDirtSplatterFX(selectedStructureForUse.transform.position, selectedStructureForUse));
         }
         
     }
@@ -2626,6 +2691,26 @@ public class MainController : MonoBehaviour
         else skillsPointsToSpendImage.gameObject.SetActive(false);
     }
     #endregion
+
+    #endregion
+
+    #region FX Functions
+
+    public IEnumerator PlayDirtSplatterFX(Vector3 loc, GameObject objectToDestroy=null)
+    {
+        // Feed in location for the dirt splatter.
+        // The effect will play at the position and then hide itself.
+        dirtSplatterFX.transform.position = loc;
+        dirtSplatterFX.GetComponent<ParticleSystem>().Play();
+
+        yield return new WaitForSeconds(dirtSplatterFX.GetComponent<ParticleSystem>().duration);
+
+        // If an object needs to be destroyed after animation.
+        if (objectToDestroy != null)
+        {
+            Destroy(objectToDestroy);
+        }
+    }
 
     #endregion
 

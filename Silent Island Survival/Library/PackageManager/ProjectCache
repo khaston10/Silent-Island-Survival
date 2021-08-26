@@ -15,7 +15,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637607168823725766
+      ticks: 637653633703684679
     m_Hash: 2351046896
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
@@ -267,6 +267,7 @@ m_PackageAssets:
         - 2.0.7
         - 2.0.8
         - 2.0.9
+        - 2.0.11
         compatible:
         - 1.0.2
         - 1.0.3
@@ -282,7 +283,8 @@ m_PackageAssets:
         - 2.0.7
         - 2.0.8
         - 2.0.9
-        verified: 2.0.9
+        - 2.0.11
+        verified: 2.0.11
       dependencies: []
       resolvedDependencies: []
       keywords: []
@@ -426,11 +428,13 @@ m_PackageAssets:
         - 1.1.22
         - 1.1.24
         - 1.1.26
+        - 1.1.27
         compatible:
         - 1.1.22
         - 1.1.24
         - 1.1.26
-        verified: 1.1.26
+        - 1.1.27
+        verified: 1.1.27
       dependencies:
       - name: com.unity.ext.nunit
         version: 1.0.6
@@ -708,10 +712,12 @@ m_PackageAssets:
         - 1.5.2
         - 1.5.4
         - 1.5.5
+        - 1.5.6
         - 1.6.0-pre.1
         - 1.6.0-pre.3
         - 1.6.0-pre.4
         - 1.6.0-pre.5
+        - 1.6.1
         compatible:
         - 1.4.6
         - 1.4.7
@@ -728,10 +734,12 @@ m_PackageAssets:
         - 1.5.2
         - 1.5.4
         - 1.5.5
+        - 1.5.6
         - 1.6.0-pre.1
         - 1.6.0-pre.3
         - 1.6.0-pre.4
         - 1.6.0-pre.5
+        - 1.6.1
         verified: 1.4.8
       dependencies:
       - name: com.unity.modules.director
