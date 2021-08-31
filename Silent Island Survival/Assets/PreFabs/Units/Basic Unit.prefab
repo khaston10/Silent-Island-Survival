@@ -52,7 +52,7 @@ MonoBehaviour:
   hitPoints: 10
   hitPointLimit: 30
   attack: 2
-  attackRange: 1
+  attackRange: 5
   defense: 2
   sight: 5
   repairPoints: 10

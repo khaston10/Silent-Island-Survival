@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 878395266153571779}
   m_Layer: 0
   m_Name: Zombie Unit
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59,10 +59,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionPoints: 5
-  hitPoints: 100
+  hitPoints: 10
   attack: 3
   attackRange: 1
-  defense: 3
+  defense: 1
   target: {fileID: 0}
   zombiePath: []
   tempPath01: []

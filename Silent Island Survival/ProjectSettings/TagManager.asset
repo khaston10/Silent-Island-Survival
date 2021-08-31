@@ -20,6 +20,8 @@ TagManager:
   - Town Hall
   - Wall
   - Holding Factory
+  - Zombie
+  - AttackIndicator
   layers:
   - Default
   - TransparentFX

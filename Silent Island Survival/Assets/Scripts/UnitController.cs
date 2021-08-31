@@ -103,6 +103,20 @@ public class UnitController : MonoBehaviour
         anim.Play("m_interact_A");
     }
 
+    public void PlayAttack()
+    {
+        // This function should only get called from the main contoller.
+        anim.Play("m_fight_attack_A");
+        
+    }
+
+    public void PlayRangedAttack()
+    {
+        // This function should only get called from the main contoller.
+        anim.Play("m_pistol_draw");
+        
+    }
+
     #endregion
 
     #endregion

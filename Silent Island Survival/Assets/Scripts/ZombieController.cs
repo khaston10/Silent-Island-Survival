@@ -11,7 +11,8 @@ public class ZombieController : MonoBehaviour
     // So we do not need limits.
 
     public int actionPoints = 4;
-    public int hitPoints = 100;
+    public int hitPoints = 10;
+    public int hitPointLimit = 10;
     public int attack = 3;
     public int attackRange = 1;
     public int defense = 3;
@@ -23,8 +24,8 @@ public class ZombieController : MonoBehaviour
     private GameObject startGridElement;
     private GameObject endGridElement;
     public bool startTurn; // This bool will be switched to True when the main script activates the zombies turn.
+    private bool getNextPos; // Used when zombie needs next position to move.
     private bool zombieIsMoving; // This bool will help to move the zombie.
-    private bool zombieIsAttacking;
     public GameObject gridPrefab;
 
     // For testing purposes we are going to checnge the color of certain grid elements.
@@ -73,39 +74,23 @@ public class ZombieController : MonoBehaviour
             startTurn = false;
             target = AcquireTarget();
             CreateZombieMovementPath();
-            zombieIsMoving = true;
+            SetAllBoolsToFalse();
+            nextPositionIndex = 0;
+            getNextPos = true;
         }
 
-        else if (zombieIsMoving && !zombieIsAttacking)
+        else if (getNextPos)
         {
-            // Check to see if the zombie is already next to the target.
-            // If this is the case, then we want to skip straight to the attack.
-            // The best way to check this is to look at the distance between the startGridElm and the endGridElm
-
-            if (Vector3.Distance(startGridElement.transform.position, endGridElement.transform.position) <= 1)
-            {
-                zombieIsMoving = false;
-
-                // Check to see if the zombie still has an action point.
-                if (actionPoints > 0)
-                {
-                    // Reduce this zombie's action points by one.
-                    actionPoints -= 1;
-
-                    // Play the attack animation.
-                    ZombieAttack(target);
-
-                    print("Target is close");
-                }
-
-                else
-                {
-                    ActivateNextZombie();
-                }
-            }
-
-            else MoveZombie();
+            // Update the next position index.
+            nextPositionIndex += 1;
+            GetNextPosition();
         }
+
+        else if (zombieIsMoving)
+        {
+            MoveZombie();
+        }
+
     }
 
     #region Functions
@@ -286,82 +271,58 @@ public class ZombieController : MonoBehaviour
     #endregion
 
     public void MoveZombie()
-    {
-        // The ground tile placed into this function must be adjacent to the zombie's current position.
-        // If the ground title is passable then the zombie will move on top of it.
-        // If the ground title is not passable then the zombie will use action points to destroy it.
-        // We should not have the case that the ground tile has a non destructable object on it, but if we do get that case the zombie will forfiet their turn.
-
-        
-        NextPosition = new Vector3(tempPath01[nextPositionIndex].transform.position.x, 0f, tempPath01[nextPositionIndex].transform.position.z);
-
-
-        if (this.transform.position == NextPosition)
+    { 
+        // Check to see if the zombie has reached the position.
+        if (Vector3.Distance(this.transform.position, NextPosition) < .1)
         {
-            // Reduce this zombie's action points by one.
-            actionPoints -= 1;
-
-            // Increment Index.
-            nextPositionIndex++;
-
-            // Play the walk animation.
-            PlayWalk();
-
-            // Check to see if there are still tiles left in the mapped tile list.
-            if (nextPositionIndex < tempPath01.Count && zombieIsAttacking == false)
-            {
-                // Check to see if the next ground tile requires the unit to move on top of it.
-                if (!ZombieInteractsWithNextGroundTileOnMove(this.gameObject, GameObject.Find("MainController").GetComponent<MainController>().LocateIndexOfGroundTile(Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.x), Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.z))))
-                {
-                    zombieIsMoving = false;
-
-                    nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
-
-                    // Delete the old movement option titles if they exist.
-                    for (int listIndex = 0; listIndex < tempPath01.Count; listIndex++)
-                    {
-                        GameObject.Destroy(tempPath01[listIndex]);
-                    }
-                    tempPath01.Clear();
-
-                    if (actionPoints > 0)
-                    {
-                        // The zombie will again create a path and move.
-                        CreateZombieMovementPath();
-                    }
-                }
-            }
-
-            // If the list has no more elements.
-            else if (nextPositionIndex >= tempPath01.Count)
-            {
-                zombieIsMoving = false;
-
-                nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
-
-                // Delete the old movement option titles if they exist.
-                for (int listIndex = 0; listIndex < tempPath01.Count; listIndex++)
-                {
-                    GameObject.Destroy(tempPath01[listIndex]);
-                }
-                tempPath01.Clear();
-
-                if (actionPoints > 0)
-                {
-                    // The zombie will again create a path and move.
-                    CreateZombieMovementPath();
-                }
-
-                else ActivateNextZombie();
-            }
-
+            SetAllBoolsToFalse();
+            getNextPos = true;
         }
-
-        else if (zombieIsAttacking == false)
+        else
         {
             this.transform.LookAt(NextPosition);
             this.transform.position = Vector3.MoveTowards(this.transform.position, NextPosition, zombieMovementSpeed * Time.deltaTime);
         }
+        
+    }
+
+    public void GetNextPosition()
+    {
+        // This function will take the next element of the zombie movement path
+        // and use the ZombieInteract with ground tile to decide if the zombie should
+        // 1. Move on top of the tile,
+        // 2. Attack the tile,
+        // 3. or end the turn because the path is impossible to complete. EX: Void, building.
+
+        // Be setting all bools to false we ensure the code does not loop back to here.
+        SetAllBoolsToFalse();
+
+        // First we need to check if there are still movement elements left in this list.
+        if (nextPositionIndex < tempPath01.Count && actionPoints > 1)
+        {
+            // Reduce action point by 1.
+            actionPoints -= 1;
+
+            NextPosition = new Vector3(tempPath01[nextPositionIndex].transform.position.x, 0f, tempPath01[nextPositionIndex].transform.position.z);
+
+            // 1. Move on top of the tile.
+            if (ZombieInteractsWithNextGroundTileOnMove(this.gameObject, GameObject.Find("MainController").GetComponent<MainController>().LocateIndexOfGroundTile(Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.x), Mathf.RoundToInt(tempPath01[nextPositionIndex].transform.position.z))))
+            {
+                PlayWalk();
+                zombieIsMoving = true;
+            }
+
+            // These cases are handled by the Zombie Interacte with Ground Tile.
+            //2.Attack the tile,
+            // 3. or end the turn because the path is impossible to complete. EX: Void, building.
+        }
+
+        // Else we need to activate the next zombie.
+        else
+        {
+            ActivateNextZombie();
+        }
+           
     }
 
     public bool ZombieInteractsWithNextGroundTileOnMove(GameObject unit, int indexForTileArray)
@@ -372,7 +333,6 @@ public class ZombieController : MonoBehaviour
 
         if (GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray] == null)
         {
-            print("Null Ground Tile Found");
             StartCoroutine(DumbWalkAnimation());
             return false;
         }
@@ -405,22 +365,23 @@ public class ZombieController : MonoBehaviour
                 var childTag = child.tag;
 
                 // If the ground tile contains a tree or rock we will harvest.
-                if (childTag == "Tree" || childTag == "Rock") ZombieAttack(child.transform.gameObject);
+                if (childTag == "Tree" || childTag == "Rock" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Wall")
+                {
+                    ZombieAttack(child.transform.gameObject);
+                }
+                    
 
 
                 // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
                 else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
-                    || childTag == "Abandoned Vehicle" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Living Quarters"
-                    || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall")
+                    || childTag == "Abandoned Vehicle" || childTag == "Living Quarters" || childTag == "Medical Facility" || childTag == "Town Hall")
                 {
-                    return false;
+                    StartCoroutine(DumbWalkAnimation());
                 }
 
                 // If the ground title contains a unit we will have the player attack.
                 else if (childTag == "Unit") ZombieAttack(child.transform.gameObject);
 
-
-                // If the ground title contains another player then nothing will happen.
             }
 
             return false;
@@ -429,17 +390,28 @@ public class ZombieController : MonoBehaviour
 
     public void ZombieAttack(GameObject target)
     {
-        // Set zombie is moving bool to false, so we do not have multiple attacks at the same time.
-        zombieIsMoving = false;
-        zombieIsAttacking = true;
-
         // Have the zombie look at the target.
         this.transform.LookAt(target.transform);
 
-        if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
+        if (target.transform.tag == "Rock" || target.transform.tag == "Tree" || target.transform.tag == "Loot Box" )
         {
             // Set the ground title to passable and destory the tree, or rock.
             target.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
+
+            StartCoroutine(AttackUnitAnimation(target));
+        }
+
+        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall")
+        {
+            // Check the health of the object. We only need to destory it if the health is lower than the zombie attack.
+            if (target.GetComponent<StructureContoller>().hitPoints < attack)
+            {
+                // Set the ground title to passable and destory the tree, or rock.
+                target.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
+            }
+
+            // Reduce the hit points of the object.
+            target.GetComponent<StructureContoller>().hitPoints -= attack;
 
             StartCoroutine(AttackUnitAnimation(target));
         }
@@ -451,8 +423,15 @@ public class ZombieController : MonoBehaviour
 
     }
 
+    public void ZombieTakeDamge(int damageAmount)
+    {
+        StartCoroutine(TakeDamageAnimation(damageAmount));
+    }
+
     public void ActivateNextZombie()
     {
+        SetAllBoolsToFalse();
+
         int currentZombieIndex = GameObject.Find("MainController").GetComponent<MainController>().zombiesInPlay.IndexOf(gameObject);
 
         if (currentZombieIndex < GameObject.Find("MainController").GetComponent<MainController>().zombiesInPlay.Count - 1)
@@ -466,16 +445,36 @@ public class ZombieController : MonoBehaviour
         else GameObject.Find("MainController").GetComponent<MainController>().UpdateTurn();
     }
 
+    public void SetAllBoolsToFalse()
+    {
+        // There are lots of times we need to set all the rest of the bools to false
+        // Then turn one back on. This function can help clean up the code.
+        startTurn = false;
+        getNextPos = false;
+        zombieIsMoving = false;
+    }
+
     #region Coroutines For Animations
 
     IEnumerator TakeDamageAnimation(int damageAmount)
     {
-        Debug.Log("Play Take Damage Animation");
+        if ((damageAmount - defense) > hitPoints)
+        {
+            // Play the death animation.
+            anim.Play("Z_dead_A");
+        }
+
+        else
+        {
+            // Play the damage animation.
+            anim.Play("Z_damage");
+        }
+        
 
         // suspend execution the length of animations
         yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
-        hitPoints -= damageAmount;
+        hitPoints -= (damageAmount - defense);
     }
 
     IEnumerator DieAnimation()
@@ -490,12 +489,13 @@ public class ZombieController : MonoBehaviour
 
     IEnumerator AttackUnitAnimation(GameObject target)
     {
+
         if (target.transform.tag == "Unit")
         {
             anim.Play("Z_attack_A");
         }
 
-        else if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
+        else
         {
             anim.Play("Z_attack_A");
         }
@@ -511,29 +511,35 @@ public class ZombieController : MonoBehaviour
             target.GetComponent<UnitController>().TakeDamage(attack);
         }
 
-        else if (target.transform.tag == "Rock" || target.transform.tag == "Tree")
+        else if (target.transform.tag == "Rock" || target.transform.tag == "Tree" || target.transform.tag == "Loot Box")
         {
             Destroy(target);
         }
-        
+
+        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall")
+        {
+            // Check the hit points of the object and destroy it if it is below 0.
+            if (target.GetComponent<StructureContoller>().hitPoints <= 0)
+            {
+                //Destroy(target);
+            }
+        }
+
 
         // Set bools.
-        zombieIsAttacking = false;
-        zombieIsMoving = true;
+        startTurn = true;
+
     }
 
     IEnumerator DumbWalkAnimation()
+
     {
         anim.Play("Z_dumb_walk_A");
-        zombieIsMoving = false;
-        zombieIsAttacking = true;
 
         // suspend execution the length of animations
         yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
 
         // Set bools.
-        zombieIsAttacking = false;
-        zombieIsMoving = false;
         actionPoints = 0;
         ActivateNextZombie();
     }

@@ -17,8 +17,8 @@ public class MainController : MonoBehaviour
     int food = 10;
     int population = 1;
     int populationCap = 5;
-    int wood = 0;
-    int stone = 0;
+    int wood = 10;
+    int stone = 10;
     bool playersTurn = true; // This will help to take the inputs away when it is not the player's turn.
 
     #region Variables - Units
@@ -34,6 +34,7 @@ public class MainController : MonoBehaviour
     public List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     bool movementSelectionCanContinue = true; // When a player ends the selection on an object that is not passable then the selection abilty must be disabled.
     public bool unitIsMoving = false; // When the unit is moving we do not want the player to input any controls.
+    public bool unitIsAttacking = false; // When the unit is attacking, this should be set to true.
     public GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
     #endregion
 
@@ -44,13 +45,23 @@ public class MainController : MonoBehaviour
     int nextPositionIndex = 0;
     Vector3 NextPosition = Vector3.zero;
 
+    // Used during attacking mode.
+    public GameObject attackingImage;
+    int attackRange;
+    int xPositionOfUnit;
+    int zPositionOfUnit;
+    public GameObject attackIndicatorPrefab;
+    public List<GameObject> attackIndicators;
+    public GameObject attackFeedbackPanel;
+    public Text attackFeedbackText;
+
     #endregion
 
     #region Variables - Zombies
     public GameObject zombiePrefab;
     public List<GameObject> zombiesInPlay = new List<GameObject>();
     public GameObject selectedZombie;
-    private int zombieCap = 1; // There can only be 3 zombies in game at one time.
+    private int zombieCap = 5; // There can only be 3 zombies in game at one time.
 
 
     #endregion
@@ -67,6 +78,7 @@ public class MainController : MonoBehaviour
     string[] acceptableUnitTags = new string[] { "Unit" };
     public GameObject selector;
     #region Variables - Movement 
+    int actionPointAvailable;
     float camTranslateSpeed = 5f;
     float camZoomSpeed = 2f;
     float camBottomBounds = 2f;
@@ -216,6 +228,14 @@ public class MainController : MonoBehaviour
 
     #endregion
 
+    #region Panel - ZombieStatsPanel
+    public GameObject zombieStatsPanel;
+    public Text zombieTitleText;
+    public Text zombieDescriptionText;
+    public Slider zombieHitPointsSlider;
+
+    #endregion
+
     #endregion
 
     #region Variables - Terrain Generation
@@ -231,7 +251,7 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 0; // By default we select 0;
+    int selectedMapIndex = 3; // By default we select 0;
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
@@ -242,6 +262,7 @@ public class MainController : MonoBehaviour
     #region Variables - FXs
 
     public GameObject dirtSplatterFX;
+    public GameObject APAnimationObject;
 
     #endregion
 
@@ -282,6 +303,19 @@ public class MainController : MonoBehaviour
             if (unitIsMoving)
             {
                 MoveUnit(selectedUnit);
+            }
+
+            else if (unitIsAttacking)
+            {
+                // If the player clicks on any object.
+                if (Input.GetMouseButtonDown(0))
+                {
+                    ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        UpdateGameWithMouseClickDuringAttack();
+                    }
+                }
             }
 
             // If a structure is being built we need to run this function.
@@ -376,7 +410,7 @@ public class MainController : MonoBehaviour
             mainCam.transform.Translate(new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.UpArrow) && mainCam.transform.position.y < camTopBound)
+        if (Input.GetKey(KeyCode.UpArrow) && !structureIsBeingBuilt && mainCam.transform.position.y < camTopBound)
         {
             mainCam.transform.Translate(Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
         }
@@ -418,9 +452,11 @@ public class MainController : MonoBehaviour
             if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
             else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
             else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.Rotate(new Vector3(0f, 45f, 0f));
             else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
         }
+
+        
     }
 
     public void UpdateCamPositionOnUnitSelection()
@@ -460,8 +496,20 @@ public class MainController : MonoBehaviour
             else if (hit.collider.tag.ToString() == "Unit")
             {
                 selectedUnit = hit.collider.transform.gameObject;
+
+                // Set the available action points so the mapping function will work.
+                actionPointAvailable = selectedUnit.GetComponent<UnitController>().actionPoints;
+
                 OpenIndividualUnitPanel(hit.transform.gameObject);
                 PlaceMovementOptionTiles(hit.transform.gameObject);
+            }
+
+
+            // If the player has selected a zombie.
+            else if (hit.collider.tag.ToString() == "Zombie")
+            {
+                // Open the zombie stats panel.
+                OpenZombieStatsPanel(hit.collider.gameObject);
             }
 
             else
@@ -499,8 +547,39 @@ public class MainController : MonoBehaviour
 
         }
     }
-    
-    private bool IsPointerOverUIObject()
+
+    public void UpdateGameWithMouseClickDuringAttack()
+    {
+        if (!IsPointerOverUIObject())
+        {
+            // If the player has selected a zombie.
+            if (hit.collider.tag.ToString() == "Zombie")
+            {
+                UnitAttack(hit.collider.gameObject);
+            }
+
+            else
+            {
+                // If the player has selected a ground tile we need to check if it has any children.
+                // If it does we need to open the appropriate menu.
+
+                var childCount = hit.transform.childCount;
+                for (var i = 0; i < childCount; i++)
+                {
+                    var child = hit.transform.GetChild(i);
+                    var childTag = child.tag;
+
+                    // Case 1 - The ground tile has a Tree, Rock, Zombie or Structures on it.
+                    // In this case we want to open the structure panel and highlight the ground tile.
+                    if (childTag == "Zombie")
+                    {
+                        UnitAttack(child.gameObject);
+                    }
+                }
+            }
+        }
+    }
+        private bool IsPointerOverUIObject()
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -1351,7 +1430,7 @@ public class MainController : MonoBehaviour
         if (movementSelectedTiles.Count > 0 && hit.transform.position.x == selector.transform.position.x && hit.transform.position.z == selector.transform.position.z)
         {
             // Give back the units action points.
-            selectedUnit.GetComponent<UnitController>().actionPoints += movementSelectedTiles.Count;
+            actionPointAvailable += movementSelectedTiles.Count;
 
             // Delete the old movement option titles if they exist.
             for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
@@ -1410,9 +1489,9 @@ public class MainController : MonoBehaviour
             // d.  Check to see if the player has the action points and update them.
             if (hit.transform.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
             {
-                if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+                if (actionPointAvailable > 0)
                 {
-                    selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
+                    actionPointAvailable -= 1;
                 }
 
                 else return;
@@ -1476,9 +1555,9 @@ public class MainController : MonoBehaviour
             // d.  Check to see if the player has the action points and update them.
             if (hit.transform.parent.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
             {
-                if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
+                if (actionPointAvailable > 0)
                 {
-                    selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
+                    actionPointAvailable -= 1;
                 }
 
                 else return;
@@ -1516,6 +1595,8 @@ public class MainController : MonoBehaviour
             unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
             unit.transform.SetParent(movementSelectedTiles[nextPositionIndex].transform.parent);
             unit.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = false;
+
+            SpendActionPoint(1, movementSelectedTiles[indexForTileArray].transform.position);
 
             return true;
         }
@@ -1585,9 +1666,9 @@ public class MainController : MonoBehaviour
         {
             if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
             {
-                
+                // Reduce action points.
+                SpendActionPoint(1, itemToHarvest.transform.position);
 
-                selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
                 wood += 1;
                 itemToHarvest.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
 
@@ -1601,10 +1682,12 @@ public class MainController : MonoBehaviour
         {
             if (selectedUnit.GetComponent<UnitController>().actionPoints >= 1)
             {
+                // Reduce action points.
+                SpendActionPoint(1, itemToHarvest.transform.position);
+
                 // Play splatter fx.
                 PlayDirtSplatterFX(itemToHarvest.transform.position);
 
-                selectedUnit.GetComponent<UnitController>().actionPoints -= 1;
                 stone += 1;
                 itemToHarvest.transform.parent.GetComponent<GroundTileController>().terrainIsPassable = true;
 
@@ -1615,6 +1698,26 @@ public class MainController : MonoBehaviour
 
         // If this item is not harvestable.
         else Debug.Log("Can not harvest this item.");
+    }
+
+    public bool SpendActionPoint(int numberOfPointsToSpend, Vector3 loc)
+    {
+        // Returns true if the unit has the action points to spend.
+
+        if (selectedUnit.GetComponent<UnitController>().actionPoints >= numberOfPointsToSpend)
+        {
+            // Reduce action points.
+            selectedUnit.GetComponent<UnitController>().actionPoints -= numberOfPointsToSpend;
+
+            // Play animation.
+            StartCoroutine(PlaySpendActionPoint(loc));
+
+            return true;
+        }
+
+        else return false;
+        
+        
     }
     #endregion
 
@@ -1720,6 +1823,9 @@ public class MainController : MonoBehaviour
 
     public void ClickScavange()
     {
+        // Reduce the action points.
+        SpendActionPoint(1, selectedUnit.transform.position);
+
         // This can get more complicated but for now we will just randomly award food.
         var amtOfFoodToSavanged = UnityEngine.Random.Range(1, 5);
         food += amtOfFoodToSavanged;
@@ -1730,7 +1836,7 @@ public class MainController : MonoBehaviour
         foodText.text = food.ToString();
 
         // And if the structure is a house or factory there is a chance we can get another survivor.
-        if(selectedStructureForUse.tag == "Abandoned House" || selectedStructureForUse.tag == "Abandoned Factory")
+        if (selectedStructureForUse.tag == "Abandoned House" || selectedStructureForUse.tag == "Abandoned Factory")
         {
             if (UnityEngine.Random.Range(0, 10) < 9 && unitsInPlay.Count < populationCap) DiscoverSurvivorOnScavenge();
             {
@@ -1739,11 +1845,13 @@ public class MainController : MonoBehaviour
         }
 
         // Destroy objects that should get destroyed.
-        else if(selectedStructureForUse.tag == "Loot Box" || selectedStructureForUse.tag == "Abandoned Vehicle")
+        else if (selectedStructureForUse.tag == "Loot Box" || selectedStructureForUse.tag == "Abandoned Vehicle")
         {
             // Play splatter fx.
             StartCoroutine(PlayDirtSplatterFX(selectedStructureForUse.transform.position, selectedStructureForUse));
         }
+        
+
         
     }
 
@@ -2692,7 +2800,186 @@ public class MainController : MonoBehaviour
     }
     #endregion
 
+    #region Zombie Stats Panel Functions
+
+    public void CloseZombieStatsPanel()
+    {
+        zombieStatsPanel.SetActive(false);
+    }
+
+    public void OpenZombieStatsPanel(GameObject zombie)
+    {
+        // Set the hit point slider.
+        zombieHitPointsSlider.value = ((float)(zombie.GetComponent<ZombieController>().hitPoints) / (float) zombie.GetComponent<ZombieController>().hitPointLimit);
+
+        // Set the zombie type.
+        zombieTitleText.text = "Basic Zombie";
+
+        // Set the description.
+        zombieDescriptionText.text = "Stinky Zombie.";
+
+        // Open the panel.
+        zombieStatsPanel.SetActive(true);
+    }
+
     #endregion
+
+    #region Attack Functions
+
+    public void ToggleAttackMode()
+    {
+        if (!unitIsAttacking)
+        {
+            // Check to see if the player has action points.
+            if (selectedUnit.GetComponent<UnitController>().actionPoints > 0)
+            {
+                unitIsMoving = false;
+                unitIsAttacking = true;
+
+                // Set the image to active.
+                attackingImage.SetActive(true);
+
+                // Create and show the attack indicators.
+                ShowZombiesInRangeOfAttack();
+            }
+
+            // If no action points then we provide the player feedback.
+            else
+            {
+                attackFeedbackText.text = "No Action Points Left.";
+                attackFeedbackPanel.SetActive(true);
+            }
+            
+        }
+
+        else
+        {
+            unitIsAttacking = false;
+
+            // Detlete old attack indicators.
+            DeleteZombieAttackIndicators();
+
+            // Set the image to inactive.
+            attackingImage.SetActive(false);
+        }
+    }
+
+    public void ShowZombiesInRangeOfAttack()
+    {
+        // Check every tile in attack range of unit and if
+        // there is a zombie on the tile we will add an attack indicator.
+        attackRange = selectedUnit.GetComponent<UnitController>().attackRange;
+        xPositionOfUnit = Mathf.RoundToInt(selectedUnit.transform.position.x);
+        zPositionOfUnit = Mathf.RoundToInt(selectedUnit.transform.position.z);
+
+        for (int row = -attackRange; row <= attackRange; row++)
+        {
+            for (int col = -attackRange; col <= attackRange; col++)
+            {
+                // Check to see if the absolute value of row + col < attack range.
+                // This means the tile is in range.
+                if ((Math.Abs(row) + Math.Abs(col)) < attackRange)
+                {
+                    
+                    // Check to see if ground tile is in bounds.
+                    if (LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col) >= 0 && LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col) < groundTiles.Count())
+                    {
+                        // Check to see if the ground tile exists.
+                        if (groundTiles[LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col)] != null)
+                        {
+                            // Check to see if a zombie is on the tile.
+                            for (int childIndex = 0; childIndex < groundTiles[LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col)].transform.childCount; childIndex++)
+                            {
+                                if (groundTiles[LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col)].transform.GetChild(childIndex).tag == "Zombie")
+                                {
+                                    // Place an attack indicator.
+                                    var tempIndicator = Instantiate(attackIndicatorPrefab);
+
+                                    tempIndicator.transform.position = groundTiles[LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col)].transform.position;
+                                    tempIndicator.transform.Translate(Vector3.up);
+
+                                    // Set the indicator as a child on the zombie.
+                                    tempIndicator.transform.SetParent(groundTiles[LocateIndexOfGroundTile(xPositionOfUnit + row, zPositionOfUnit + col)].transform.GetChild(childIndex).transform);
+
+                                    attackIndicators.Add(tempIndicator);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void DeleteZombieAttackIndicators()
+    {
+        for (int i = 0; i < attackIndicators.Count; i++)
+        {
+            Destroy(attackIndicators[i]);
+        }
+
+        attackIndicators.Clear();
+    }
+
+    public bool UnitAttack(GameObject zombie)
+    {
+        // Check to see if the zombie has an attack indicator.
+        for (int childIndex = 0; childIndex < zombie.transform.childCount; childIndex++)
+        {
+            if (zombie.transform.GetChild(childIndex).transform.tag.ToString() == "AttackIndicator")
+            {
+                // Spend action points.
+                SpendActionPoint(1, selectedUnit.transform.position);
+
+                // Start the Attack.
+                StartCoroutine(PlayUnitAttack(zombie));
+
+                // Toggle Attack Mode.
+                ToggleAttackMode();
+
+                return true;
+            }
+        }
+
+        ShowAttackFeedbackPanel("Zombie is out of range.");
+        return false;
+    }
+
+    public void ShowAttackFeedbackPanel(string feedback)
+    {
+        attackFeedbackText.text = feedback;
+        attackFeedbackPanel.SetActive(true);
+    }
+
+    public IEnumerator PlayUnitAttack(GameObject zombie)
+    {
+        // Face the unit towards the target.
+        selectedUnit.transform.LookAt(zombie.transform);
+
+        // Play the ranged attack animation if the unit is far away from the target.
+        if (Vector3.Distance(selectedUnit.transform.position, zombie.transform.position) > 1.5)
+        {
+            selectedUnit.GetComponent<UnitController>().PlayRangedAttack();
+        }
+
+        // Play the close attack animation if the unit is close to the target.
+        else
+        {
+            selectedUnit.GetComponent<UnitController>().PlayAttack();
+        }
+        
+
+        yield return new WaitForSeconds(1);
+
+        zombie.GetComponent<ZombieController>().ZombieTakeDamge(selectedUnit.GetComponent<UnitController>().attack);
+
+        
+    }
+
+    #endregion
+
+    #endregion
+
 
     #region FX Functions
 
@@ -2710,6 +2997,21 @@ public class MainController : MonoBehaviour
         {
             Destroy(objectToDestroy);
         }
+    }
+
+    public IEnumerator PlaySpendActionPoint(Vector3 loc)
+    {
+        // Create a game object from prefab.
+        var tempAPAnimation = Instantiate(APAnimationObject);
+
+        // Get animation object to the correct location.
+        tempAPAnimation.transform.position = loc;
+
+
+        yield return new WaitForSeconds(.8f);
+
+        // Destory the temp object.
+        Destroy(tempAPAnimation);
     }
 
     #endregion
