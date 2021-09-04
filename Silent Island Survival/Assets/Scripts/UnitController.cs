@@ -54,6 +54,7 @@ public class UnitController : MonoBehaviour
         // Decided if the unit will die from damage.
         if (damageAmount >= hitPoints)
         {
+            hitPoints = 0;
             StartCoroutine(DieAnimation());
         }
 

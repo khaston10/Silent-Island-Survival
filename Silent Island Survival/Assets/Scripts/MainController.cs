@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -62,6 +63,15 @@ public class MainController : MonoBehaviour
     public List<GameObject> zombiesInPlay = new List<GameObject>();
     public GameObject selectedZombie;
     private int zombieCap = 5; // There can only be 3 zombies in game at one time.
+
+
+    #endregion
+
+    #region Variables - Update
+
+    public bool UpdatingAP = false; // This helps with the update phase of the game.
+    public bool UpdatingHP = false; // This helps with the update phase of the game.
+    int unitIndexForUpdate = 0;
 
 
     #endregion
@@ -198,7 +208,7 @@ public class MainController : MonoBehaviour
     GameObject selectedStructureForUse;
 
     // To keep track of structures at update, we need a list to hold them.
-    List<GameObject> currentStructuresInGame = new List<GameObject>();
+    public List<GameObject> currentStructuresInGame = new List<GameObject>();
 
     public Button ToggleBuildPanel;
     public GameObject BuildPanel;
@@ -251,7 +261,7 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 3; // By default we select 0;
+    int selectedMapIndex = 1; // By default we select 0. 3 = Clear Map for testing.
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
@@ -263,6 +273,9 @@ public class MainController : MonoBehaviour
 
     public GameObject dirtSplatterFX;
     public GameObject APAnimationObject;
+    public GameObject HPAnimationObject;
+    private int rewardActionPoints = 0;
+    private int rewardHitPoints = 0;
 
     #endregion
 
@@ -380,6 +393,72 @@ public class MainController : MonoBehaviour
                 CloseIndividualUnitPanel();
             }
         }
+
+        else if (UpdatingAP)
+        {
+            // Update units at the end of the round.
+            // Cycle through the list of units and update them.
+            if (unitIndexForUpdate < unitsInPlay.Count)
+            {
+                // Place the camera on the unit to be updated.
+                UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
+                // Action Points.
+                if (unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPoints < unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPointsLimit)
+                {
+                    UpdatingAP = false;
+                    StartCoroutine("PlayEarnActionPoint", unitsInPlay[unitIndexForUpdate]);
+                }
+
+                else
+                {
+                    unitIndexForUpdate += 1;
+                }
+            }
+
+            else
+            {
+                // The next update we need to do is hit points.
+                UpdatingAP = false;
+                UpdatingHP = true;
+
+                // Reset index.
+                unitIndexForUpdate = 0;
+
+            }
+        }
+
+        else if (UpdatingHP)
+        {
+            // Update units at the end of the round.
+            // Cycle through the list of units and update them.
+            if (unitIndexForUpdate < unitsInPlay.Count)
+            {
+                // Place the camera on the unit to be updated.
+                UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
+                // Hit Points.
+                if (unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPoints < unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().hitPointLimit)
+                {
+                    UpdatingHP = false;
+                    StartCoroutine("PlayEarnHitPoints", unitsInPlay[unitIndexForUpdate]);
+                }
+
+                else
+                {
+                    unitIndexForUpdate += 1;
+                }
+            }
+
+            else
+            {
+                // End Update and Start Player Turn, we also need to set the player's turn bool to true to allow player input.
+                playersTurn = true;
+                UpdatingAP = false;
+                UpdatingHP = false;
+                PlayerTurn();
+            }
+        }
     }
 
     #region Functions
@@ -439,7 +518,7 @@ public class MainController : MonoBehaviour
             else selectedUnit = unitsInPlay[0];
 
             // and update the camera.
-            UpdateCamPositionOnUnitSelection();
+            UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
 
             // Set text to match unit's attributes.
             unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
@@ -459,17 +538,17 @@ public class MainController : MonoBehaviour
         
     }
 
-    public void UpdateCamPositionOnUnitSelection()
+    public void UpdateCamPositionOnUnitSelection(Vector3 position)
     {
         // This function position the camera on the selected unit.
         // It is used when the player selects a unit with the TAB key, the camera will move and rotate.
         
-        mainCam.transform.position = new Vector3(selectedUnit.transform.position.x, 5f, selectedUnit.transform.position.z - 4);
+        mainCam.transform.position = new Vector3(position.x, 5f, position.z - 4);
         mainCam.transform.rotation = Quaternion.Euler(45f, 0f, 0);
 
         // Move the selector tile to the position.
         // We need to move the selector object to the tile's position.
-        selector.transform.position = selectedUnit.transform.position;
+        selector.transform.position = position;
         selector.transform.position += new Vector3(0f, .1f, 0f);
 
 
@@ -579,7 +658,8 @@ public class MainController : MonoBehaviour
             }
         }
     }
-        private bool IsPointerOverUIObject()
+
+    private bool IsPointerOverUIObject()
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -629,7 +709,7 @@ public class MainController : MonoBehaviour
             }
         }
 
-        UpdateCamPositionOnUnitSelection();
+        UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
 
     }
 
@@ -872,33 +952,68 @@ public class MainController : MonoBehaviour
     public void UpdateTurn()
     {
         // Update the time of day and sunlight.
-        UpdateTimeOfDay();
-        UpdateLightSource();
+        //UpdateTimeOfDay(); TO DO
+        //UpdateLightSource(); To DO
 
         // Update Text Objects.
         UpdateAllText();
 
+        // Remove dead zombies.
+        for (int indexOfZombie = 0; indexOfZombie < zombiesInPlay.Count; indexOfZombie++)
+        {
+            // Check to see if they are dead.
+            if (zombiesInPlay[indexOfZombie].GetComponent<ZombieController>().hitPoints <= 0)
+            {
+                var temp = zombiesInPlay[indexOfZombie];
+
+                // Remove them from the list.
+                zombiesInPlay.Remove(temp);
+
+                // Destroy the zombie.
+                Destroy(temp);
+            }
+        }
+
+        // Remove dead units.
+        for (int indexOfUnit = 0; indexOfUnit < unitsInPlay.Count; indexOfUnit++)
+        {
+            // Check to see if they are dead.
+            if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().hitPoints <= 0)
+            {
+                var temp = unitsInPlay[indexOfUnit];
+
+                // Remove them from the list.
+                unitsInPlay.Remove(temp);
+
+                // Destroy the Unit.
+                Destroy(temp);
+            }
+        }
+
+        // Check to see if all the units have been killed.
+        if (unitsInPlay.Count == 0) print("All units have been killed. Game Over.");
+
         // Update structures.
         UpdateStructuresAtEndOfRound();
 
-        // Update Unit attributes.
-        UpdateUnitsAtEndOfRound();
+        // Set the unit index to zero.
+        unitIndexForUpdate = 0;
 
-        // Update skills points.
-        UpdateSkillPointsAtEndOfRound();
-
-        if(zombiesInPlay.Count < zombieCap)
+        // For now we will create 1 zombie at the update unit the cap is reached.
+        if (zombiesInPlay.Count < zombieCap)
         {
-            CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the update.
+            CreateZombieAtRandomLocation(); 
         }
-        
 
         // Update Current Zombies in Play.
         UpdateZombiesAtEndOfRound();
 
-        // End Update and Start Player Turn, we also need to set the player's turn bool to true to allow player input.
-        playersTurn = true;
-        PlayerTurn();
+        // Set the bool to true so the update starts.
+        UpdatingAP = true;
+
+        // Update skills points.
+        UpdateSkillPointsAtEndOfRound();
+        
     }
 
     public void UpdateTimeOfDay()
@@ -924,16 +1039,6 @@ public class MainController : MonoBehaviour
 
         // Then decrease in intensity from 4 pm until 12 am.
         else if (currentHour >= 16 && currentHour <= 23) mainLightSourceSun.intensity -= .1f;
-    }
-
-    public void UpdateUnitsAtEndOfRound() 
-    {
-        // Cycle through the list of units and award points.
-        for (int count = 0; count < unitsInPlay.Count; count++)
-        {
-            if (unitsInPlay[count].GetComponent<UnitController>().actionPoints < unitsInPlay[count].GetComponent<UnitController>().actionPointsLimit)
-                unitsInPlay[count].GetComponent<UnitController>().actionPoints += 1;
-        }
     }
 
     public void UpdateStructuresAtEndOfRound()
@@ -1008,6 +1113,48 @@ public class MainController : MonoBehaviour
         {
             zombiesInPlay[indexOfZombie].GetComponent<ZombieController>().actionPoints = 5;
         }
+    }
+
+    public int ActionPointsRewardFromLivingQuarters(GameObject unit)
+    {
+        for (int structureIndex = 0; structureIndex < currentStructuresInGame.Count; structureIndex++)
+        {
+            // Check to see if the structure is a Living Quaters.
+            if (currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().structureType == "Living Quarters")
+            {
+                // Check the distance versus the actionPointHealRange attribute.
+                if (Vector3.Distance(unit.transform.position, currentStructuresInGame[structureIndex].transform.position) < currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().actionPointHealRange)
+                {
+                    return currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().amountOfActionPointsHealed;
+                }
+            }
+
+            
+        }
+
+        return 0;
+
+    }
+
+    public int HitPointsRewardFromMedical(GameObject unit)
+    {
+        for (int structureIndex = 0; structureIndex < currentStructuresInGame.Count; structureIndex++)
+        {
+            // Check to see if the structure is a Medical Facility.
+            if (currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().structureType == "Medical Facility")
+            {
+                // Check the distance versus the actionPointHealRange attribute.
+                if (Vector3.Distance(unit.transform.position, currentStructuresInGame[structureIndex].transform.position) < currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().hitPointHealRange)
+                {
+                    return currentStructuresInGame[structureIndex].GetComponent<StructureContoller>().amountOfHitPointsHealed;
+                }
+            }
+
+
+        }
+
+        return 0;
+
     }
     #endregion
 
@@ -3012,6 +3159,80 @@ public class MainController : MonoBehaviour
 
         // Destory the temp object.
         Destroy(tempAPAnimation);
+    }
+
+    public IEnumerator PlayEarnActionPoint(GameObject unit)
+    {
+        // This function is to be called from the update loop only.
+
+        // Set the amount of action points to reward.
+        rewardActionPoints = 1;
+        rewardActionPoints += ActionPointsRewardFromLivingQuarters(unit);
+
+        while (rewardActionPoints > 0)
+        {
+            // Create a game object from prefab.
+            var tempAPAnimation = Instantiate(APAnimationObject);
+
+            // Get animation object to the correct location.
+            tempAPAnimation.transform.position = unit.transform.position;
+
+            // Add an action point.
+            unit.GetComponent<UnitController>().actionPoints += 1;
+
+            // Play the correct animation.
+            tempAPAnimation.GetComponent<Animator>().Play("EarnAP");
+
+            yield return new WaitForSeconds(.8f);
+
+            // Destory the temp object.
+            Destroy(tempAPAnimation);
+
+            //Decrement action points.
+            rewardActionPoints -= 1;
+
+        }
+
+        // These help the update loop continue to function.
+        unitIndexForUpdate += 1;
+        UpdatingAP = true;
+    }
+
+    public IEnumerator PlayEarnHitPoints(GameObject unit)
+    {
+        // This function is to be called from the update loop only.
+
+        // Set the amount of action points to reward.
+        rewardHitPoints = HitPointsRewardFromMedical(unit);
+        
+
+        while (rewardHitPoints >= 5)
+        {
+            // Create a game object from prefab.
+            var tempHPAnimation = Instantiate(HPAnimationObject);
+
+            // Get animation object to the correct location.
+            tempHPAnimation.transform.position = unit.transform.position;
+
+            // Add an action point.
+            unit.GetComponent<UnitController>().hitPoints += 5;
+
+            // Play the correct animation.
+            tempHPAnimation.GetComponent<Animator>().Play("EarnHP");
+
+            yield return new WaitForSeconds(.8f);
+
+            // Destory the temp object.
+            Destroy(tempHPAnimation);
+
+            //Decrement action points.
+            rewardHitPoints -= 5;
+
+        }
+
+        // These help the update loop continue to function.
+        unitIndexForUpdate += 1;
+        UpdatingHP = true;
     }
 
     #endregion

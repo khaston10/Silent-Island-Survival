@@ -1837,7 +1837,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6e5e6cad126028748a620f3803388a9f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fb03f108ac05a5240870b6299a9aae6a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2062,6 +2062,8 @@ MonoBehaviour:
   zombiePrefab: {fileID: 1237046989571852138, guid: b171facb35d37a747ba0049528164cf0, type: 3}
   zombiesInPlay: []
   selectedZombie: {fileID: 0}
+  UpdatingAP: 0
+  UpdatingHP: 0
   mainCam: {fileID: 963194227}
   mainLightSourceSun: {fileID: 705507994}
   selector: {fileID: 1916051183}
@@ -2123,6 +2125,7 @@ MonoBehaviour:
   medicalFacilitySelector: {fileID: 555215954}
   wallSelector: {fileID: 745030255}
   townHallSelector: {fileID: 1987473436}
+  currentStructuresInGame: []
   ToggleBuildPanel: {fileID: 757112506}
   BuildPanel: {fileID: 1998230834}
   createFarmPlotButton: {fileID: 1896731854}
@@ -2187,6 +2190,7 @@ MonoBehaviour:
   TerrainBase: {fileID: 1483794356}
   dirtSplatterFX: {fileID: 911619315}
   APAnimationObject: {fileID: 6502957358566107021, guid: 1bacb502e495c254384c69fe3a42f92c, type: 3}
+  HPAnimationObject: {fileID: 3177399234520933345, guid: 19ea6453c6b33134ea38bc71396edea5, type: 3}
 --- !u!4 &270517806
 Transform:
   m_ObjectHideFlags: 0

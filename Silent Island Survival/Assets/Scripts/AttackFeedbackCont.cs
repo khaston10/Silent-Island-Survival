@@ -19,8 +19,14 @@ public class AttackFeedbackCont : MonoBehaviour
     {
         if (VisibilityTimer > timeVisible)
         {
+            timeVisible = 3;
+            VisibilityTimer = 0;
             this.gameObject.SetActive(false);
         }
-        else VisibilityTimer += Time.deltaTime;
+        else
+        {
+            VisibilityTimer += Time.deltaTime;
+        }
+            
     }
 }

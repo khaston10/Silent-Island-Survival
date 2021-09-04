@@ -365,16 +365,14 @@ public class ZombieController : MonoBehaviour
                 var childTag = child.tag;
 
                 // If the ground tile contains a tree or rock we will harvest.
-                if (childTag == "Tree" || childTag == "Rock" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Wall")
+                if (childTag == "Tree" || childTag == "Rock" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Wall" || childTag == "Living Quarters" || childTag == "Medical Facility" || childTag == "Town Hall")
                 {
                     ZombieAttack(child.transform.gameObject);
                 }
-                    
-
 
                 // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
                 else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
-                    || childTag == "Abandoned Vehicle" || childTag == "Living Quarters" || childTag == "Medical Facility" || childTag == "Town Hall")
+                    || childTag == "Abandoned Vehicle" || childTag == "Holding Factory" || childTag == "Zombie")
                 {
                     StartCoroutine(DumbWalkAnimation());
                 }
@@ -401,7 +399,7 @@ public class ZombieController : MonoBehaviour
             StartCoroutine(AttackUnitAnimation(target));
         }
 
-        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall")
+        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall" || target.transform.tag == "Living Quarters" || target.transform.tag == "Medical Facility" || target.transform.tag == "Town Hall")
         {
             // Check the health of the object. We only need to destory it if the health is lower than the zombie attack.
             if (target.GetComponent<StructureContoller>().hitPoints < attack)
@@ -516,12 +514,16 @@ public class ZombieController : MonoBehaviour
             Destroy(target);
         }
 
-        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall")
+        else if (target.transform.tag == "Farm Plot" || target.transform.tag == "Wall" || target.transform.tag == "Living Quarters" || target.transform.tag == "Medical Facility" || target.transform.tag == "Town Hall")
         {
             // Check the hit points of the object and destroy it if it is below 0.
             if (target.GetComponent<StructureContoller>().hitPoints <= 0)
             {
-                //Destroy(target);
+                // Remove the target from the list of structures.
+                GameObject.Find("MainController").GetComponent<MainController>().currentStructuresInGame.Remove(target);
+
+                // Destory Game Object.
+                Destroy(target);
             }
         }
 

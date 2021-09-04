@@ -26,13 +26,13 @@ public class StructureContoller : MonoBehaviour
 
     #region Variables for Living Quarters
     // Living Quarters heal action points for units in range.
-    int amountOfActionPointsHealed = 3;
+    public int amountOfActionPointsHealed = 3;
     public int actionPointHealRange = 3;
     #endregion
 
     #region Variables for Medical Facilities
     // Medical Facilities heal hit points for units in range.
-    int amountOfHitPointsHealed = 10;
+    public int amountOfHitPointsHealed = 10; // This value should come in multiplies or 5.
     public int hitPointHealRange = 2;
     #endregion
 
