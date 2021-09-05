@@ -22,6 +22,7 @@ TagManager:
   - Holding Factory
   - Zombie
   - AttackIndicator
+  - Trap
   layers:
   - Default
   - TransparentFX

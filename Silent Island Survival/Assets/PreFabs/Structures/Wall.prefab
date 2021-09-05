@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   structureObjects:
-  - {fileID: 1241308165467671372, guid: 7aac8919a7b13874ea08a1e9756e820c, type: 3}
-  - {fileID: 6837449819349144091, guid: c6a5dd86694aa7e4fa1a9d6a3c022995, type: 3}
-  - {fileID: 4762054602892566636, guid: fad0d4ef56a08cd42bb0a6650dc6b784, type: 3}
+  - {fileID: 2428538063436336419, guid: 4eb580712b9f64c468220eadebfd81d8, type: 3}
+  - {fileID: 182835862953956262, guid: 4569c9af872253b47962b307853cd61f, type: 3}
+  - {fileID: 629077128039679916, guid: f278713013b72884399cd05d51d1e838, type: 3}
   structureType: Wall
   hitPoints: 10
   hitPointLimit: 10

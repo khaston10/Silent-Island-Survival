@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class StructureContoller : MonoBehaviour
@@ -30,10 +31,27 @@ public class StructureContoller : MonoBehaviour
     public int actionPointHealRange = 3;
     #endregion
 
+    #region Variables for Wall
+
+    // The wall's position can be fine adjusted by the user when creating, so we need two variables;
+    // These values will always be between -.4 and .4 and will be updated by the main script when the wall is created.
+    float wallOffsetX;
+    float wallOffsetZ;
+    Quaternion wallRot;
+
+    #endregion
+
     #region Variables for Medical Facilities
     // Medical Facilities heal hit points for units in range.
     public int amountOfHitPointsHealed = 10; // This value should come in multiplies or 5.
     public int hitPointHealRange = 2;
+    #endregion
+
+    #region Variables for Traps
+
+    private string[] PlayAnimationNames = { "Trap01Attack", "Trap02Attack"};
+    public int[] trapDamge = { 3, 5, 10 };
+
     #endregion
 
     // Start is called before the first frame update
@@ -41,6 +59,21 @@ public class StructureContoller : MonoBehaviour
     {
         // Create the most basic structure be instantiating the first object on the list.
         var temp = Instantiate(structureObjects[0], this.transform.position, this.transform.rotation);
+
+        // If the structure is a wall we need to fine adjust the wall prefab's position.
+        if (structureType == "Wall")
+        {
+            // Set the wall offsets from the main script.
+            wallOffsetX = GameObject.Find("MainController").GetComponent<MainController>().wallOffsetX;
+            wallOffsetZ = GameObject.Find("MainController").GetComponent<MainController>().wallOffsetZ;
+            wallRot = GameObject.Find("MainController").GetComponent<MainController>().wallOnWallSelector.transform.rotation;
+
+            temp.transform.position = new Vector3(this.transform.position.x + wallOffsetX, 0f, this.transform.position.z + wallOffsetZ);
+
+            // Update the rotation.
+            temp.transform.rotation = wallRot;
+        }
+
         temp.transform.SetParent(this.transform);
 
         // Set radius of effect for Living Quarters and Medical Facilities.
@@ -49,6 +82,14 @@ public class StructureContoller : MonoBehaviour
             // Update the radius of effect.
             this.transform.GetChild(0).transform.localScale = Vector3.one * actionPointHealRange * .3f;
         }
+
+        // If the structure is a trap we need to get the animator.
+        
+        if (structureType == "Trap")
+        {
+            PlayTrapAnim();
+        }
+        
 
     }
 
@@ -110,10 +151,14 @@ public class StructureContoller : MonoBehaviour
             var temp = Instantiate(structureObjects[currentStructureLevel + 1], this.transform.position, this.transform.rotation);
             temp.transform.SetParent(this.transform);
 
+            // If the structure is a wall we will need to set the wall's location more precisely.
+            temp.transform.position = new Vector3(this.transform.position.x + wallOffsetX, 0f, this.transform.position.z + wallOffsetZ);
+
+            // Update the rotation.
+            temp.transform.rotation = wallRot;
+
             // Increment the current structure level.
             currentStructureLevel += 1;
-
-            
 
             return true;
         }
@@ -209,6 +254,30 @@ public class StructureContoller : MonoBehaviour
 
             else unit.transform.GetComponent<UnitController>().hitPoints = unit.transform.GetComponent<UnitController>().hitPointLimit;
         }
+    }
+
+    public void PlayTrapAnim()
+    {
+        StartCoroutine(PlayTrapAnimation());
+    }
+
+    public IEnumerator PlayTrapAnimation()
+    {
+        if (currentStructureLevel < 2)
+        {
+            var anim = GetComponentInChildren<Animator>();
+            anim.Play(PlayAnimationNames[currentStructureLevel]);
+        }
+
+        else
+        {
+            GetComponentInChildren<ParticleSystem>().Play();
+        }
+        
+
+        yield return new WaitForSeconds(1);
+
+
     }
     #endregion
 }

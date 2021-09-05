@@ -71,6 +71,7 @@ public class MainController : MonoBehaviour
 
     public bool UpdatingAP = false; // This helps with the update phase of the game.
     public bool UpdatingHP = false; // This helps with the update phase of the game.
+    public bool UpdatingFood = false; // This helps with the update phase of the game.
     int unitIndexForUpdate = 0;
 
 
@@ -83,7 +84,7 @@ public class MainController : MonoBehaviour
     Ray ray;
     RaycastHit hit;
     string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
-    string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Town Hall" };
+    string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Wall Angled", "Town Hall", "Trap" };
     string[] acceptableGroundTilesTags = new string[] { "GroundTile", "Holding Factory"};
     string[] acceptableUnitTags = new string[] { "Unit" };
     public GameObject selector;
@@ -138,7 +139,8 @@ public class MainController : MonoBehaviour
         ["Abandoned Factory"] = "Any unit can scavenge supplies from here. Beware of zombies!",
         ["Abandoned Vehicle"] = "Vehicle is too destroyed to functions, but supplies can still be scavenged.",
         ["Loot Box"] = "Any unit can scavenge loot from here.",
-        ["Trash"] = "This item is of no use to you."
+        ["Trash"] = "This item is of no use to you.",
+        ["Trap"] = "This is a trap."
     };
 
     #endregion
@@ -175,6 +177,7 @@ public class MainController : MonoBehaviour
     public GameObject medicalFacilityPrefab;
     public GameObject wallPrefab;
     public GameObject townHallPrefab;
+    public GameObject trapPrefab;
 
     #endregion
 
@@ -202,7 +205,9 @@ public class MainController : MonoBehaviour
     public GameObject livingQuartersSelector;
     public GameObject medicalFacilitySelector;
     public GameObject wallSelector;
+    public GameObject wallOnWallSelector; // Used to move the individual wall within the selector.
     public GameObject townHallSelector;
+    public GameObject trapSelector;
 
     // This variable was created to keep track of the gameObject the player is trying to call methods from.
     GameObject selectedStructureForUse;
@@ -217,6 +222,10 @@ public class MainController : MonoBehaviour
     public Button createMedicalTentButton;
     public Button createFenceButton;
     public Button createTownHallButton;
+
+    // Used for placing walls;
+    public float wallOffsetX = 0;
+    public float wallOffsetZ = 0;
 
     #endregion
 
@@ -261,12 +270,12 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 1; // By default we select 0. 3 = Clear Map for testing.
+    int selectedMapIndex = 3; // By default we select 0. 3 = Clear Map for testing.
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
 
-
+    public GameObject waterPlanePrefab;
     #endregion
 
     #region Variables - FXs
@@ -274,6 +283,8 @@ public class MainController : MonoBehaviour
     public GameObject dirtSplatterFX;
     public GameObject APAnimationObject;
     public GameObject HPAnimationObject;
+    public GameObject FeedAnimationObject;
+    public GameObject StarveAnimationObject;
     private int rewardActionPoints = 0;
     private int rewardHitPoints = 0;
 
@@ -284,6 +295,7 @@ public class MainController : MonoBehaviour
 
         #region Terrain Generation
         LoadGroundTitlesFromMap();
+        PlaceWaterPlane();
         #endregion
 
         #region Text Object Updates
@@ -400,12 +412,12 @@ public class MainController : MonoBehaviour
             // Cycle through the list of units and update them.
             if (unitIndexForUpdate < unitsInPlay.Count)
             {
-                // Place the camera on the unit to be updated.
-                UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
-
                 // Action Points.
                 if (unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPoints < unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPointsLimit)
                 {
+                    // Place the camera on the unit to be updated.
+                    UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
                     UpdatingAP = false;
                     StartCoroutine("PlayEarnActionPoint", unitsInPlay[unitIndexForUpdate]);
                 }
@@ -434,12 +446,12 @@ public class MainController : MonoBehaviour
             // Cycle through the list of units and update them.
             if (unitIndexForUpdate < unitsInPlay.Count)
             {
-                // Place the camera on the unit to be updated.
-                UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
-
                 // Hit Points.
-                if (unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().actionPoints < unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().hitPointLimit)
+                if (unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().hitPoints < unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().hitPointLimit)
                 {
+                    // Place the camera on the unit to be updated.
+                    UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
                     UpdatingHP = false;
                     StartCoroutine("PlayEarnHitPoints", unitsInPlay[unitIndexForUpdate]);
                 }
@@ -452,10 +464,66 @@ public class MainController : MonoBehaviour
 
             else
             {
+                // Once through we need to reset the index and start the feed phase.
+                unitIndexForUpdate = 0;
+                UpdatingAP = false;
+                UpdatingHP = false;
+                UpdatingFood = true;
+            }
+        }
+
+        else if (UpdatingFood)
+        {
+            // Update units at the end of the round.
+            // Cycle through the list of units and update them.
+            if (unitIndexForUpdate < unitsInPlay.Count)
+            {
+                // Hit Points.
+                if (food > 0)
+                {
+                    // Place the camera on the unit to be updated.
+                    UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
+                    UpdatingFood = false;
+                    StartCoroutine("PlayFeedUnit", unitsInPlay[unitIndexForUpdate]);
+                }
+
+                else
+                {
+                    // Place the camera on the unit to be updated.
+                    UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
+
+                    UpdatingFood = false;
+                    StartCoroutine("PlayStarveUnit", unitsInPlay[unitIndexForUpdate]);
+                }
+            }
+
+            else
+            {
+                // Remove dead units.
+                for (int indexOfUnit = 0; indexOfUnit < unitsInPlay.Count; indexOfUnit++)
+                {
+                    // Check to see if they are dead.
+                    if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().hitPoints <= 0)
+                    {
+                        var temp = unitsInPlay[indexOfUnit];
+
+                        // Reset the ground tile to passable.
+                        temp.GetComponentInParent<GroundTileController>().terrainIsPassable = true;
+
+                        // Remove them from the list.
+                        unitsInPlay.Remove(temp);
+
+                        // Destroy the Unit.
+                        Destroy(temp);
+                    }
+                }
+
                 // End Update and Start Player Turn, we also need to set the player's turn bool to true to allow player input.
                 playersTurn = true;
                 UpdatingAP = false;
                 UpdatingHP = false;
+                UpdatingFood = false;
                 PlayerTurn();
             }
         }
@@ -479,12 +547,12 @@ public class MainController : MonoBehaviour
             mainCam.transform.Translate(-new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        if ((Input.GetKey(KeyCode.LeftArrow ) || Input.GetKey(KeyCode.A)) && !structureIsBeingBuilt)
         {
             mainCam.transform.Translate(-new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && !structureIsBeingBuilt)
         {
             mainCam.transform.Translate(new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
         }
@@ -494,7 +562,7 @@ public class MainController : MonoBehaviour
             mainCam.transform.Translate(Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
         }
 
-        if (Input.GetKey(KeyCode.DownArrow) && mainCam.transform.position.y > camBottomBounds)
+        if (Input.GetKey(KeyCode.DownArrow) && !structureIsBeingBuilt && mainCam.transform.position.y > camBottomBounds)
         {
             mainCam.transform.Translate(-Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
         }
@@ -531,11 +599,47 @@ public class MainController : MonoBehaviour
             if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
             else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
             else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.Rotate(new Vector3(0f, 45f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Wall") wallOnWallSelector.transform.Rotate(new Vector3(0f, 45f, 0f));
             else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            else if (currentStructureSelectedToBuild.name == "Trap") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
         }
 
-        
+        if (Input.GetKeyDown(KeyCode.UpArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+        {
+            if (wallOffsetZ < .4f)
+            {
+                wallOffsetZ += .1f;
+                wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+        {
+            if (wallOffsetZ > -.4f)
+            {
+                wallOffsetZ -= .1f;
+                wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+        {
+            if (wallOffsetX < .4f)
+            {
+                wallOffsetX += .1f;
+                wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+        {
+            if (wallOffsetX > -.4f)
+            {
+                wallOffsetX -= .1f;
+                wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
+            }
+        }
+
     }
 
     public void UpdateCamPositionOnUnitSelection(Vector3 position)
@@ -955,6 +1059,25 @@ public class MainController : MonoBehaviour
         //UpdateTimeOfDay(); TO DO
         //UpdateLightSource(); To DO
 
+        // Remove dead units.
+        for (int indexOfUnit = 0; indexOfUnit < unitsInPlay.Count; indexOfUnit++)
+        {
+            // Check to see if they are dead.
+            if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().hitPoints <= 0)
+            {
+                var temp = unitsInPlay[indexOfUnit];
+
+                // Reset the ground tile to passable.
+                temp.GetComponentInParent<GroundTileController>().terrainIsPassable = true;
+
+                // Remove them from the list.
+                unitsInPlay.Remove(temp);
+
+                // Destroy the Unit.
+                Destroy(temp);
+            }
+        }
+
         // Update Text Objects.
         UpdateAllText();
 
@@ -966,6 +1089,9 @@ public class MainController : MonoBehaviour
             {
                 var temp = zombiesInPlay[indexOfZombie];
 
+                // Reset the ground tile to passable.
+                temp.GetComponentInParent<GroundTileController>().terrainIsPassable = true;
+
                 // Remove them from the list.
                 zombiesInPlay.Remove(temp);
 
@@ -974,21 +1100,7 @@ public class MainController : MonoBehaviour
             }
         }
 
-        // Remove dead units.
-        for (int indexOfUnit = 0; indexOfUnit < unitsInPlay.Count; indexOfUnit++)
-        {
-            // Check to see if they are dead.
-            if (unitsInPlay[indexOfUnit].GetComponent<UnitController>().hitPoints <= 0)
-            {
-                var temp = unitsInPlay[indexOfUnit];
-
-                // Remove them from the list.
-                unitsInPlay.Remove(temp);
-
-                // Destroy the Unit.
-                Destroy(temp);
-            }
-        }
+        
 
         // Check to see if all the units have been killed.
         if (unitsInPlay.Count == 0) print("All units have been killed. Game Over.");
@@ -1160,6 +1272,17 @@ public class MainController : MonoBehaviour
 
 
     #region Terrain Generation Functions
+
+    public void PlaceWaterPlane()
+    {
+        var water = Instantiate(waterPlanePrefab);
+        water.transform.position = new Vector3((WorldSize / 2), -1f, (WorldSize / 2));
+
+        // Scale the plane.
+        // The plane will need to be scaled up by 1 for every 100 in world size.
+        var scaleFactor = Math.Round(WorldSize / 100d, 0) * 1;
+        water.transform.localScale = new Vector3(1 + (float)scaleFactor, 1f, 1 + (float)scaleFactor);
+    }
 
     public void LoadGroundTitlesFromMap()
     {
@@ -1430,6 +1553,25 @@ public class MainController : MonoBehaviour
     {
         // Make this button disappear.
         EndOfDayTurnButton.gameObject.SetActive(false);
+
+        // Remove dead zombies.
+        for (int indexOfZombie = 0; indexOfZombie < zombiesInPlay.Count; indexOfZombie++)
+        {
+            // Check to see if they are dead.
+            if (zombiesInPlay[indexOfZombie].GetComponent<ZombieController>().hitPoints <= 0)
+            {
+                var temp = zombiesInPlay[indexOfZombie];
+
+                // Reset the ground tile to passable.
+                temp.GetComponentInParent<GroundTileController>().terrainIsPassable = true;
+
+                // Remove them from the list.
+                zombiesInPlay.Remove(temp);
+
+                // Destroy the zombie.
+                Destroy(temp);
+            }
+        }
 
         // Start the zombie's turn.
         ZombieTurn();
@@ -1787,7 +1929,7 @@ public class MainController : MonoBehaviour
                 // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
                 else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
                     || childTag == "Abandoned Vehicle" || childTag == "Loot Box" || childTag == "Farm Plot" || childTag == "Living Quarters"
-                    || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall")
+                    || childTag == "Medical Facility" || childTag == "Wall" || childTag == "Town Hall" || childTag == "Trap")
                     {
                     selectedStructureForUse = child.transform.gameObject;
                     OpenInteractWithStructurePanel(child.transform.gameObject);
@@ -1929,7 +2071,7 @@ public class MainController : MonoBehaviour
 
         else if (structureObject.transform.tag.ToString() == "Farm Plot" || structureObject.transform.tag.ToString() == "Living Quarters"
             || structureObject.transform.tag.ToString() == "Medical Facility" || structureObject.transform.tag.ToString() == "Wall" 
-            || structureObject.transform.tag.ToString() == "Town Hall")
+            || structureObject.transform.tag.ToString() == "Town Hall" || structureObject.transform.tag.ToString() == "Trap")
         {
             SetButtonToSeeThrough(false, repairButton);
             SetButtonToSeeThrough(false, upgradeButton);
@@ -2326,6 +2468,15 @@ public class MainController : MonoBehaviour
             requiredMatsText.text = requiredMaterialString;
         }
 
+        else if (nameOfStructure == "Trap")
+        {
+            var requiredMaterialString = "Wood: " + trapPrefab.GetComponent<StructureContoller>().woodToBuild[0].ToString() +
+                " Stone: " + trapPrefab.GetComponent<StructureContoller>().stoneToBuild[0].ToString() + " Food: " +
+                trapPrefab.GetComponent<StructureContoller>().foodToBuild[0].ToString();
+
+            requiredMatsText.text = requiredMaterialString;
+        }
+
         else Debug.Log("String put into HoverStructureToBuildEnter is not valid");
 
     }
@@ -2343,6 +2494,7 @@ public class MainController : MonoBehaviour
         else if (nameOfStructure == "Medical Facility") return medicalFacilityPrefab;
         else if (nameOfStructure == "Wall") return wallPrefab;
         else if (nameOfStructure == "Town Hall") return townHallPrefab;
+        else if (nameOfStructure == "Trap") return trapPrefab;
         else return null;
     }
 
@@ -2477,6 +2629,7 @@ public class MainController : MonoBehaviour
         else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.position = hit.transform.position;
         else if (currentStructureSelectedToBuild.name == "Wall") wallSelector.transform.position = hit.transform.position;
         else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.position = hit.transform.position;
+        else if (currentStructureSelectedToBuild.name == "Trap") trapSelector.transform.position = hit.transform.position;
         else Debug.Log("UpdateStructureSelector has bad input.");
     }
 
@@ -2500,6 +2653,7 @@ public class MainController : MonoBehaviour
         medicalFacilitySelector.transform.position = hideLocation;
         wallSelector.transform.position = hideLocation;
         townHallSelector.transform.position = hideLocation;
+        trapSelector.transform.position = hideLocation;
     }
 
     public void OpenStructureStatsPanel(GameObject structure)
@@ -2511,9 +2665,23 @@ public class MainController : MonoBehaviour
         SelectedStructureTitleText.text = structure.GetComponentInParent<StructureContoller>().structureType;
         SelectedStructureCurrentLevelText.text = (structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1).ToString();
         SelectedStructureMaxLevelText.text = structure.GetComponentInParent<StructureContoller>().structureObjects.Length.ToString();
-        RequiredWoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().woodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
-        RequiredStoneForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().stoneToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
-        RequiredFoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().foodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+
+        // Check to see if the structure can still be upgraded.
+        if (structure.GetComponentInParent<StructureContoller>().currentStructureLevel == 2)
+        {
+            RequiredWoodForUpgradeText.text = "NA";
+            RequiredStoneForUpgradeText.text = "NA";
+            RequiredFoodForUpgradeText.text = "NA";
+
+        }
+
+        else
+        {
+            RequiredWoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().woodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+            RequiredStoneForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().stoneToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+            RequiredFoodForUpgradeText.text = structure.GetComponentInParent<StructureContoller>().foodToBuild[structure.GetComponentInParent<StructureContoller>().currentStructureLevel + 1].ToString();
+        }
+        
         structureHitPointsSlider.value =  ((float) structure.GetComponentInParent<StructureContoller>().hitPoints / (float) structure.GetComponentInParent<StructureContoller>().hitPointLimit);
         Debug.Log((structure.GetComponentInParent<StructureContoller>().hitPoints / structure.GetComponentInParent<StructureContoller>().hitPointLimit));
 
@@ -3233,6 +3401,58 @@ public class MainController : MonoBehaviour
         // These help the update loop continue to function.
         unitIndexForUpdate += 1;
         UpdatingHP = true;
+    }
+
+    public IEnumerator PlayFeedUnit(GameObject unit)
+    {
+        // This function is to be called from the update loop only.
+      
+        // Create a game object from prefab.
+        var tempFeedAnimation = Instantiate(FeedAnimationObject);
+
+        // Get animation object to the correct location.
+        tempFeedAnimation.transform.position = unit.transform.position;
+
+        // Reduce Food.
+        food -= 1; ;
+
+        // Play the correct animation.
+        tempFeedAnimation.GetComponent<Animator>().Play("Eat");
+
+        yield return new WaitForSeconds(.8f);
+
+        // Destory the temp object.
+        Destroy(tempFeedAnimation);
+
+        // These help the update loop continue to function.
+        unitIndexForUpdate += 1;
+        UpdatingFood = true;
+    }
+
+    public IEnumerator PlayStarveUnit(GameObject unit)
+    {
+        // This function is to be called from the update loop only.
+
+        // Create a game object from prefab.
+        var tempStarveAnimation = Instantiate(StarveAnimationObject);
+
+        // Get animation object to the correct location.
+        tempStarveAnimation.transform.position = unit.transform.position;
+
+        // Play the correct animation.
+        tempStarveAnimation.GetComponent<Animator>().Play("Starve");
+
+        yield return new WaitForSeconds(.8f);
+
+        // Reduce unit health.
+        unit.GetComponent<UnitController>().TakeDamage(1);
+
+        // Destory the temp object.
+        Destroy(tempStarveAnimation);
+
+        // These help the update loop continue to function.
+        unitIndexForUpdate += 1;
+        UpdatingFood = true;
     }
 
     #endregion

@@ -354,6 +354,13 @@ public class ZombieController : MonoBehaviour
             return true;
         }
 
+        // Check to see if the tile has a factory on it.
+        else if (GameObject.Find("MainController").GetComponent<MainController>().groundTiles[indexForTileArray].transform.tag == "Holding Factory")
+        {
+            StartCoroutine(DumbWalkAnimation());
+            return false;
+        }
+
         else
         {
             // We need to handle the unit's interation with that object.
@@ -370,11 +377,20 @@ public class ZombieController : MonoBehaviour
                     ZombieAttack(child.transform.gameObject);
                 }
 
+                
+
                 // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
                 else if (childTag == "Abandoned House" || childTag == "Abandoned Factory"
-                    || childTag == "Abandoned Vehicle" || childTag == "Holding Factory" || childTag == "Zombie")
+                    || childTag == "Abandoned Vehicle" || childTag == "Zombie")
                 {
                     StartCoroutine(DumbWalkAnimation());
+                }
+
+                // If the zombie is moving to a trap.
+                else if (childTag == "Trap")
+                {
+                    child.gameObject.GetComponent<StructureContoller>().PlayTrapAnim();
+                    StartCoroutine(DamageFromTrapsAnimation(child.gameObject.GetComponent<StructureContoller>().trapDamge[child.gameObject.GetComponent<StructureContoller>().currentStructureLevel]));
                 }
 
                 // If the ground title contains a unit we will have the player attack.
@@ -537,6 +553,34 @@ public class ZombieController : MonoBehaviour
 
     {
         anim.Play("Z_dumb_walk_A");
+
+        // suspend execution the length of animations
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
+
+        // Set bools.
+        actionPoints = 0;
+        ActivateNextZombie();
+    }
+
+    IEnumerator DamageFromTrapsAnimation(int amountOfDamage)
+    {
+        print("Damge: " + amountOfDamage.ToString());
+        if (amountOfDamage >= hitPoints)
+        {
+            // Zombie will die.
+            anim.Play("Z_dead_A");
+
+            hitPoints = 0;
+        }
+
+        else
+        {
+            // Zombie takes damage.
+            anim.Play("Z_damage");
+
+            hitPoints -= amountOfDamage;
+        }
+        
 
         // suspend execution the length of animations
         yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);

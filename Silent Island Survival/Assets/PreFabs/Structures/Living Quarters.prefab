@@ -52,16 +52,18 @@ MonoBehaviour:
   structureType: Living Quarters
   hitPoints: 100
   hitPointLimit: 100
-  woodToBuild: 000000000000000000000000
+  woodToBuild: 000000000100000002000000
   stoneToBuild: 000000000000000000000000
   foodToBuild: 000000000000000000000000
   currentStructureLevel: 0
   cropsPlanted: 0
   cropsReadyForHarvest: 0
   daysSinceCropsPlanted: 0
-  daysUntilCropsMature: 2
+  turnsUntilCropsMature: 0
   cropsAtHarvest: 5
+  amountOfActionPointsHealed: 3
   actionPointHealRange: 3
+  amountOfHitPointsHealed: 10
   hitPointHealRange: 2
 --- !u!65 &1397437164661130319
 BoxCollider:
