@@ -2174,8 +2174,8 @@ MonoBehaviour:
   zombieDescriptionText: {fileID: 686805413}
   zombieHitPointsSlider: {fileID: 611704174}
   TerrainMaps:
-  - {fileID: 4900000, guid: 401bd94dfac016d4687761ff34326db7, type: 3}
-  - {fileID: 4900000, guid: d81d262bdf2a95442871fc9207bae47e, type: 3}
+  - {fileID: 4900000, guid: 480a254ebd09cdc43aafdd93f852311d, type: 3}
+  - {fileID: 4900000, guid: 832709e294119e045a5e3adefc7e7e2e, type: 3}
   - {fileID: 4900000, guid: 480a254ebd09cdc43aafdd93f852311d, type: 3}
   - {fileID: 4900000, guid: 679fda332356448458ed71e0e87a8f7d, type: 3}
   GroundTilePrefabs:

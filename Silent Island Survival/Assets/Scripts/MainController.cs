@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using utils;
+using System.IO;
 
 public class MainController : MonoBehaviour
 {
@@ -270,12 +271,15 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedFactoryPrefabs;
     #endregion
 
-    int selectedMapIndex = 3; // By default we select 0. 3 = Clear Map for testing.
+    int selectedMapIndex = 1; // By default we select 0. 3 = Clear Map for testing.
     public int WorldSize = 0; // The world size will be set at the start of the game and depends on what map is selected.
     public GameObject[] groundTiles; // This is where all of the active ground tiles will be stored.
     public GameObject TerrainBase; // This will be used so that the entire set of ground tiles can be set to be children of an object in the hierarchy.
 
     public GameObject waterPlanePrefab;
+
+    public string ActiveMapName; // Global Variable.
+    public string activeMapText;
     #endregion
 
     #region Variables - FXs
@@ -294,6 +298,7 @@ public class MainController : MonoBehaviour
     {
 
         #region Terrain Generation
+        GetActiveMapName();
         LoadGroundTitlesFromMap();
         PlaceWaterPlane();
         #endregion
@@ -307,6 +312,8 @@ public class MainController : MonoBehaviour
         SpawnUnitsAtStartOfGame();
         CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
         CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
+
+        
 
         // Start Player's Turn.
         PlayerTurn();
@@ -1273,6 +1280,13 @@ public class MainController : MonoBehaviour
 
     #region Terrain Generation Functions
 
+    public string GetActiveMapName()
+    {
+        ActiveMapName = GlobalControl.Instance.ActiveMapName;
+        print(ActiveMapName);
+        return ActiveMapName;
+    }
+
     public void PlaceWaterPlane()
     {
         var water = Instantiate(waterPlanePrefab);
@@ -1286,17 +1300,33 @@ public class MainController : MonoBehaviour
 
     public void LoadGroundTitlesFromMap()
     {
+        //0. Load the map in at index 0.
+        // Path to file.
+        string path = Application.dataPath + "\\" + ActiveMapName;
+
+        activeMapText = File.ReadAllText(path);
+
         // 1. Check to see if the world map is square. If it is not we need to throw an error.
         // This strips all characters that are not 0, ., |, -, └, ┘, ┐, ┴, ┬, ├, ┤, ^, *, &, 1, 2, 3, 4, x and ┌
-        string allCharsInString = System.Text.RegularExpressions.Regex.Replace(TerrainMaps[selectedMapIndex].text, @"[^.0|┐└┌┘┴┬├┤^&*1234x-]", ""); 
+        //string allCharsInString = System.Text.RegularExpressions.Regex.Replace(TerrainMaps[selectedMapIndex].text, @"[^.0|┐└┌┘┴┬├┤^&*1234x-]", "");
+        string allCharsInString = System.Text.RegularExpressions.Regex.Replace(activeMapText, @"[^.0|┐└┌┘┴┬├┤^&*1234x-]", "");
 
-        if (allCharsInString.Length / (TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n') - 1) != (TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n') - 1))
+        //int numOfCols = TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n');
+        //int numOfRows = allCharsInString.Length / numOfCols;
+
+        int numOfCols = activeMapText.Replace(" ", "").IndexOf('\n');
+        int numOfRows = allCharsInString.Length / numOfCols;
+
+        if (numOfCols != numOfRows)
         {
             Debug.Log("The Map Is Not Square!");
+            print(allCharsInString.Length / (TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n') - 1));
+            //print((TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n') - 1));
         }
 
         // 2. Save the WorldSize variable based on the map side length.
-        else WorldSize = TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n') - 1;
+        //else WorldSize = TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n');
+        else WorldSize = activeMapText.Replace(" ", "").IndexOf('\n');
 
         // 3. Use for loops it instantiate ground tiles, position them, and add them to the array groundTiles. 
         groundTiles = new GameObject[WorldSize * WorldSize];
@@ -2146,8 +2176,6 @@ public class MainController : MonoBehaviour
 
     public bool DiscoverSurvivorOnScavenge()
     {
-        Debug.Log("Survivor Discover");
-
         // Find a location to place survivor.
         // Check all tiles around selected unit, if there is a clear one we will place the unit there.
         // Otherwise we will not discover a unit.
