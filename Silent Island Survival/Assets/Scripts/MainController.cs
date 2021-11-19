@@ -278,7 +278,7 @@ public class MainController : MonoBehaviour
 
     public GameObject waterPlanePrefab;
 
-    public string ActiveMapName; // Global Variable.
+    public string ActiveSavePath; // Global Variable.
     public string activeMapText;
     #endregion
 
@@ -1282,9 +1282,21 @@ public class MainController : MonoBehaviour
 
     public string GetActiveMapName()
     {
-        ActiveMapName = GlobalControl.Instance.ActiveMapName;
-        print(ActiveMapName);
-        return ActiveMapName;
+        // If the game is started from the Main scene while developing we still want to load a map.
+        if (GlobalControl.Instance.ActiveSavePath == null)
+        {
+            ActiveSavePath = Application.dataPath + "/Saves/Save00/Map.txt";
+        }
+
+        else
+        {
+            ActiveSavePath = GlobalControl.Instance.ActiveSavePath;
+        }
+        
+
+        
+
+        return ActiveSavePath;
     }
 
     public void PlaceWaterPlane()
@@ -1302,7 +1314,7 @@ public class MainController : MonoBehaviour
     {
         //0. Load the map in at index 0.
         // Path to file.
-        string path = Application.dataPath + "\\" + ActiveMapName;
+        string path = ActiveSavePath + "/Map.txt";
 
         activeMapText = File.ReadAllText(path);
 

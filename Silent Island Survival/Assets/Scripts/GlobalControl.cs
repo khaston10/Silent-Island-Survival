@@ -8,7 +8,8 @@ public class GlobalControl : MonoBehaviour
 
     #region Global Variables
 
-    public string ActiveMapName;
+    public string ActiveSavePath;
+
 
     #endregion
 

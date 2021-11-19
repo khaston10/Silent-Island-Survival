@@ -13,10 +13,16 @@ public class StartController : MonoBehaviour
     #region - Variables - New World Creation Panel
 
     public GameObject newWorldCreationPanel;
+    public GameObject loadPanel;
+    public GameObject feedbackPanel;
+    public Text feedbackText;
     public Text worldSizeText;
-    private int worldSize = 10;
+    private int worldSize = 50;
     public List<string> map = new List<string>();
     public string ActiveMapName;
+
+
+    private string[] savePath = new string[4];
 
     #endregion
     // Start is called before the first frame update
@@ -24,6 +30,13 @@ public class StartController : MonoBehaviour
     {
         // Set text objects to values.
         worldSizeText.text = worldSize.ToString();
+
+        // Set the save paths.
+        // There are 3 save files that will hold maps and the paths to the files are stored in a string array.
+        savePath[0] = Application.dataPath + "/Saves/Save00";
+        savePath[1] = Application.dataPath + "/Saves/Save01";
+        savePath[2] = Application.dataPath + "/Saves/Save02";
+        savePath[3] = Application.dataPath + "/Saves/Save03";
     }
 
     // Update is called once per frame
@@ -34,15 +47,15 @@ public class StartController : MonoBehaviour
 
     #region Functions
 
-    public void ClickNewGame()
+    public void ClickOpenCloseLoadGamePanel()
     {
-        GenerateNewWorldMap();
-        SceneManager.LoadScene(1);
-    }
+        if (loadPanel.activeInHierarchy)
+        {
+            loadPanel.SetActive(false);
+            feedbackPanel.SetActive(false);
+        }
 
-    public void ClickLoadGame()
-    {
-        Debug.Log("Load game.");
+        else loadPanel.SetActive(true);
     }
 
     public void ClickSettings()
@@ -63,12 +76,31 @@ public class StartController : MonoBehaviour
         else newWorldCreationPanel.SetActive(true);
     }
 
+    public void LoadExistingMap(int savePathIndex)
+    {
+        // Check to see if the map file exists.
+        if (System.IO.File.Exists(savePath[savePathIndex] + "/Map.txt"))
+        {
+            SaveActiveMapName(savePath[savePathIndex]);
+            SceneManager.LoadScene(1);
+        }
+
+        else
+        {
+            feedbackText.text = "This slot is empty.";
+            if (feedbackPanel.activeInHierarchy == false)
+            {
+                feedbackPanel.SetActive(true);
+            }
+        }
+    }
+
     public void IncreaseDecreaseWorldSize(bool increase)
     {
         if (increase)
         {
             // Check to see if the world size is already maxed. 
-            if (worldSize >= 100) print("World size is already maxed!");
+            if (worldSize >= 200) print("World size is already maxed!");
             else
             {
                 worldSize += 10;
@@ -92,33 +124,32 @@ public class StartController : MonoBehaviour
     {
         string[] Map = new string[worldSize];
         Map = Utils.GenerateNewWorldMap(worldSize);
-        WriteMapToTxtFile("Map01.txt", Map);
+        WriteMapToTxtFile(savePath[0], Map);
+        SceneManager.LoadScene(1);
 
     }
 
-    private void WriteMapToTxtFile(string fileName, string[] inMap)
+    private void WriteMapToTxtFile(string path, string[] inMap)
     {
-        // Path to file.
-        string path = Application.dataPath + "\\" + fileName;
 
-        File.WriteAllText(path, "");
+        File.WriteAllText(path + "/Map.txt", "");
 
         // Add the map.
         for (int numOfLines = 0; numOfLines < worldSize; numOfLines++)
         {
-            File.AppendAllText(path, inMap[numOfLines] + "\n");
+            File.AppendAllText(path + "/Map.txt", inMap[numOfLines] + "\n");
         }
 
         // Save the file.
 
         // Save map name in global control script so the main scene can open it.
-        SaveActiveMapName(fileName);
+        SaveActiveMapName(path);
         
     }
 
-    public void SaveActiveMapName (string inMapName)
+    public void SaveActiveMapName (string path)
     {
-        GlobalControl.Instance.ActiveMapName = inMapName;
+        GlobalControl.Instance.ActiveSavePath = path;
     }
 
     #endregion

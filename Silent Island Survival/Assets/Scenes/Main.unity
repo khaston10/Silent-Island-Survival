@@ -2200,6 +2200,8 @@ MonoBehaviour:
   groundTiles: []
   TerrainBase: {fileID: 1483794356}
   waterPlanePrefab: {fileID: 2259662223854931732, guid: 4aa9953c2fa3be946be778fa174e8853, type: 3}
+  ActiveSavePath: 
+  activeMapText: 
   dirtSplatterFX: {fileID: 911619315}
   APAnimationObject: {fileID: 6502957358566107021, guid: 1bacb502e495c254384c69fe3a42f92c, type: 3}
   HPAnimationObject: {fileID: 3177399234520933345, guid: 19ea6453c6b33134ea38bc71396edea5, type: 3}
@@ -5912,7 +5914,7 @@ Light:
   m_CookieSize: 10
   m_Shadows:
     m_Type: 2
-    m_Resolution: -1
+    m_Resolution: 0
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
