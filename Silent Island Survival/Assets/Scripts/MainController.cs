@@ -256,6 +256,23 @@ public class MainController : MonoBehaviour
 
     #endregion
 
+    #region Panel - Main
+
+    public GameObject MainPanel;
+    public GameObject ObjectivesPanel;
+    public GameObject UnitsPanel;
+    public GameObject GamePanel;
+    public GameObject SettingsPanel;
+
+    public Text GameSaveFeedbackText;
+    public Button OverwriteSaveButtonYes;
+    public Button OverwriteSaveButtonNo;
+
+    private string[] savePath = new string[4];
+    private int SlotToOverwite = 0;
+
+    #endregion
+
     #endregion
 
     #region Variables - Terrain Generation
@@ -296,6 +313,13 @@ public class MainController : MonoBehaviour
 
     void Start()
     {
+
+        // Set the save paths.
+        // There are 3 save files that will hold maps and the paths to the files are stored in a string array.
+        savePath[0] = Application.dataPath + "/Saves/Save00";
+        savePath[1] = Application.dataPath + "/Saves/Save01";
+        savePath[2] = Application.dataPath + "/Saves/Save02";
+        savePath[3] = Application.dataPath + "/Saves/Save03";
 
         #region Terrain Generation
         GetActiveMapName();
@@ -538,9 +562,268 @@ public class MainController : MonoBehaviour
 
     #region Functions
 
+
+    #region SavingData Functions
+    public void SaveGameData(int SaveSlot)
+    {
+        string[] Map = new string[WorldSize];
+
+        Map = BuildMapFromWorld();
+
+        if (SaveSlot == 0) // Quick Save will use what ever path was loaded.
+        {
+            // Check to see if there is a current saved file.
+            if ((GlobalControl.Instance.ActiveSavePath.Substring(GlobalControl.Instance.ActiveSavePath.Length - 2, 2) == "00"))
+            {
+                GameSaveFeedbackText.text = "Save Unsuccessful, Select a Slot.";
+            }
+
+            else
+            {
+                WriteMapToTxtFile(GlobalControl.Instance.ActiveSavePath + "/SavedMap.txt", Map);
+                GameSaveFeedbackText.text = "Save Successful.";
+            }
+            
+        }
+
+        else
+        {
+            // Check to see if a file is already saved in the slot. If it is we will as for overwrite auth.
+            //if (System.IO.File.Exists("myfile.txt"))
+            if (System.IO.File.Exists(savePath[SaveSlot] + "/Map.txt") && !OverwriteSaveButtonYes.gameObject.activeInHierarchy)
+            {
+                // Set overwrite buttons to active.
+                OverwriteSaveButtonYes.gameObject.SetActive(true);
+                OverwriteSaveButtonNo.gameObject.SetActive(true);
+
+                // Give feedback.
+                GameSaveFeedbackText.text = "Overwrite Save?";
+
+                // Set current save slot to help select the correct slot when the user presses YES.
+                SlotToOverwite = SaveSlot;
+
+            }
+            WriteMapToTxtFile(savePath[SaveSlot] + "/SavedMap.txt", Map);
+            GameSaveFeedbackText.text = "Save Successful.";
+        }
+    }
+
+    public void ClickOverwriteSave(bool overwrite) 
+    {
+        if (overwrite)
+        {
+            SaveGameData(SlotToOverwite);
+
+            // Set overwrite buttons to active.
+            OverwriteSaveButtonYes.gameObject.SetActive(false);
+            OverwriteSaveButtonNo.gameObject.SetActive(false);
+
+            // Give feedback.
+            GameSaveFeedbackText.text = "Save Successful.";
+
+            // Set current save slot to help select the correct slot when the user presses YES.
+            SlotToOverwite = 0;
+        }
+
+        else
+        {
+            // Set overwrite buttons to active.
+            OverwriteSaveButtonYes.gameObject.SetActive(false);
+            OverwriteSaveButtonNo.gameObject.SetActive(false);
+
+            // Give feedback.
+            GameSaveFeedbackText.text = "Save Canceled.";
+
+            // Set current save slot to help select the correct slot when the user presses YES.
+            SlotToOverwite = 0;
+        }
+    }
+
+    public string[] BuildMapFromWorld()
+    {
+        string[] tempMap = new string[WorldSize];
+        string tempChar = "";
+        bool objectFound = false;
+
+        // Iterate through the ground tiles.
+        for (int row = 0; row < WorldSize; row++)
+        {
+            for (int col = 0; col < WorldSize; col++)
+            {
+                //Debug.Log(groundTiles[LocateIndexOfGroundTile(row, col)]);
+                // If the ground tile is NUll, it should be saved as water.
+                if (groundTiles[LocateIndexOfGroundTile(row, col)] == null)
+                {
+                    tempMap[row] += ".";
+                }
+
+                else
+                {
+                    for (int childInd = 0; childInd < groundTiles[LocateIndexOfGroundTile(row, col)].transform.childCount; childInd++)
+                    {
+                        if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Tree")
+                        {
+                            tempChar = "^";
+                            objectFound = true;
+                        }
+
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Rock")
+                        {
+                            tempChar = "*";
+                            objectFound = true;
+                        }
+
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Loot Box")
+                        {
+                            tempChar = "&";
+                            objectFound = true;
+                        }
+
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Abandoned Vehicle")
+                        {
+                            tempChar = "3";
+                            objectFound = true;
+                        }
+
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Abandoned Factory")
+                        {
+                            tempChar = "2";
+                            objectFound = true;
+                        }
+
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).tag == "Abandoned House")
+                        {
+                            tempChar = "1";
+                            objectFound = true;
+                        }
+
+                        // Here are straight roads, either vertival or horizontal.
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).transform.name == "tile-road-straight (1)")
+                        {
+                            if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).transform.rotation.y == 0 || 
+                                groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).transform.rotation.y == 180)
+                            {
+                                tempChar = "-";
+                            }
+
+                            else
+                            {
+                                tempChar = "|";
+                            }
+                            
+                            objectFound = true;
+                        }
+
+                        // Here are the 4 flavors of T intersections.
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).transform.name == "tile-road-intersection-t")
+                        {
+                            if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 0)
+                            {
+                                tempChar = "┤";
+                            }
+
+                            else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 90)
+                            {
+                                tempChar = "┬";
+                            }
+
+                            else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 180)
+                            {
+                                tempChar = "├";
+                            }
+
+                            else
+                            {
+                                tempChar = "┴";
+                            }
+
+                            objectFound = true;
+                        }
+
+                        // Here are the 4 flavors of curved roads.
+                        else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.GetChild(childInd).transform.name == "tile-road-curve")
+                        {
+                            if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 0)
+                            {
+                                tempChar = "└";
+                            }
+
+                            else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 90)
+                            {
+                                tempChar = "┌";
+                            }
+
+                            else if (groundTiles[LocateIndexOfGroundTile(row, col)].transform.eulerAngles.y == 180)
+                            {
+                                tempChar = "┐";
+                            }
+
+                            else
+                            {
+                                tempChar = "┘";
+                            }
+
+                            objectFound = true;
+                        }
+
+
+                        else if(groundTiles[LocateIndexOfGroundTile(row, col)].transform.name == "RoadBlockTile01(Clone)")
+                        {
+                            tempChar = "x";
+                            objectFound = true;
+                        }
+                        
+
+                        else
+                        {
+                            if (!objectFound)
+                            {
+                                tempChar = "0";
+                                objectFound = true;
+                            }
+                            
+                        }
+                            
+                    }
+
+                    // Add the correct char to the row.
+                    tempMap[row] += tempChar;
+                    objectFound = false;
+
+                }
+            }
+
+
+            /*
+             string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
+    string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Wall Angled", "Town Hall", "Trap" };
+    string[] acceptableGroundTilesTags = new string[] { "GroundTile", "Holding Factory"};
+    string[] acceptableUnitTags = new string[] { "Unit" };
+            */
+        }
+
+        Debug.Log(tempMap);
+        return tempMap;
+    }
+
+    private void WriteMapToTxtFile(string path, string[] inMap)
+    {
+        File.WriteAllText(path, "");
+
+        // Add the map.
+        for (int numOfLines = 0; numOfLines < WorldSize; numOfLines++)
+        {
+            File.AppendAllText(path, inMap[numOfLines] + "\n");
+        }
+        
+    }
+    
+    #endregion
+
+
     #region Camera Raycasting and Movement Fuctions
 
-    public void UpdateCamPosition()
+        public void UpdateCamPosition()
     {
         // This function handles key board inputs.
 
@@ -645,6 +928,12 @@ public class MainController : MonoBehaviour
                 wallOffsetX -= .1f;
                 wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (MainPanel.activeInHierarchy) CloseMainMenu();
+            else OpenMainMenu("Objectives");
         }
 
     }
@@ -1587,6 +1876,7 @@ public class MainController : MonoBehaviour
         BasicInformationPanel.SetActive(false);
         StructurePanel.SetActive(false);
         IndividualUnitPanel.SetActive(false);
+        MainPanel.SetActive(false);
     }
 
     #region Basic Information Panel Functions
@@ -3330,6 +3620,43 @@ public class MainController : MonoBehaviour
 
         
     }
+
+    #endregion
+
+    #region Main Panel Functions
+
+    public void OpenMainMenu(string subPanel)
+    {
+        MainPanel.SetActive(true);
+
+        CloseAllSubPanelsOfMainMenu();
+
+        if (subPanel == "Objectives") ObjectivesPanel.SetActive(true);
+        else if (subPanel == "Units") UnitsPanel.SetActive(true);
+        else if (subPanel == "Game") GamePanel.SetActive(true);
+        else if (subPanel == "Settings") SettingsPanel.SetActive(true);
+        else ObjectivesPanel.SetActive(true);
+    }
+
+    public void CloseMainMenu()
+    {
+        MainPanel.SetActive(false);
+    }
+
+    private void CloseAllSubPanelsOfMainMenu()
+    {
+        ObjectivesPanel.SetActive(false);
+        UnitsPanel.SetActive(false);
+        GamePanel.SetActive(false);
+        SettingsPanel.SetActive(false);
+    }
+
+    public void HoverGamePanel(string NameOfButton)
+    {
+        if (NameOfButton == "Quick Save") GameSaveFeedbackText.text = "Quick Save?";
+        else GameSaveFeedbackText.text = "";
+    }
+
 
     #endregion
 
