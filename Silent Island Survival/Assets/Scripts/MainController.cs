@@ -29,6 +29,7 @@ public class MainController : MonoBehaviour
     public GameObject[] basicUnitPrefabs;
     // When more types of prefabs get implemented we can create multiple arrays.
     // That way we can have multiple types of farmers, and soldiers, ect.
+    private string[] sexes = new string[] { "M", "F"};
 
     public GameObject movementOptionPrefab;
     public GameObject movementSelectedPrefab;
@@ -271,6 +272,27 @@ public class MainController : MonoBehaviour
     private string[] savePath = new string[4];
     private int SlotToOverwite = 0;
 
+    // Unit panel variables
+    public Image unitImage;
+    public Sprite[] unitSprites;
+    public Text unitNameUnitPanelText;
+    public Text unitClassUnitPanelText;
+    public Text actionPointsUnitPanelText;
+    public Text actionPointLimitUnitPanelText;
+    public Text hitPointsUnitPanelText;
+    public Text hitPointLimitUnitPanelText;
+    public Text attackUnitPanelText;
+    public Text attackRangeUnitPanelText;
+    public Text defenseUnitPanelText;
+    public Text sightUnitPanelText;
+    public Slider actionPointunitPanelSlider;
+    public Slider hitPointunitPanelSlider;
+    public Text currentUnitNumText;
+    public Text unitlimitText;
+    int currentUnitSelected = 0;
+
+
+
     #endregion
 
     #endregion
@@ -326,6 +348,18 @@ public class MainController : MonoBehaviour
         LoadGroundTitlesFromMap();
         PlaceWaterPlane();
         #endregion
+
+        Debug.Log(GlobalControl.Instance.ActiveSavePath);
+        //(System.IO.File.Exists("myfile.txt"))
+        if (System.IO.File.Exists(GlobalControl.Instance.ActiveSavePath + "/SavedData.txt"))
+        {
+            LoadGameData();
+        }
+
+        else
+        {
+            Debug.Log("File Not Found");
+        }
 
         #region Text Object Updates
 
@@ -580,7 +614,8 @@ public class MainController : MonoBehaviour
 
             else
             {
-                WriteMapToTxtFile(GlobalControl.Instance.ActiveSavePath + "/SavedMap.txt", Map);
+                WriteMapToTxtFile(GlobalControl.Instance.ActiveSavePath + "/Map.txt", Map);
+                WriteFameDataToSaveFile(GlobalControl.Instance.ActiveSavePath + "/SavedData.txt", BuildSaveInformation());
                 GameSaveFeedbackText.text = "Save Successful.";
             }
             
@@ -603,8 +638,14 @@ public class MainController : MonoBehaviour
                 SlotToOverwite = SaveSlot;
 
             }
-            WriteMapToTxtFile(savePath[SaveSlot] + "/SavedMap.txt", Map);
-            GameSaveFeedbackText.text = "Save Successful.";
+
+            else
+            {
+                WriteMapToTxtFile(savePath[SaveSlot] + "/Map.txt", Map);
+                WriteFameDataToSaveFile(savePath[SaveSlot] + "/SavedData.txt", BuildSaveInformation());
+                GameSaveFeedbackText.text = "Save Successful.";
+            }
+            
         }
     }
 
@@ -802,8 +843,46 @@ public class MainController : MonoBehaviour
             */
         }
 
-        Debug.Log(tempMap);
         return tempMap;
+    }
+
+    public List<string> BuildSaveInformation()
+    {
+        List<string> tempSaveData = new List<string>();
+
+
+        // Save Basic Game Information.
+        tempSaveData.Add("Day: [" + currentDay.ToString() + "]");
+        tempSaveData.Add("Hour: [" + currentHour.ToString() + "]");
+        tempSaveData.Add("Food: [" + food.ToString() + "]");
+        tempSaveData.Add("Wood: [" + wood.ToString() + "]");
+        tempSaveData.Add("Stone: [" + stone.ToString() + "]");
+        tempSaveData.Add("Population Cap: [" + populationCap.ToString() + "]");
+
+
+        /*
+         
+
+        public int currentDay = 1;
+    int currentHour = 15; // This can have values of 0 - 23.
+    float skillPointsAvailable = 2;
+    int food = 10;
+    int population = 1;
+    int populationCap = 5;
+    int wood = 10;
+    int stone = 10;
+    bool playersTurn = true; // This will help to take the inputs away when it is not the player's turn.
+        */
+
+        // Save Structure Information.
+
+        // Save skills panel information
+
+        // Save unit Information.
+
+        // Save Zombie Information.
+
+        return tempSaveData;
     }
 
     private void WriteMapToTxtFile(string path, string[] inMap)
@@ -817,13 +896,113 @@ public class MainController : MonoBehaviour
         }
         
     }
-    
+
+    private void WriteFameDataToSaveFile(string path, List<string> gameData)
+    {
+        File.WriteAllText(path, "");
+
+        // Add the map.
+        for (int numOfLines = 0; numOfLines < gameData.Count; numOfLines++)
+        {
+            File.AppendAllText(path, gameData[numOfLines] + "\n");
+        }
+
+    }
+
+    #endregion
+
+    #region LoadingData Functions
+
+    private void LoadGameData()
+    {
+        // This should only be used if the player has selected to load a previously saved game.
+        // To check this we need to check if the ActiveSavePath on the Global Controler had a file named SavedData.txt
+        LoadBasicInformation(GlobalControl.Instance.ActiveSavePath + "/SavedData.txt");
+    }
+
+    private void LoadBasicInformation(string path)
+    {
+        var saveDataText = File.ReadAllLines(path);
+        Debug.Log(saveDataText);
+
+        for(int line = 0; line < saveDataText.Length; line++)
+        {
+            // Pull the next line's data and get title.
+            var currentLine = saveDataText[line];
+            var indexOfFirstWhiteSpace = currentLine.IndexOf(" ");
+            var title = currentLine.Substring(0, indexOfFirstWhiteSpace);
+            Debug.Log(title);
+
+            // Now that we have the next line we can decide what information it has and what to do with it.
+            // Basic data.
+            if (title == "Day:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("Day = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) -1 ));
+                currentDay = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Hour:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("Hour = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
+                currentHour = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Food:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("Food = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
+                food = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Wood:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("Wood = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
+                wood = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Stone:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("Stone = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
+                stone = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Population Cap:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                Debug.Log("PopCap = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
+                populationCap = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else
+            {
+                Debug.Log("Data is not loading correctly");
+            }
+        }
+
+            // Remove the substring from the saved data so the while loop can continue.
+            //saveDataText.Remove(0, indexOfSemiCol);
+            
+        
+
+
+    }
+
     #endregion
 
 
     #region Camera Raycasting and Movement Fuctions
 
-        public void UpdateCamPosition()
+    public void UpdateCamPosition()
     {
         // This function handles key board inputs.
 
@@ -1118,11 +1297,17 @@ public class MainController : MonoBehaviour
         // Pick a unit type: Basic, Farmer, Soldier.
         var randomType = UnityEngine.Random.Range(0, 3);
 
+        // Pick the gender of the unit.
+        var gender = sexes[UnityEngine.Random.Range(0, sexes.Length)];
+
         // Create game object.
-        var temp = Instantiate(basicUnitPrefabs[randomType], spawnLoc, Quaternion.identity);
+        var temp = new GameObject();
+
+        if (gender == "F") temp = Instantiate(basicUnitPrefabs[randomType + 3], spawnLoc, Quaternion.identity);
+        else temp = Instantiate(basicUnitPrefabs[randomType], spawnLoc, Quaternion.identity);
 
         // Set the random attributes for the unit.
-        SetUnitAttributesAtCreation(temp);
+        SetUnitAttributesAtCreation(temp, gender);
 
         // Make the unit a child of the ground tile.
         var row = Mathf.RoundToInt(spawnLoc.x);
@@ -1149,10 +1334,12 @@ public class MainController : MonoBehaviour
         Destroy(unit);
     }
 
-    public void SetUnitAttributesAtCreation(GameObject unit)
+    public void SetUnitAttributesAtCreation(GameObject unit, string gender)
     {
         // Pick a random name for the unit.
-        unit.GetComponent<UnitController>().unitName = Utils.GetName();
+        unit.GetComponent<UnitController>().unitName = Utils.GetName(gender);
+
+        unit.GetComponent<UnitController>().sex = unit.GetComponent<UnitController>().sex = gender;
 
         // This can be expanded once differnt unit types are created.
     }
@@ -3013,7 +3200,6 @@ public class MainController : MonoBehaviour
         }
         
         structureHitPointsSlider.value =  ((float) structure.GetComponentInParent<StructureContoller>().hitPoints / (float) structure.GetComponentInParent<StructureContoller>().hitPointLimit);
-        Debug.Log((structure.GetComponentInParent<StructureContoller>().hitPoints / structure.GetComponentInParent<StructureContoller>().hitPointLimit));
 
     }
 
@@ -3632,7 +3818,13 @@ public class MainController : MonoBehaviour
         CloseAllSubPanelsOfMainMenu();
 
         if (subPanel == "Objectives") ObjectivesPanel.SetActive(true);
-        else if (subPanel == "Units") UnitsPanel.SetActive(true);
+        else if (subPanel == "Units")
+        {
+            UnitsPanel.SetActive(true);
+            UpdateUnitNextUnitInformation(selectedUnit);
+        }
+            
+            
         else if (subPanel == "Game") GamePanel.SetActive(true);
         else if (subPanel == "Settings") SettingsPanel.SetActive(true);
         else ObjectivesPanel.SetActive(true);
@@ -3655,6 +3847,61 @@ public class MainController : MonoBehaviour
     {
         if (NameOfButton == "Quick Save") GameSaveFeedbackText.text = "Quick Save?";
         else GameSaveFeedbackText.text = "";
+    }
+
+    public void UpdateUnitNextUnitInformation(GameObject unit)
+    {
+        unitNameUnitPanelText.text = unit.GetComponent<UnitController>().unitName;
+        unitClassUnitPanelText.text = unit.GetComponent<UnitController>().unitClass.ToString();
+        actionPointsUnitPanelText.text = unit.GetComponent<UnitController>().actionPoints.ToString();
+        actionPointLimitUnitPanelText.text = unit.GetComponent<UnitController>().actionPointsLimit.ToString();
+        attackUnitPanelText.text = unit.GetComponent<UnitController>().attack.ToString();
+        hitPointsUnitPanelText.text = unit.GetComponent<UnitController>().hitPoints.ToString();
+        hitPointLimitUnitPanelText.text = unit.GetComponent<UnitController>().hitPointLimit.ToString();
+        attackRangeUnitPanelText.text = unit.GetComponent<UnitController>().attackRange.ToString();
+        defenseUnitPanelText.text = unit.GetComponent<UnitController>().defense.ToString();
+        sightUnitPanelText.text = unit.GetComponent<UnitController>().sight.ToString();
+        currentUnitNumText.text = (unitsInPlay.IndexOf(unit) + 1).ToString();
+        currentUnitSelected = unitsInPlay.IndexOf(unit);
+        unitlimitText.text = unitsInPlay.Count.ToString();
+        if ((int)unit.GetComponent<UnitController>().unitClass == 0)
+        {
+            if (unit.GetComponent<UnitController>().sex == "M") unitImage.sprite = unitSprites[0];
+            else unitImage.sprite = unitSprites[3];
+        }
+
+        else if ((int)unit.GetComponent<UnitController>().unitClass == 1)
+        {
+            if (unit.GetComponent<UnitController>().sex == "M") unitImage.sprite = unitSprites[1];
+            else unitImage.sprite = unitSprites[4];
+        }
+
+        else
+        {
+            if (unit.GetComponent<UnitController>().sex == "M") unitImage.sprite = unitSprites[2];
+            else unitImage.sprite = unitSprites[5];
+        }
+
+
+        actionPointunitPanelSlider.value = (float)(unit.GetComponent<UnitController>().actionPoints) / (float)(unit.GetComponent<UnitController>().actionPointsLimit);
+        hitPointunitPanelSlider.value = (float)(unit.GetComponent<UnitController>().hitPoints) / (float)(unit.GetComponent<UnitController>().hitPointLimit);
+    }
+
+    public void ClickNextUnitInfo(bool forward)
+    {
+        if (forward)
+        {
+            if (currentUnitSelected == unitsInPlay.Count - 1) UpdateUnitNextUnitInformation(unitsInPlay[0]);
+
+            else UpdateUnitNextUnitInformation(unitsInPlay[currentUnitSelected + 1]);
+        }
+
+        else
+        {
+            if (currentUnitSelected == 0) UpdateUnitNextUnitInformation(unitsInPlay[unitsInPlay.Count - 1]);
+
+            else UpdateUnitNextUnitInformation(unitsInPlay[currentUnitSelected - 1]);
+        }
     }
 
 

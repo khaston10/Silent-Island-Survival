@@ -1,0 +1,6 @@
+Day: [1]
+Hour: [15]
+Food: [10]
+Wood: [0]
+Stone: [8]
+Population Cap: [5]

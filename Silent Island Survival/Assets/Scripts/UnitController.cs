@@ -12,6 +12,7 @@ public class UnitController : MonoBehaviour
         Farmer,    // == 1
         Soldier,   // == 2
     }
+    public string sex = "M"; // Can be M or F
     public Class unitClass;
     public int actionPoints = 1;
     public int actionPointsLimit = 10;
@@ -31,9 +32,9 @@ public class UnitController : MonoBehaviour
     void Start()
     {
         // Set the unit Class
-        if (this.name == "Basic Unit(Clone)") unitClass = Class.Basic;
-        else if (this.name == "Farmer Unit(Clone)") unitClass = Class.Farmer;
-        else if (this.name == "Soldier Unit(Clone)") unitClass = Class.Soldier;
+        if (this.name == "Basic Unit(Clone)" || this.name == "Basic Unit Female(Clone)") unitClass = Class.Basic;
+        else if (this.name == "Farmer Unit(Clone)" || this.name == "Farmer Unit Female(Clone)") unitClass = Class.Farmer;
+        else if (this.name == "Soldier Unit(Clone)" || this.name == "Soldier Unit Female(Clone)") unitClass = Class.Soldier;
         else Debug.Log("Invalid Unit Type. No Class assigned.");
 
         // Get animator contoller from unit.
