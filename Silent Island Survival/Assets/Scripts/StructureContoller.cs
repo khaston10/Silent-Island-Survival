@@ -14,6 +14,7 @@ public class StructureContoller : MonoBehaviour
     public int[] stoneToBuild = new int[] { 0, 0, 0 }; // Stone material required to build.
     public int[] foodToBuild = new int[] { 0, 0, 0 }; // Food material required to build.
     public int currentStructureLevel = 0;
+    public int levelUpgradeFromSave = 0; // This is allowed to be 0, 1, or 2. If a structure needs to be upgraded from a loaded game.
 
     #region Variables for Farm Plots
 
@@ -37,7 +38,7 @@ public class StructureContoller : MonoBehaviour
     // These values will always be between -.4 and .4 and will be updated by the main script when the wall is created.
     float wallOffsetX;
     float wallOffsetZ;
-    Quaternion wallRot;
+    public Quaternion wallRot;
 
     #endregion
 
@@ -63,10 +64,6 @@ public class StructureContoller : MonoBehaviour
         // If the structure is a wall we need to fine adjust the wall prefab's position.
         if (structureType == "Wall")
         {
-            // Set the wall offsets from the main script.
-            wallOffsetX = GameObject.Find("MainController").GetComponent<MainController>().wallOffsetX;
-            wallOffsetZ = GameObject.Find("MainController").GetComponent<MainController>().wallOffsetZ;
-            wallRot = GameObject.Find("MainController").GetComponent<MainController>().wallOnWallSelector.transform.rotation;
 
             temp.transform.position = new Vector3(this.transform.position.x + wallOffsetX, 0f, this.transform.position.z + wallOffsetZ);
 
@@ -90,6 +87,12 @@ public class StructureContoller : MonoBehaviour
             PlayTrapAnim();
         }
         
+        // Check to see if the structure needs to be upgraded. 
+        // This can happen if the game was loaded from a save.
+        for (int upgradesNeeded = 0; upgradesNeeded < levelUpgradeFromSave; upgradesNeeded++)
+        {
+            UpgradeStructure();
+        }
 
     }
 

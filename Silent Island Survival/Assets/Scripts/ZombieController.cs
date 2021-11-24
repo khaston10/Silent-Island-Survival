@@ -53,7 +53,7 @@ public class ZombieController : MonoBehaviour
     // Variables used durning zombie movement.
     int nextPositionIndex = 0;
     Vector3 NextPosition = Vector3.zero;
-    float zombieMovementSpeed = 1f;
+    float zombieMovementSpeed = 5f;
 
     private Animator anim;
     #endregion

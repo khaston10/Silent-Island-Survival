@@ -41,7 +41,7 @@ public class MainController : MonoBehaviour
     public GameObject selectedUnit; // When a unit is selected they will be tracked by this object.
     #endregion
 
-    float unitMovementSpeed = 3;
+    float unitMovementSpeed = 5;
     public List<GameObject> unitsInPlay = new List<GameObject>();
 
     // Used during movement of unit.
@@ -165,7 +165,7 @@ public class MainController : MonoBehaviour
     public Button harvestButton;
     public Button repairButton;
     public Button upgradeButton;
-    public Button draftOrdinanceButton;
+    public Button scrapButton;
     public Button ExitInteractWithStructurePanel;
 
     #endregion
@@ -349,16 +349,24 @@ public class MainController : MonoBehaviour
         PlaceWaterPlane();
         #endregion
 
-        Debug.Log(GlobalControl.Instance.ActiveSavePath);
         //(System.IO.File.Exists("myfile.txt"))
         if (System.IO.File.Exists(GlobalControl.Instance.ActiveSavePath + "/SavedData.txt"))
         {
             LoadGameData();
+            // Set the starting unit to the selected unit.
+            selectedUnit = unitsInPlay[0];
+
+            // Set text to match unit's attributes.
+            unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
+
+            UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
         }
 
         else
         {
-            Debug.Log("File Not Found");
+            SpawnUnitsAtStartOfGame();
+            CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
+            CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
         }
 
         #region Text Object Updates
@@ -366,12 +374,6 @@ public class MainController : MonoBehaviour
         UpdateBasicInformationText();
 
         #endregion
-
-        SpawnUnitsAtStartOfGame();
-        CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
-        CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
-
-        
 
         // Start Player's Turn.
         PlayerTurn();
@@ -857,30 +859,62 @@ public class MainController : MonoBehaviour
         tempSaveData.Add("Food: [" + food.ToString() + "]");
         tempSaveData.Add("Wood: [" + wood.ToString() + "]");
         tempSaveData.Add("Stone: [" + stone.ToString() + "]");
-        tempSaveData.Add("Population Cap: [" + populationCap.ToString() + "]");
+        tempSaveData.Add("PopulationCap: [" + populationCap.ToString() + "]");
 
+        for (int unitCount = 0; unitCount< unitsInPlay.Count; unitCount++)
+        {
+            var unitName = unitsInPlay[unitCount].GetComponent<UnitController>().unitName;
+            var unitGender = unitsInPlay[unitCount].GetComponent<UnitController>().sex;
+            var unitClass = unitsInPlay[unitCount].GetComponent<UnitController>().unitClass;
+            var unitPosX = unitsInPlay[unitCount].transform.position.x;
+            var unitPosZ = unitsInPlay[unitCount].transform.position.z;
+            var unitAP = unitsInPlay[unitCount].GetComponent<UnitController>().actionPoints;
+            var unitAPL = unitsInPlay[unitCount].GetComponent<UnitController>().actionPointsLimit;
+            var unitHP = unitsInPlay[unitCount].GetComponent<UnitController>().hitPoints;
+            var unitHPL = unitsInPlay[unitCount].GetComponent<UnitController>().hitPointLimit;
+            var unitAttack = unitsInPlay[unitCount].GetComponent<UnitController>().attack;
+            var unitAttackR = unitsInPlay[unitCount].GetComponent<UnitController>().attackRange;
+            var unitDefense = unitsInPlay[unitCount].GetComponent<UnitController>().defense;
+            var unitSight = unitsInPlay[unitCount].GetComponent<UnitController>().sight;
+            var unitRP = unitsInPlay[unitCount].GetComponent<UnitController>().repairPoints;
+            var unitCritHit = unitsInPlay[unitCount].GetComponent<UnitController>().criticalHitPercentage;
+            var unitCropsAtHarvestMlt = unitsInPlay[unitCount].GetComponent<UnitController>().cropsAtHarvestMultiplier;
+            var unitTurnsUntilCropsMature = unitsInPlay[unitCount].GetComponent<UnitController>().turnsUntilCropsMature;
 
-        /*
-         
+            // Saves Data on Units Name, Sex, Class, PositionX, PositionZ, Action Points, Action Point Limit, Hit Points, Hit Point Limit, Attack,
+            // Attack Range, Defense, Sight, Repair Points, Critical Hit Percentage, Crops At Harvest Multiplier, Turns Until Crops Mature
+            tempSaveData.Add("Unit: ["  + unitName + ", " + unitGender + ", " + unitClass.ToString() + ", " + unitPosX + ", " + +unitPosZ + ", " + unitAP + ", " + unitAPL 
+                + ", " + unitHP + ", " + unitHPL + ", " + unitAttack + ", " + unitAttackR + ", " + unitDefense + ", " + unitSight + ", " 
+                + unitRP + ", " + unitCritHit + ", " + unitCropsAtHarvestMlt + ", " + unitTurnsUntilCropsMature + "]");
+        }
 
-        public int currentDay = 1;
-    int currentHour = 15; // This can have values of 0 - 23.
-    float skillPointsAvailable = 2;
-    int food = 10;
-    int population = 1;
-    int populationCap = 5;
-    int wood = 10;
-    int stone = 10;
-    bool playersTurn = true; // This will help to take the inputs away when it is not the player's turn.
-        */
+        for (int zombieCount = 0; zombieCount < zombiesInPlay.Count; zombieCount++)
+        {
+            var zombiePosX = Convert.ToInt32(zombiesInPlay[zombieCount].transform.position.x);
+            var zombiePosZ = Convert.ToInt32(zombiesInPlay[zombieCount].transform.position.z);
+            var zombieHP = zombiesInPlay[zombieCount].GetComponent<ZombieController>().hitPoints;
+            tempSaveData.Add("Zombie: [" + zombiePosX + ", " + zombiePosZ + ", " + zombieHP + "]");
+        }
 
-        // Save Structure Information.
+        for (int structureCount = 0; structureCount < currentStructuresInGame.Count; structureCount++)
+        {
+            var structureType = currentStructuresInGame[structureCount].GetComponent<StructureContoller>().structureType;
+            var structurePosX = Convert.ToInt32(currentStructuresInGame[structureCount].transform.position.x);
+            var structurePosZ = Convert.ToInt32(currentStructuresInGame[structureCount].transform.position.z);
+            var structureHP = currentStructuresInGame[structureCount].GetComponent<StructureContoller>().hitPoints;
+            var structureHPL = currentStructuresInGame[structureCount].GetComponent<StructureContoller>().hitPointLimit;
+            var structureLevel = currentStructuresInGame[structureCount].GetComponent<StructureContoller>().currentStructureLevel;
+            var structureRotation = currentStructuresInGame[structureCount].transform.eulerAngles.y;
 
-        // Save skills panel information
+            if (currentStructuresInGame[structureCount].GetComponent<StructureContoller>().structureType == "Wall")
+            {
+                structureRotation = currentStructuresInGame[structureCount].GetComponent<StructureContoller>().wallRot.eulerAngles.y;
+            }
 
-        // Save unit Information.
+            tempSaveData.Add("Structure: [" + structureType + ", " + structurePosX + ", " + structurePosZ + ", " + structureHP + ", " + structureHPL + ", " + structureLevel + ", " + structureRotation + "]");
 
-        // Save Zombie Information.
+        }
+
 
         return tempSaveData;
     }
@@ -911,6 +945,7 @@ public class MainController : MonoBehaviour
 
     #endregion
 
+
     #region LoadingData Functions
 
     private void LoadGameData()
@@ -923,7 +958,6 @@ public class MainController : MonoBehaviour
     private void LoadBasicInformation(string path)
     {
         var saveDataText = File.ReadAllLines(path);
-        Debug.Log(saveDataText);
 
         for(int line = 0; line < saveDataText.Length; line++)
         {
@@ -931,7 +965,6 @@ public class MainController : MonoBehaviour
             var currentLine = saveDataText[line];
             var indexOfFirstWhiteSpace = currentLine.IndexOf(" ");
             var title = currentLine.Substring(0, indexOfFirstWhiteSpace);
-            Debug.Log(title);
 
             // Now that we have the next line we can decide what information it has and what to do with it.
             // Basic data.
@@ -939,7 +972,6 @@ public class MainController : MonoBehaviour
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("Day = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) -1 ));
                 currentDay = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
@@ -947,7 +979,6 @@ public class MainController : MonoBehaviour
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("Hour = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
                 currentHour = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
@@ -955,7 +986,6 @@ public class MainController : MonoBehaviour
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("Food = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
                 food = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
@@ -963,7 +993,6 @@ public class MainController : MonoBehaviour
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("Wood = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
                 wood = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
@@ -971,29 +1000,97 @@ public class MainController : MonoBehaviour
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("Stone = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
                 stone = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
-            else if (title == "Population Cap:")
+            else if (title == "PopulationCap:")
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
                 var indexOfRightB = currentLine.IndexOf("]");
-                Debug.Log("PopCap = " + currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1));
                 populationCap = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "Unit:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+
+                var unitInfo = currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1);
+
+                string[] unitInfoArray = unitInfo.Split(',');
+
+                var unitName = unitInfoArray[0].ToString();
+                var unitGender = unitInfoArray[1].ToString().Replace(" ", "");
+                var unitClass = unitInfoArray[2].ToString().Replace(" ", "");
+                var unitPosX = Convert.ToInt32(unitInfoArray[3]);
+                var unitPosZ = Convert.ToInt32(unitInfoArray[4]);
+                var unitAP = Convert.ToInt32(unitInfoArray[5]);
+                var unitAPL = Convert.ToInt32(unitInfoArray[6]);
+                var unitHP = Convert.ToInt32(unitInfoArray[7]);
+                var unitHPL = Convert.ToInt32(unitInfoArray[8]);
+                var unitAttack = Convert.ToInt32(unitInfoArray[9]);
+                var unitAttackR = Convert.ToInt32(unitInfoArray[10]);
+                var unitDefense = Convert.ToInt32(unitInfoArray[11]);
+                var unitSight = Convert.ToInt32(unitInfoArray[12]);
+                var unitRP = Convert.ToInt32(unitInfoArray[13]);
+                var unitCritHit = float.Parse(unitInfoArray[14]);
+                var unitCropsAtHarvestMlt = Convert.ToInt32(unitInfoArray[15]);
+                var unitTurnsUntilCropsMature = Convert.ToInt32(unitInfoArray[16]);
+
+                //Debug.Log("Unit Action Points: " + unitAP + " Type: " + unitAP.GetType());
+                // Create this unit.
+                createUnitAtLoad(unitName, unitGender, unitClass, unitPosX, unitPosZ, unitAP, unitAPL, unitHP, unitHPL, unitAttack, unitAttackR, unitDefense, unitSight, unitRP, unitCritHit, unitCropsAtHarvestMlt, unitTurnsUntilCropsMature);
+
+
+
+            }
+
+            else if (title == "Zombie:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+
+                var zombieInfo = currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1);
+
+                string[] zombieInfoArray = zombieInfo.Split(',');
+
+                var zombiePosX = Convert.ToInt32(zombieInfoArray[0]);
+                var zombiePosZ = Convert.ToInt32(zombieInfoArray[1]);
+                var zombieHP = Convert.ToInt32(zombieInfoArray[2]);
+
+                // Create the instance of this zombie.
+                createZombieAtLoad(zombiePosX, zombiePosZ, zombieHP);
+            }
+
+            else if (title == "Structure:")
+            {
+                
+
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+
+                var structureInfo = currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1);
+
+                string[] structureInfoArray = structureInfo.Split(',');
+
+                var structureType = (structureInfoArray[0]).ToString();
+                var structurePosX = Convert.ToInt32(structureInfoArray[1]);
+                var structurePosZ = Convert.ToInt32(structureInfoArray[2]);
+                var structureHP = Convert.ToInt32(structureInfoArray[3]);
+                var structureHPL = Convert.ToInt32(structureInfoArray[4]);
+                var structureLevel = Convert.ToInt32(structureInfoArray[5]);
+                var structureRotation = float.Parse(structureInfoArray[6]);
+
+                // Create the instance of this structure.
+                CreateStructuresAtLoad(structureType, structurePosX, structurePosZ, structureHP, structureHPL, structureLevel, structureRotation);
             }
 
             else
             {
                 Debug.Log("Data is not loading correctly");
+                Debug.Log(title);
             }
         }
-
-            // Remove the substring from the saved data so the while loop can continue.
-            //saveDataText.Remove(0, indexOfSemiCol);
-            
-        
-
 
     }
 
@@ -1289,6 +1386,183 @@ public class MainController : MonoBehaviour
         }
 
         UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
+
+    }
+
+    public void createUnitAtLoad(string unitName, string unitGender, string unitClass, int unitPosX, int unitPosZ, int unitAP, int unitAPL, 
+        int unitHP, int unitHPL, int unitAttack, int unitAttackR, int unitDefense, int unitSight, int unitRP, float unitCritHit, int unitCropsAtHarv, int unitTurnsUntilMature)
+    {
+
+        // Create game object.
+        var temp = new GameObject();
+
+        var unitPosVec = new Vector3(unitPosX, 0f, unitPosZ);
+
+
+        // Create unit and set Gender, Class
+        if (unitClass == "Basic")
+        {
+            if (unitGender == "M")
+            {
+                temp = Instantiate(basicUnitPrefabs[0], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "M";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Basic;
+            }
+
+            else
+            {
+                temp = Instantiate(basicUnitPrefabs[3], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "F";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Basic;
+            }
+        }
+
+        else if (unitClass == "Farmer")
+        {
+            if (unitGender == "M")
+            {
+                temp = Instantiate(basicUnitPrefabs[1], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "M";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Farmer;
+            }
+
+            else
+            {
+                temp = Instantiate(basicUnitPrefabs[4], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "F";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Farmer;
+            }
+        }
+
+        else
+        {
+            if (unitGender == "M")
+            {
+                temp = Instantiate(basicUnitPrefabs[2], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "M";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Soldier;
+            }
+
+            else
+            {
+                temp = Instantiate(basicUnitPrefabs[5], unitPosVec, Quaternion.identity);
+                temp.GetComponent<UnitController>().sex = "F";
+                temp.GetComponent<UnitController>().unitClass = UnitController.Class.Soldier;
+            }
+
+        }
+
+        // Set the rest of the atts.
+        temp.GetComponent<UnitController>().unitName = unitName;
+        temp.GetComponent<UnitController>().actionPoints = unitAP;
+        temp.GetComponent<UnitController>().actionPointsLimit = unitAPL;
+        temp.GetComponent<UnitController>().hitPoints = unitHP;
+        temp.GetComponent<UnitController>().hitPointLimit = unitHPL;
+        temp.GetComponent<UnitController>().attack = unitAttack;
+        temp.GetComponent<UnitController>().attackRange = unitAttackR;
+        temp.GetComponent<UnitController>().defense = unitDefense;
+        temp.GetComponent<UnitController>().sight = unitSight;
+        temp.GetComponent<UnitController>().repairPoints = unitRP;
+        temp.GetComponent<UnitController>().criticalHitPercentage = unitCritHit;
+        temp.GetComponent<UnitController>().cropsAtHarvestMultiplier = unitCropsAtHarv;
+        temp.GetComponent<UnitController>().turnsUntilCropsMature = unitTurnsUntilMature;
+
+
+        // Make the unit a child of the ground tile.
+        temp.transform.SetParent(groundTiles[LocateIndexOfGroundTile(unitPosX, unitPosZ)].transform);
+
+        // Set the ground tiles attribute so that the terrain is no longer passable.
+        groundTiles[LocateIndexOfGroundTile(unitPosX, unitPosZ)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+        // Add the unit to the list of units in play.
+        unitsInPlay.Add(temp);
+
+        // Update text.
+        populationText.text = unitsInPlay.Count.ToString();
+
+        
+    }
+
+    public void createZombieAtLoad(int zombiePosX, int zombiePosZ, int zombieHP)
+    {
+        // Create game object and set atts.
+        var zombiePosVec = new Vector3(zombiePosX, 0f, zombiePosZ);
+        var temp = Instantiate(zombiePrefab, zombiePosVec, Quaternion.identity);
+        temp.GetComponent<ZombieController>().hitPoints = zombieHP;
+  
+        // Make the unit a child of the ground tile.
+        temp.transform.SetParent(groundTiles[LocateIndexOfGroundTile(zombiePosX, zombiePosZ)].transform);
+
+        // Set the ground tiles attribute so that the terrain is no longer passable.
+        groundTiles[LocateIndexOfGroundTile(zombiePosX, zombiePosZ)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+        // Add the unit to the list of units in play.
+        zombiesInPlay.Add(temp);
+    }
+
+    public void CreateStructuresAtLoad(string structureName, int structurePosX, int structurePosZ, int structureHP, int structureHPL, int structureLevel, float structureRotation)
+    {
+        var tempStructure = gameObject;
+        var PosVect = new Vector3(structurePosX, 0f, structurePosZ);
+
+        if (structureName == "Farm Plot")
+        {
+            // Create structure.
+            tempStructure = Instantiate(farmPlotPrefab, PosVect, Quaternion.Euler(0, structureRotation, 0));
+        }
+
+        else if (structureName == "Living Quarters")
+        {
+            // Create structure.
+            tempStructure = Instantiate(livingQuartersPrefab, PosVect, Quaternion.Euler(0, structureRotation, 0));
+        }
+
+        else if (structureName == "Medical Facility")
+        {
+            // Create structure.
+            tempStructure = Instantiate(medicalFacilityPrefab, PosVect, Quaternion.Euler(0, structureRotation, 0));
+        }
+
+        else if (structureName == "Wall")
+        {
+
+            // Create structure.
+            tempStructure = Instantiate(wallPrefab, PosVect, Quaternion.identity);
+
+            tempStructure.GetComponent<StructureContoller>().wallRot = Quaternion.Euler(0f, structureRotation, 0f);
+        }
+
+        else if (structureName == "Town Hall")
+        {
+            // Create structure.
+            tempStructure = Instantiate(townHallPrefab, PosVect, Quaternion.Euler(0, structureRotation, 0));
+        }
+
+        else if (structureName == "Trap")
+        {
+            // Create structure.
+            tempStructure = Instantiate(trapPrefab, PosVect, Quaternion.identity);
+        }
+
+        else
+        {
+            Debug.Log("Error Found While Loading St4ructure: Invalid Type");
+        }
+
+        // Add the structure to the current structure list.
+        currentStructuresInGame.Add(tempStructure);
+        
+        // Make the structure a child of the ground tile.
+        tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(structurePosX, structurePosZ)].transform);
+
+        // Set the title to not passable.
+        groundTiles[LocateIndexOfGroundTile(structurePosX, structurePosZ)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+        // Upgrade the structure if needed.
+        for (int upgradeCount = 0; upgradeCount < structureLevel; upgradeCount++)
+        {
+            tempStructure.GetComponent<StructureContoller>().levelUpgradeFromSave = structureLevel;
+        }
 
     }
 
@@ -1630,10 +1904,10 @@ public class MainController : MonoBehaviour
     public void UpdateLightSource()
     {
         // Sun should increase in intensity from 4 am to 12 pm.
-        if (currentHour >= 4 && currentHour < 12) mainLightSourceSun.intensity += .1f;
+        //if (currentHour >= 4 && currentHour < 12) mainLightSourceSun.intensity += .1f;
 
         // Then decrease in intensity from 4 pm until 12 am.
-        else if (currentHour >= 16 && currentHour <= 23) mainLightSourceSun.intensity -= .1f;
+        //else if (currentHour >= 16 && currentHour <= 23) mainLightSourceSun.intensity -= .1f;
     }
 
     public void UpdateStructuresAtEndOfRound()
@@ -2540,7 +2814,7 @@ public class MainController : MonoBehaviour
         SetButtonToSeeThrough(true, harvestButton);
         SetButtonToSeeThrough(true, repairButton);
         SetButtonToSeeThrough(true, upgradeButton);
-        SetButtonToSeeThrough(true, draftOrdinanceButton);
+        SetButtonToSeeThrough(true, scrapButton);
         SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
 
         // Set the feedback panel to off.
@@ -2564,7 +2838,10 @@ public class MainController : MonoBehaviour
 
             // Set Scavange button to useable.
             SetButtonToSeeThrough(false, scavangeButton);
-            
+
+            // Set Scrap button to useable.
+            SetButtonToSeeThrough(false, scrapButton);
+
 
             // To destory loot box on scavenge we need to set it to the selected structure.
             selectedStructureForUse = structureObject;
@@ -2586,6 +2863,7 @@ public class MainController : MonoBehaviour
             
             SetButtonToSeeThrough(false, repairButton);
             SetButtonToSeeThrough(false, upgradeButton);
+            SetButtonToSeeThrough(false, scrapButton);
         }
 
         else if (structureObject.transform.tag.ToString() == "Farm Plot" || structureObject.transform.tag.ToString() == "Living Quarters"
@@ -2594,6 +2872,8 @@ public class MainController : MonoBehaviour
         {
             SetButtonToSeeThrough(false, repairButton);
             SetButtonToSeeThrough(false, upgradeButton);
+            // Set Scrap button to useable.
+            SetButtonToSeeThrough(false, scrapButton);
         }
 
         else plantCropsButton.gameObject.SetActive(true); 
@@ -2737,6 +3017,21 @@ public class MainController : MonoBehaviour
         }
 
 
+    }
+
+    public void ClickScrap()
+    {
+        // This function will scrap the selected structure.
+        var tempStructure = selectedStructureForUse;
+
+        // Set ground title to passable.
+        groundTiles[LocateIndexOfGroundTile(Convert.ToInt32(selectedStructureForUse.transform.position.x), Convert.ToInt32(selectedStructureForUse.transform.position.z))].GetComponent<GroundTileController>().terrainIsPassable = true;
+
+        // Remove it from the structure list.
+        currentStructuresInGame.Remove(selectedStructureForUse);
+
+        // Destroy it.
+        Destroy(selectedStructureForUse);
     }
 
     public void ClickRepair()
@@ -3087,6 +3382,9 @@ public class MainController : MonoBehaviour
 
                 // Add the structure to the current structure list.
                 currentStructuresInGame.Add(tempStructure);
+
+                // If the structure is a wall we need to set the rotation.
+                tempStructure.GetComponent<StructureContoller>().wallRot = wallOnWallSelector.transform.rotation;
 
                 // Make the structure a child of the ground tile.
                 tempStructure.transform.SetParent(groundTiles[LocateIndexOfGroundTile(row, col)].transform);
