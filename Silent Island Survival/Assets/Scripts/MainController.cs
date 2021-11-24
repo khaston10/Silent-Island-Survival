@@ -2839,9 +2839,6 @@ public class MainController : MonoBehaviour
             // Set Scavange button to useable.
             SetButtonToSeeThrough(false, scavangeButton);
 
-            // Set Scrap button to useable.
-            SetButtonToSeeThrough(false, scrapButton);
-
 
             // To destory loot box on scavenge we need to set it to the selected structure.
             selectedStructureForUse = structureObject;
