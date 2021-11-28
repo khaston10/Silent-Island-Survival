@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using utils;
 using System.IO;
+using UnityEngine.Audio;
 
 public class MainController : MonoBehaviour
 {
@@ -85,7 +86,7 @@ public class MainController : MonoBehaviour
     public Light mainLightSourceSun;
     Ray ray;
     RaycastHit hit;
-    string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
+    string[] acceptableTags = new string[] {"Abandoned House", "Abandoned Factory", "Grave Yard", "Abandoned Vehicle", "Loot Box", "Tree", "Rock", "Trash"};
     string[] acceptableStructureTags = new string[] { "Farm Plot", "Living Quarters", "Medical Facility", "Wall", "Wall Angled", "Town Hall", "Trap" };
     string[] acceptableGroundTilesTags = new string[] { "GroundTile", "Holding Factory"};
     string[] acceptableUnitTags = new string[] { "Unit" };
@@ -297,6 +298,29 @@ public class MainController : MonoBehaviour
 
     #endregion
 
+    #region Variables - Sound
+
+    public AudioMixerGroup MusicMixer;
+    public AudioMixerGroup SFXMixer;
+    public AudioSource SFXSource;
+    public Slider musicSlider;
+    public Slider sfxSlider;
+
+    #region Variables UISounds
+    public AudioClip Clack;
+    public AudioClip mouseClick01;
+    public AudioClip mouseClick02;
+    public AudioClip mouseClick03;
+    public AudioClip mouseClick04;
+    public AudioClip mouseClickCoarse;
+    public AudioClip mouseClickFunny;
+    public AudioClip Ping;
+    public AudioClip mouseClickSpace;
+    public AudioClip mouseClickTiny;
+    #endregion
+
+    #endregion
+
     #region Variables - Terrain Generation
 
     #region Terrain Generation Pre-Fabs
@@ -308,6 +332,7 @@ public class MainController : MonoBehaviour
     public GameObject[] AbandonedVehiclesPrefabs;
     public GameObject[] AbandonedHousePrefabs;
     public GameObject[] AbandonedFactoryPrefabs;
+    public GameObject[] GraveYardPrefab;
     #endregion
 
     int selectedMapIndex = 1; // By default we select 0. 3 = Clear Map for testing.
@@ -349,6 +374,10 @@ public class MainController : MonoBehaviour
         PlaceWaterPlane();
         #endregion
 
+        // Set sound settings.
+        SFXSource = SoundManager.SoundManagerInstance.SFXSource;
+        //GlobalControl.Instance.ActiveSavePath = path;
+
         //(System.IO.File.Exists("myfile.txt"))
         if (System.IO.File.Exists(GlobalControl.Instance.ActiveSavePath + "/SavedData.txt"))
         {
@@ -367,6 +396,7 @@ public class MainController : MonoBehaviour
             SpawnUnitsAtStartOfGame();
             CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
             CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
+            SetSliderOnStart(false);
         }
 
         #region Text Object Updates
@@ -2071,7 +2101,7 @@ public class MainController : MonoBehaviour
         // 1. Check to see if the world map is square. If it is not we need to throw an error.
         // This strips all characters that are not 0, ., |, -, └, ┘, ┐, ┴, ┬, ├, ┤, ^, *, &, 1, 2, 3, 4, x and ┌
         //string allCharsInString = System.Text.RegularExpressions.Regex.Replace(TerrainMaps[selectedMapIndex].text, @"[^.0|┐└┌┘┴┬├┤^&*1234x-]", "");
-        string allCharsInString = System.Text.RegularExpressions.Regex.Replace(activeMapText, @"[^.0|┐└┌┘┴┬├┤^&*1234x-]", "");
+        string allCharsInString = System.Text.RegularExpressions.Regex.Replace(activeMapText, @"[^.0|┐└┌┘┴┬├┤^&*1234gx-]", "");
 
         //int numOfCols = TerrainMaps[selectedMapIndex].text.Replace(" ", "").IndexOf('\n');
         //int numOfRows = allCharsInString.Length / numOfCols;
@@ -2101,7 +2131,8 @@ public class MainController : MonoBehaviour
                 if (allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '0' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '^'
                     || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '&' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '*'
                     || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '1' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '2'
-                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '3' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '4')
+                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '3' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '4' 
+                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == 'g')
                 {
                     groundTiles[LocateIndexOfGroundTile(line, letter)] = Instantiate(GroundTilePrefabs[0], new Vector3(line, 0, letter), Quaternion.identity);
                     groundTiles[LocateIndexOfGroundTile(line, letter)].transform.SetParent(TerrainBase.transform);
@@ -2222,7 +2253,8 @@ public class MainController : MonoBehaviour
                 // Now we need to add objects that will be children of these tiles, trees, rocks, abandoned structures, ect.
                 if (allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '^' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '*'
                     || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '&' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '1' 
-                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '2' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '3')
+                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '2' || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '3' 
+                    || allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == 'g')
                 {
                     // Trees.
                     if (allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == '^')
@@ -2240,6 +2272,15 @@ public class MainController : MonoBehaviour
 
                         // Set the ground tile's attribute terrainIsPassable to false.
                         groundTiles[LocateIndexOfGroundTile(line, letter)].GetComponent<GroundTileController>().terrainIsPassable = false;
+                    }
+
+                    // Grave Yards.
+                    else if (allCharsInString.Substring(line * WorldSize, WorldSize)[letter] == 'g')
+                    {
+                        Instantiate(GraveYardPrefab[0], new Vector3(line, 0, letter), Quaternion.Euler(0f, 0f, 0f)).transform.SetParent(groundTiles[LocateIndexOfGroundTile(line, letter)].transform);
+
+                        // Set the ground tile's attribute terrainIsPassable to false.
+                        groundTiles[LocateIndexOfGroundTile(line, letter)].GetComponent<GroundTileController>().terrainIsPassable = true;
                     }
 
                     // Loot.
@@ -2344,6 +2385,9 @@ public class MainController : MonoBehaviour
 
     public void ClickEndTurn()
     {
+        // Make a sound.
+        SFXSource.PlayOneShot(mouseClick01);
+
         // Make this button disappear.
         EndOfDayTurnButton.gameObject.SetActive(false);
 
@@ -4362,6 +4406,44 @@ public class MainController : MonoBehaviour
         // These help the update loop continue to function.
         unitIndexForUpdate += 1;
         UpdatingFood = true;
+    }
+
+    #endregion
+
+
+    #region Sound Functions
+
+    public void SetSliderOnStart(bool loadingGame)
+    {
+        // If the game is being loaded then the function will need to grab the settings from the load.
+        if (loadingGame)
+        {
+
+        }
+
+        else
+        {
+            float sliderValue = new float();
+            MusicMixer.audioMixer.GetFloat("MusicVol", out sliderValue);
+            musicSlider.value = sliderValue;
+            SFXMixer.audioMixer.GetFloat("SFXVol", out sliderValue);
+            sfxSlider.value = sliderValue;
+        }
+    }
+
+    public void AdjustMusicVol(float volume)
+    {
+        MusicMixer.audioMixer.SetFloat("MusicVol", volume);
+    }
+
+    public void AdjustSFXVol(float volume)
+    {
+        SFXMixer.audioMixer.SetFloat("SFXVol", volume);
+    }
+
+    public void PlaySFXClip(AudioClip audioClip)
+    {
+        SFXSource.PlayOneShot(audioClip);
     }
 
     #endregion

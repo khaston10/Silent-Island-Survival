@@ -51,6 +51,7 @@ namespace utils
             Map = makeLand(inSize);
             Map = AddRocks(Map, 10);
             Map = AddTrees(Map, 10);
+            Map = AddGraves(Map, 5);
             Map = AddWater(Map);
             Map = addRoads(Map);
             Map = addLootBoxes(Map);
@@ -70,6 +71,7 @@ namespace utils
         //# 1 abandoned house
         //# 2 abandoned factory
         //# 3 abandoned vehicle
+        //# g Grave Yard
         //# & lootbox
         //# | road
         //# - road
@@ -140,6 +142,31 @@ namespace utils
                     if (Random.Range(0, 100) < chanceOfTree)
                     {
                         tempLine += "^";
+                    }
+                    else
+                    {
+                        tempLine += inMap[row][tile];
+                    }
+                }
+                tempMap[row] = tempLine;
+            }
+
+            return tempMap;
+        }
+
+        private static string[] AddGraves(string[] inMap, int chanceOfGrave)
+        {
+            string[] tempMap = new string[inMap.Length];
+
+            for (int row = 0; row < inMap.Length; row++)
+            {
+                string tempLine = "";
+                for (int tile = 0; tile < inMap[row].Length; tile++)
+                {
+                    // Random chance that we will add a grave here.
+                    if (Random.Range(0, 100) < chanceOfGrave)
+                    {
+                        tempLine += "g";
                     }
                     else
                     {

@@ -23,6 +23,7 @@ TagManager:
   - Zombie
   - AttackIndicator
   - Trap
+  - Grave Yard
   layers:
   - Default
   - TransparentFX

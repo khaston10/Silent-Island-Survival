@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using utils;
 using System.IO;
+using UnityEngine.Audio;
 
 public class StartController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class StartController : MonoBehaviour
     public GameObject newWorldCreationPanel;
     public GameObject loadPanel;
     public GameObject feedbackPanel;
+    public GameObject settingsPanel;
     public Text feedbackText;
     public Text worldSizeText;
     private int worldSize = 50;
@@ -25,6 +27,28 @@ public class StartController : MonoBehaviour
     private string[] savePath = new string[4];
 
     #endregion
+
+    #region Variables - Sound
+
+    public AudioMixerGroup MusicMixer;
+    public AudioMixerGroup SFXMixer;
+    public AudioSource SFXSource;
+
+    #region Variables UISounds
+    public AudioClip Clack;
+    public AudioClip mouseClick01;
+    public AudioClip mouseClick02;
+    public AudioClip mouseClick03;
+    public AudioClip mouseClick04;
+    public AudioClip mouseClickCoarse;
+    public AudioClip mouseClickFunny;
+    public AudioClip Ping;
+    public AudioClip mouseClickSpace;
+    public AudioClip mouseClickTiny;
+    #endregion
+
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +73,9 @@ public class StartController : MonoBehaviour
 
     public void ClickOpenCloseLoadGamePanel()
     {
+        // Play Mouse Click
+        SFXSource.PlayOneShot(mouseClick01);
+
         if (loadPanel.activeInHierarchy)
         {
             loadPanel.SetActive(false);
@@ -58,20 +85,31 @@ public class StartController : MonoBehaviour
         else loadPanel.SetActive(true);
     }
 
-    public void ClickSettings()
-    {
-        Debug.Log("Open Settings.");
-    }
-
     public void ClickQuitGame()
     {
+        // Play Mouse Click
+        SFXSource.PlayOneShot(mouseClick01);
+
         Debug.Log("Quit game.");
+    }
+
+    public void OpenCloseSettingsPanel()
+    {
+        // Play Mouse Click
+        SFXSource.PlayOneShot(mouseClick01);
+
+        if (settingsPanel.activeInHierarchy) settingsPanel.SetActive(false);
+        else settingsPanel.SetActive(true);
+
     }
 
     #region New World Creation Functions
 
     public void OpenCloseNewWorldCreationPanel()
     {
+        // Play Mouse Click
+        SFXSource.PlayOneShot(mouseClick01);
+
         if (newWorldCreationPanel.activeInHierarchy) newWorldCreationPanel.SetActive(false);
         else newWorldCreationPanel.SetActive(true);
     }
@@ -97,6 +135,9 @@ public class StartController : MonoBehaviour
 
     public void IncreaseDecreaseWorldSize(bool increase)
     {
+        // Play Mouse Click
+        SFXSource.PlayOneShot(mouseClick01);
+
         if (increase)
         {
             // Check to see if the world size is already maxed. 
@@ -151,6 +192,25 @@ public class StartController : MonoBehaviour
     {
         GlobalControl.Instance.ActiveSavePath = path;
     }
+
+    #region Sound Functions
+
+    public void AdjustMusicVol(float volume)
+    {
+        MusicMixer.audioMixer.SetFloat("MusicVol", volume);
+    }
+
+    public void AdjustSFXVol(float volume)
+    {
+        SFXMixer.audioMixer.SetFloat("SFXVol", volume);
+    }
+
+    public void PlaySFXClip(AudioClip audioClip)
+    {
+        SFXSource.PlayOneShot(audioClip);
+    }
+
+    #endregion
 
     #endregion
 
