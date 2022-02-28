@@ -17,7 +17,7 @@ public class MainController : MonoBehaviour
     public int currentDay = 1;
     int currentHour = 15; // This can have values of 0 - 23.
     float skillPointsAvailable = 2;
-    int food = 10;
+    int food = 1;
     int population = 1;
     int populationCap = 5;
     int wood = 10;
@@ -33,9 +33,10 @@ public class MainController : MonoBehaviour
     private string[] sexes = new string[] { "M", "F"};
 
     public GameObject movementOptionPrefab;
-    public GameObject movementSelectedPrefab;
+    public GameObject[] movementSelectedPrefab;
     List<GameObject> movementOptionTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
     public List<GameObject> movementSelectedTiles = new List<GameObject>(); // Temporaly holds these objects as they exist.
+    private int indexOfFinalLocation = 0; // Used for unit movement during movement phase.
     bool movementSelectionCanContinue = true; // When a player ends the selection on an object that is not passable then the selection abilty must be disabled.
     public bool unitIsMoving = false; // When the unit is moving we do not want the player to input any controls.
     public bool unitIsAttacking = false; // When the unit is attacking, this should be set to true.
@@ -150,6 +151,7 @@ public class MainController : MonoBehaviour
 
     #region Panel - Individual Unit Panel
 
+    public GameObject StaticIndividualUnitPanel;
     public GameObject IndividualUnitPanel;
     public Text unitNameText;
     public Slider HealthUnitSlider;
@@ -305,6 +307,10 @@ public class MainController : MonoBehaviour
     public AudioSource SFXSource;
     public Slider musicSlider;
     public Slider sfxSlider;
+    public Slider ZombieAnimationSpeedSlider;
+    private int ZombieAnimationSpeed;
+    public Toggle BeginningOfDayAnimationsToggle;
+    private bool BeginningOfDayAnimations;
 
     #region Variables UISounds
     public AudioClip Clack;
@@ -358,6 +364,21 @@ public class MainController : MonoBehaviour
 
     #endregion
 
+    #region Variables - Items
+
+    //public GameObject[] MainBackpack = new GameObject[9];
+    public Image[] MainBackpackImagesOnButtons;
+    public Image[] unitItemImagesOnButtons;
+    public Sprite[] ItemImages; // Mealkit, Medkit, boots, chovel
+    public Sprite UIMask;
+    private string[] itemNames = {"Mealkit", "Medkit", "Boots", "Shovel" };
+    public String[] itemMealkit = { "Mealkit", "Increases range by 3."};
+    public String[] itemKit = { "Medkit", "Hit Points are fully restored each turn."};
+    public String[] itemBoots = { "Boots", "Action Points are fully restored each turn."};
+    public String[] itemShovel = { "Shovel", "Unit can now destroy gave sites."};
+
+    #endregion
+
     void Start()
     {
 
@@ -393,6 +414,7 @@ public class MainController : MonoBehaviour
 
         else
         {
+            SetGameSettingsOnStart(false);
             SpawnUnitsAtStartOfGame();
             CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
             CreateZombieAtRandomLocation(); // For now we will create 1 zombie at the start.
@@ -407,6 +429,13 @@ public class MainController : MonoBehaviour
 
         // Start Player's Turn.
         PlayerTurn();
+
+        // Testing Backpack.
+        //for (int i  = 0; i < 4; i++)
+        //{
+        //    CreateItem();
+        //}
+        
     }
 
 
@@ -467,39 +496,61 @@ public class MainController : MonoBehaviour
                 }
             }
 
-            // When the players left mouse button is down and they are mapping a units path.
-            else if (Input.GetMouseButton(0) && IndividualUnitPanel)
+            // When the players Space button is down and they are mapping a units path.
+            else if (Input.GetKeyDown(KeyCode.Space) && !IndividualUnitPanel.activeInHierarchy)
             {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit))
-                {
-                    MapUnitMovementPath();
-                }
+                // Update cam so it is on the selected unit. 
+                UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
+
+                // Set the available action points so the mapping function will work.
+                actionPointAvailable = selectedUnit.GetComponent<UnitController>().actionPoints;
+
+                OpenIndividualUnitPanel(selectedUnit);
+                PlaceMovementOptionTiles(selectedUnit);
+
             }
 
-            // Closes the Individual Unit Panel when the mouse is released.
-            else if (Input.GetMouseButtonUp(0) && IndividualUnitPanel.gameObject.activeSelf)
+            // Closes the Individual Unit Panel when the Space is released.
+            else if (Input.GetKeyUp(KeyCode.Space) && IndividualUnitPanel.gameObject.activeSelf)
             {
+                // Move the unit to the last green tile on the movement list.
+                indexOfFinalLocation = -1;
+
                 if (movementSelectedTiles.Count > 0)
                 {
-                    if (UnitInteractsWithNextGroundTileOnMove(selectedUnit, 0))
+                    for (int i = 0; i < movementSelectedTiles.Count; i++)
                     {
-                     
-                        unitIsMoving = true;
-                        PlayUnitRun(selectedUnit); // Play the run animation.
+                        if (movementSelectedTiles[i].transform.name == "MovementSelectedTile(Clone)")
+                        {
+                            indexOfFinalLocation = (i);
+                        }
+                    }
 
+                    //Set the start postion if a green tile can be found on movement list, otherwise we will cancel the movement and simply try and interact with the first tile.
+                    if (indexOfFinalLocation != -1)
+                    {
+                        NextPosition = new Vector3(movementSelectedTiles[0].transform.position.x, 0f, movementSelectedTiles[0].transform.position.z);
+                        
+
+                        unitIsMoving = true;
+
+                        // Set the ground tile that the unit is leaving to passable.
+                        groundTiles[LocateIndexOfGroundTile((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z)].GetComponent<GroundTileController>().terrainIsPassable = true;
                     }
 
                     else
                     {
-                        selectedUnit.transform.LookAt(movementSelectedTiles[0].transform.position);
-                        PlayUnitInteract(selectedUnit);
+                        selectedUnit.transform.LookAt(movementSelectedTiles[0].transform);
+                        UnitInteractsWithNextGroundTileOnMove(selectedUnit, 0);
+                        ClearMovementSelectionTiles();
+
                     }
                 }
-                
+
                 // Reset the player's abilty to select movements. 
                 movementSelectionCanContinue = true;
                 CloseIndividualUnitPanel();
+
             }
         }
 
@@ -576,7 +627,7 @@ public class MainController : MonoBehaviour
             if (unitIndexForUpdate < unitsInPlay.Count)
             {
                 // Hit Points.
-                if (food > 0)
+                if (food > 0 || unitsInPlay[unitIndexForUpdate].GetComponent<UnitController>().DoesUnitHaveItem("Mealkit"))
                 {
                     // Place the camera on the unit to be updated.
                     UpdateCamPositionOnUnitSelection(unitsInPlay[unitIndexForUpdate].transform.position);
@@ -890,6 +941,16 @@ public class MainController : MonoBehaviour
         tempSaveData.Add("Wood: [" + wood.ToString() + "]");
         tempSaveData.Add("Stone: [" + stone.ToString() + "]");
         tempSaveData.Add("PopulationCap: [" + populationCap.ToString() + "]");
+        tempSaveData.Add("MusicVol: [" + musicSlider.value.ToString() + "]");
+        tempSaveData.Add("SFXVol: [" + sfxSlider.value.ToString() + "]");
+
+        string backpackContents = "MainBackpack: [";
+        for (int i = 0; i < MainBackpackImagesOnButtons.Length - 1; i++)
+        {
+            backpackContents += MainBackpackImagesOnButtons[i].sprite.name + ", ";
+        }
+        backpackContents += MainBackpackImagesOnButtons[MainBackpackImagesOnButtons.Length-1].sprite.name;
+        tempSaveData.Add(backpackContents + "]");
 
         for (int unitCount = 0; unitCount< unitsInPlay.Count; unitCount++)
         {
@@ -910,12 +971,14 @@ public class MainController : MonoBehaviour
             var unitCritHit = unitsInPlay[unitCount].GetComponent<UnitController>().criticalHitPercentage;
             var unitCropsAtHarvestMlt = unitsInPlay[unitCount].GetComponent<UnitController>().cropsAtHarvestMultiplier;
             var unitTurnsUntilCropsMature = unitsInPlay[unitCount].GetComponent<UnitController>().turnsUntilCropsMature;
+            var unitBackpackItem01 = unitsInPlay[unitCount].GetComponent<UnitController>().unitBackpack[0];
+            var unitBackpackItem02 = unitsInPlay[unitCount].GetComponent<UnitController>().unitBackpack[1];
 
             // Saves Data on Units Name, Sex, Class, PositionX, PositionZ, Action Points, Action Point Limit, Hit Points, Hit Point Limit, Attack,
             // Attack Range, Defense, Sight, Repair Points, Critical Hit Percentage, Crops At Harvest Multiplier, Turns Until Crops Mature
             tempSaveData.Add("Unit: ["  + unitName + ", " + unitGender + ", " + unitClass.ToString() + ", " + unitPosX + ", " + +unitPosZ + ", " + unitAP + ", " + unitAPL 
                 + ", " + unitHP + ", " + unitHPL + ", " + unitAttack + ", " + unitAttackR + ", " + unitDefense + ", " + unitSight + ", " 
-                + unitRP + ", " + unitCritHit + ", " + unitCropsAtHarvestMlt + ", " + unitTurnsUntilCropsMature + "]");
+                + unitRP + ", " + unitCritHit + ", " + unitCropsAtHarvestMlt + ", " + unitTurnsUntilCropsMature + ", " + unitBackpackItem01 + "," + unitBackpackItem02 +"]");
         }
 
         for (int zombieCount = 0; zombieCount < zombiesInPlay.Count; zombieCount++)
@@ -1040,6 +1103,37 @@ public class MainController : MonoBehaviour
                 populationCap = Convert.ToInt32((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
             }
 
+            else if(title == "MusicVol:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                musicSlider.value = float.Parse((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "SFXVol:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                sfxSlider.value = float.Parse((currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1)));
+            }
+
+            else if (title == "MainBackpack:")
+            {
+                var indexOfLeftB = currentLine.IndexOf("[");
+                var indexOfRightB = currentLine.IndexOf("]");
+                var backpackInfo = currentLine.Substring(indexOfLeftB + 1, (indexOfRightB - indexOfLeftB) - 1);
+                string[] backpackInfoArray = backpackInfo.Split(',');
+               
+                for (int i = 0; i < MainBackpackImagesOnButtons.Length; i++)
+                {
+                    if (backpackInfoArray[i].Replace(" ", "") == "blue23") MainBackpackImagesOnButtons[i].sprite = ItemImages[0];
+                    else if (backpackInfoArray[i].Replace(" ", "") == "blue7") MainBackpackImagesOnButtons[i].sprite = ItemImages[1];
+                    else if (backpackInfoArray[i].Replace(" ", "") == "graytwo8") MainBackpackImagesOnButtons[i].sprite = ItemImages[2];
+                    else if (backpackInfoArray[i].Replace(" ", "") == "graytwo30") MainBackpackImagesOnButtons[i].sprite = ItemImages[3];
+                    else MainBackpackImagesOnButtons[i].sprite = UIMask;
+                }
+            }
+
             else if (title == "Unit:")
             {
                 var indexOfLeftB = currentLine.IndexOf("[");
@@ -1066,10 +1160,14 @@ public class MainController : MonoBehaviour
                 var unitCritHit = float.Parse(unitInfoArray[14]);
                 var unitCropsAtHarvestMlt = Convert.ToInt32(unitInfoArray[15]);
                 var unitTurnsUntilCropsMature = Convert.ToInt32(unitInfoArray[16]);
+                var item01 = unitInfoArray[17].Replace(" ", "");
+                var item02 = unitInfoArray[18].Replace(" ", "");
+                print(item01);
+                print(item02);
 
                 //Debug.Log("Unit Action Points: " + unitAP + " Type: " + unitAP.GetType());
                 // Create this unit.
-                createUnitAtLoad(unitName, unitGender, unitClass, unitPosX, unitPosZ, unitAP, unitAPL, unitHP, unitHPL, unitAttack, unitAttackR, unitDefense, unitSight, unitRP, unitCritHit, unitCropsAtHarvestMlt, unitTurnsUntilCropsMature);
+                createUnitAtLoad(unitName, unitGender, unitClass, unitPosX, unitPosZ, unitAP, unitAPL, unitHP, unitHPL, unitAttack, unitAttackR, unitDefense, unitSight, unitRP, unitCritHit, unitCropsAtHarvestMlt, unitTurnsUntilCropsMature, item01, item02);
 
 
 
@@ -1133,114 +1231,151 @@ public class MainController : MonoBehaviour
     {
         // This function handles key board inputs.
 
-        if (Input.GetKey(KeyCode.W))
+        // When the player is not mapping movement.
+        if (Input.GetKey(KeyCode.Space) == false)
         {
-            mainCam.transform.Translate(new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed *Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            mainCam.transform.Translate(-new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed * Time.deltaTime, Space.World);
-        }
-
-        if ((Input.GetKey(KeyCode.LeftArrow ) || Input.GetKey(KeyCode.A)) && !structureIsBeingBuilt)
-        {
-            mainCam.transform.Translate(-new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
-        }
-
-        if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && !structureIsBeingBuilt)
-        {
-            mainCam.transform.Translate(new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKey(KeyCode.UpArrow) && !structureIsBeingBuilt && mainCam.transform.position.y < camTopBound)
-        {
-            mainCam.transform.Translate(Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow) && !structureIsBeingBuilt && mainCam.transform.position.y > camBottomBounds)
-        {
-            mainCam.transform.Translate(-Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKey(KeyCode.Q))
-        {
-            mainCam.transform.Rotate(-Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKey(KeyCode.E))
-        {
-            mainCam.transform.Rotate(Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            // Tab will select the next unit, 
-            int currentIndex = unitsInPlay.IndexOf(selectedUnit);
-
-            if (currentIndex < unitsInPlay.Count - 1) selectedUnit = unitsInPlay[currentIndex + 1];
-            else selectedUnit = unitsInPlay[0];
-
-            // and update the camera.
-            UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
-
-            // Set text to match unit's attributes.
-            unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
-
-
-        }
-
-        if (Input.GetKeyDown(KeyCode.R) && structureIsBeingBuilt)
-        {
-            if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Wall") wallOnWallSelector.transform.Rotate(new Vector3(0f, 45f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-            else if (currentStructureSelectedToBuild.name == "Trap") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
-        {
-            if (wallOffsetZ < .4f)
+            if (Input.GetKey(KeyCode.W))
             {
-                wallOffsetZ += .1f;
-                wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
+                mainCam.transform.Translate(new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                mainCam.transform.Translate(-new Vector3(mainCam.transform.forward.x, 0f, mainCam.transform.forward.z) * camTranslateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && !structureIsBeingBuilt)
+            {
+                mainCam.transform.Translate(-new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && !structureIsBeingBuilt)
+            {
+                mainCam.transform.Translate(new Vector3(mainCam.transform.right.x, 0f, mainCam.transform.right.z) * camTranslateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKey(KeyCode.UpArrow) && !structureIsBeingBuilt && mainCam.transform.position.y < camTopBound)
+            {
+                mainCam.transform.Translate(Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKey(KeyCode.DownArrow) && !structureIsBeingBuilt && mainCam.transform.position.y > camBottomBounds)
+            {
+                mainCam.transform.Translate(-Vector3.up * camZoomSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKey(KeyCode.Q))
+            {
+                mainCam.transform.Rotate(-Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKey(KeyCode.E))
+            {
+                mainCam.transform.Rotate(Vector3.up * camRotateSpeed * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // Tab will select the next unit, 
+                int currentIndex = unitsInPlay.IndexOf(selectedUnit);
+
+                if (currentIndex < unitsInPlay.Count - 1) selectedUnit = unitsInPlay[currentIndex + 1];
+                else selectedUnit = unitsInPlay[0];
+
+                // and update the camera.
+                UpdateCamPositionOnUnitSelection(selectedUnit.transform.position);
+
+                // Set text to match unit's attributes.
+                unitNameText.text = selectedUnit.GetComponent<UnitController>().unitName;
+
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.R) && structureIsBeingBuilt)
+            {
+                if (currentStructureSelectedToBuild.name == "Farm Plot") farmPlotSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+                else if (currentStructureSelectedToBuild.name == "Living Quarters") livingQuartersSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+                else if (currentStructureSelectedToBuild.name == "Medical Facility") medicalFacilitySelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+                else if (currentStructureSelectedToBuild.name == "Wall") wallOnWallSelector.transform.Rotate(new Vector3(0f, 45f, 0f));
+                else if (currentStructureSelectedToBuild.name == "Town Hall") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+                else if (currentStructureSelectedToBuild.name == "Trap") townHallSelector.transform.Rotate(new Vector3(0f, 90f, 0f));
+            }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+            {
+                if (wallOffsetZ < .4f)
+                {
+                    wallOffsetZ += .1f;
+                    wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+            {
+                if (wallOffsetZ > -.4f)
+                {
+                    wallOffsetZ -= .1f;
+                    wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+            {
+                if (wallOffsetX < .4f)
+                {
+                    wallOffsetX += .1f;
+                    wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+            {
+                if (wallOffsetX > -.4f)
+                {
+                    wallOffsetX -= .1f;
+                    wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (MainPanel.activeInHierarchy) CloseMainMenu();
+                else OpenMainMenu("Objectives");
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
+        // When the player is mapping movement.
+        else
         {
-            if (wallOffsetZ > -.4f)
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                wallOffsetZ -= .1f;
-                wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
+                MapUnitMovementPath("U");
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                MapUnitMovementPath("D");
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                MapUnitMovementPath("L");
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                MapUnitMovementPath("R");
+            }
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                // Clears the movement path.
+                ClearMovementSelectionTiles();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
-        {
-            if (wallOffsetX < .4f)
-            {
-                wallOffsetX += .1f;
-                wallOnWallSelector.transform.position = new Vector3((wallSelector.transform.position.x + wallOffsetX), 0f, (wallSelector.transform.position.z + wallOffsetZ));
-            }
-        }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && structureIsBeingBuilt && currentStructureSelectedToBuild.name == "Wall")
-        {
-            if (wallOffsetX > -.4f)
-            {
-                wallOffsetX -= .1f;
-                wallOnWallSelector.transform.position = new Vector3(wallSelector.transform.position.x + wallOffsetX, 0f, wallSelector.transform.position.z + wallOffsetZ);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (MainPanel.activeInHierarchy) CloseMainMenu();
-            else OpenMainMenu("Objectives");
-        }
+        
 
     }
 
@@ -1281,12 +1416,6 @@ public class MainController : MonoBehaviour
             else if (hit.collider.tag.ToString() == "Unit")
             {
                 selectedUnit = hit.collider.transform.gameObject;
-
-                // Set the available action points so the mapping function will work.
-                actionPointAvailable = selectedUnit.GetComponent<UnitController>().actionPoints;
-
-                OpenIndividualUnitPanel(hit.transform.gameObject);
-                PlaceMovementOptionTiles(hit.transform.gameObject);
             }
 
 
@@ -1315,13 +1444,6 @@ public class MainController : MonoBehaviour
                         OpenStructurePanel(childTag);
                     }
 
-                    // Case 2 - The ground title has a unit on it.
-                    else if (acceptableUnitTags.Contains(childTag))
-                    {
-                        selectedUnit = child.transform.gameObject;
-                        OpenIndividualUnitPanel(child.transform.gameObject);
-                        PlaceMovementOptionTiles(child.transform.gameObject);
-                    }
                 }           
             }
 
@@ -1384,6 +1506,9 @@ public class MainController : MonoBehaviour
         // Set camera up for player's turn.
         updateCameraForPlayerTurn();
 
+        // Turn on the static unit panel.
+        StaticIndividualUnitPanel.SetActive(true);
+
         // Need to enable the End Of Turn button so player can chose when to end the turn.
         EndOfDayTurnButton.gameObject.SetActive(true);
     }
@@ -1420,7 +1545,7 @@ public class MainController : MonoBehaviour
     }
 
     public void createUnitAtLoad(string unitName, string unitGender, string unitClass, int unitPosX, int unitPosZ, int unitAP, int unitAPL, 
-        int unitHP, int unitHPL, int unitAttack, int unitAttackR, int unitDefense, int unitSight, int unitRP, float unitCritHit, int unitCropsAtHarv, int unitTurnsUntilMature)
+        int unitHP, int unitHPL, int unitAttack, int unitAttackR, int unitDefense, int unitSight, int unitRP, float unitCritHit, int unitCropsAtHarv, int unitTurnsUntilMature, string item01, string item02)
     {
 
         // Create game object.
@@ -1496,6 +1621,8 @@ public class MainController : MonoBehaviour
         temp.GetComponent<UnitController>().criticalHitPercentage = unitCritHit;
         temp.GetComponent<UnitController>().cropsAtHarvestMultiplier = unitCropsAtHarv;
         temp.GetComponent<UnitController>().turnsUntilCropsMature = unitTurnsUntilMature;
+        if (item01 != "") temp.GetComponent<UnitController>().AddItem(item01);
+        if (item02 != "") temp.GetComponent<UnitController>().AddItem(item02);
 
 
         // Make the unit a child of the ground tile.
@@ -1656,68 +1783,47 @@ public class MainController : MonoBehaviour
 
     public void MoveUnit(GameObject unit)
     {
-        NextPosition = new Vector3(movementSelectedTiles[nextPositionIndex].transform.position.x, 0f, movementSelectedTiles[nextPositionIndex].transform.position.z);
-
-
-        if (selectedUnit.transform.position == NextPosition)
+        
+        // Unit has reached the next position but still needs to continue.
+        if (selectedUnit.transform.position == NextPosition && (nextPositionIndex < indexOfFinalLocation))
         {
             // Increment Index.
             nextPositionIndex++;
             PlayUnitRun(unit); //Play the run animation.
 
+            // Reset the next position.
+            NextPosition = new Vector3(movementSelectedTiles[nextPositionIndex].transform.position.x, 0f, movementSelectedTiles[nextPositionIndex].transform.position.z);
 
-            // Check to see if the next ground tile requires the unit to move on top of it.
-            if (nextPositionIndex < movementSelectedTiles.Count)
+            // Spend AP.
+            SpendActionPoint(1, selectedUnit.transform.position);
+        }
+
+        if(selectedUnit.transform.position == NextPosition && (nextPositionIndex == indexOfFinalLocation))
+        {
+            // Spend AP.
+            SpendActionPoint(1, selectedUnit.transform.position);
+
+            // Place unit on the tile.
+            selectedUnit.transform.SetParent(groundTiles[LocateIndexOfGroundTile((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z)].transform);
+
+            // Set the ground title to not passable.
+            groundTiles[LocateIndexOfGroundTile((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z)].GetComponent<GroundTileController>().terrainIsPassable = false;
+
+            // Check to see if the unit should interact with an object on the next tile.
+            if (nextPositionIndex < movementSelectedTiles.Count - 1)
             {
-                if (!UnitInteractsWithNextGroundTileOnMove(selectedUnit, nextPositionIndex))
-                {
-                    selectedUnit.transform.LookAt(movementSelectedTiles[nextPositionIndex].transform.position);
-                    PlayUnitInteract(unit); // Play the interact with animation.
-                    unitIsMoving = false;
-
-                    nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
-
-
-                    // Delete the old movement option titles if they exist.
-                    for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
-                    {
-                        GameObject.Destroy(movementOptionTiles[listIndex]);
-                    }
-                    movementOptionTiles.Clear();
-
-                    // Delete the old movement selected titles if they exist.
-                    for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
-                    {
-                        GameObject.Destroy(movementSelectedTiles[listIndex]);
-                    }
-                    movementSelectedTiles.Clear();
-                }
+                selectedUnit.transform.LookAt(movementSelectedTiles[nextPositionIndex + 1].transform);
+                UnitInteractsWithNextGroundTileOnMove(selectedUnit, nextPositionIndex + 1);
             }
 
-            // If the list has no more elements.
-            else if (nextPositionIndex >= movementSelectedTiles.Count)
-            {
-                unitIsMoving = false;
+            // Reset the index.
+            nextPositionIndex = 0;
 
-                PlayUnitIdle(unit); // Play the idle animation because unit has stopped.
+            // CLose out this move.
+            unitIsMoving = false;
+            ClearMovementSelectionTiles();
 
-                nextPositionIndex = 0; // This is the index of the next object the unit needs to move towards.
-
-                // Delete the old movement option titles if they exist.
-                for (int listIndex = 0; listIndex < movementOptionTiles.Count; listIndex++)
-                {
-                    GameObject.Destroy(movementOptionTiles[listIndex]);
-                }
-                movementOptionTiles.Clear();
-
-                // Delete the old movement selected titles if they exist.
-                for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
-                {
-                    GameObject.Destroy(movementSelectedTiles[listIndex]);
-                }
-                movementSelectedTiles.Clear();
-            }
-
+            
         }
 
         else
@@ -2339,6 +2445,8 @@ public class MainController : MonoBehaviour
                                         groundTiles[LocateIndexOfGroundTile(line + row, letter + col)].transform.SetParent(groundTiles[LocateIndexOfGroundTile(line, letter)].transform);
                                     }
                                 }
+
+
                             }
                         }
                     }
@@ -2387,6 +2495,9 @@ public class MainController : MonoBehaviour
     {
         // Make a sound.
         SFXSource.PlayOneShot(mouseClick01);
+
+        // Turn off the static unit panel.
+        StaticIndividualUnitPanel.SetActive(false);
 
         // Make this button disappear.
         EndOfDayTurnButton.gameObject.SetActive(false);
@@ -2549,161 +2660,134 @@ public class MainController : MonoBehaviour
         }
     }
 
-    public void MapUnitMovementPath()
+    public void ClearMovementSelectionTiles()
     {
-        // If the list of movemtent tiles is not empty we need to check if the player has the cursor back over the selector.
-        // If the mouse is back over the starting tile then we will want to clear the list.
-        if (movementSelectedTiles.Count > 0 && hit.transform.position.x == selector.transform.position.x && hit.transform.position.z == selector.transform.position.z)
+        //Delete the old movement option titles if they exist.
+        for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
         {
-            // Give back the units action points.
-            actionPointAvailable += movementSelectedTiles.Count;
+            GameObject.Destroy(movementSelectedTiles[listIndex]);
+        }
+        movementSelectedTiles.Clear();
+    }
 
-            // Delete the old movement option titles if they exist.
-            for (int listIndex = 0; listIndex < movementSelectedTiles.Count; listIndex++)
-            {
-                GameObject.Destroy(movementSelectedTiles[listIndex]);
-            }
-            movementSelectedTiles.Clear();
+    public bool MapUnitMovementPath(string dir)
+    {
+        int previousTileLocX = 0;
+        int previousTileLocZ = 0;
+        int newTileLocX = 0;
+        int newTileLocZ = 0;
 
-            //Reset movement selection.
-            movementSelectionCanContinue = true;
+        // Store this previous tiles location.
+        if (movementSelectedTiles.Count > 0)
+        {
+            previousTileLocX = (int)movementSelectedTiles[movementSelectedTiles.Count-1].transform.position.x;
+            previousTileLocZ = (int)movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z;
         }
 
-        // This function is called when the Individual Unit Panel is open and the player is holding the mouse down.
-        // 1. Check to see if the object the mouse is over is a ground tile and the selection option is enabled.
-        if (acceptableGroundTilesTags.Contains(hit.collider.tag.ToString()) && movementSelectionCanContinue)
+        else
         {
-            // a. If the ground title is the same tile that the player is on, we will do nothing.
-            if (selectedUnit.transform.IsChildOf(hit.transform)) return;
-
-            // b. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
-            for (int count = 0; count < movementSelectedTiles.Count; count++)
-            {
-                if (hit.transform.position.x == movementSelectedTiles[count].transform.position.x && hit.transform.position.z == movementSelectedTiles[count].transform.position.z)
-                {
-                    return;
-                }
-            }
-
-            // c. Check to see if the ground tile is adjacent to the last tile in the list, if it is not then we will ignore.
-            if (movementSelectedTiles.Count > 0) 
-            {
-                if ((Mathf.Abs(hit.transform.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 0 &&
-                    Mathf.Abs(hit.transform.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 1) ||
-                    (Mathf.Abs(hit.transform.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 1 &&
-                    Mathf.Abs(hit.transform.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 0))
-                {
-
-                }
-
-                else return;
-            }
-
-            else
-            {
-                if ((Mathf.Abs(hit.transform.position.x - selectedUnit.transform.position.x) <= 0 &&
-                    Mathf.Abs(hit.transform.position.z - selectedUnit.transform.position.z) <= 1) ||
-                    (Mathf.Abs(hit.transform.position.x - selectedUnit.transform.position.x) <= 1 &&
-                    Mathf.Abs(hit.transform.position.z - selectedUnit.transform.position.z) <= 0))
-                {
-
-                }
-
-                else return;
-            }
-            
-            // d.  Check to see if the player has the action points and update them.
-            if (hit.transform.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
-            {
-                if (actionPointAvailable > 0)
-                {
-                    actionPointAvailable -= 1;
-                }
-
-                else return;
-            }
-
-            // e. Create a movement Selected Tile at the location of the ground tile and add it to the list if the ground tile also has a movement option tile.
-            // If the ground tile is set to not passable, then the list must end here.
-            for (int count = 0; count < movementOptionTiles.Count; count++)
-            {
-                if (hit.transform.position.x == movementOptionTiles[count].transform.position.x && hit.transform.position.z == movementOptionTiles[count].transform.position.z)
-                {
-                    var tempTile = Instantiate(movementSelectedPrefab, new Vector3(hit.transform.position.x, .1f, hit.transform.position.z), Quaternion.identity);
-                    tempTile.transform.SetParent(hit.transform);
-                    movementSelectedTiles.Add(tempTile);
-                }
-
-                if (!hit.transform.gameObject.GetComponent<GroundTileController>().terrainIsPassable) movementSelectionCanContinue = false;
-            }
-
+            previousTileLocX = (int)selectedUnit.transform.position.x;
+            previousTileLocZ = (int)selectedUnit.transform.position.z;
         }
 
-        // 2. Check to see if the object the mouse is over is a structure and the selection option is enabled.
-        if ((acceptableTags.Contains(hit.collider.tag.ToString()) || acceptableStructureTags.Contains(hit.collider.tag.ToString())) && movementSelectionCanContinue)
+        // Add this new input to the movement selected tiles list, if the ground tile exists.
+        if (dir == "U")
         {
-            // b. Check to see if the ground tile has the same location as a tile in the list movementSlectedTiles, if it is already listed we will ignore.
-            for (int count = 0; count < movementSelectedTiles.Count; count++)
+            newTileLocX = previousTileLocX;
+            newTileLocZ = previousTileLocZ + 1;
+        }
+
+        else if (dir == "D")
+        {
+            newTileLocX = previousTileLocX;
+            newTileLocZ = previousTileLocZ - 1;
+        }
+
+        else if (dir == "L")
+        {
+            newTileLocX = previousTileLocX - 1;
+            newTileLocZ = previousTileLocZ;
+        }
+
+        else if (dir == "R")
+        {
+            newTileLocX = previousTileLocX + 1;
+            newTileLocZ = previousTileLocZ;
+        }
+
+        if (groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)] == null)
+        {
+            print("Unable to map movement because ground tile does not exist.");
+            return false;
+        }
+
+        
+
+        // Check to see if the location has already been stored in the movement list.
+        int duplicateIndex = -1;
+
+        for (int i = 0; i < movementSelectedTiles.Count; i++)
+        {
+            if ((int)movementSelectedTiles[i].transform.position.x == newTileLocX && (int)movementSelectedTiles[i].transform.position.z == newTileLocZ)
             {
-                if (hit.transform.parent.position.x == movementSelectedTiles[count].transform.position.x && hit.transform.parent.position.z == movementSelectedTiles[count].transform.position.z)
-                {
-                    return;
-                }
-            }
-
-            // c. Check to see if the ground tile is adjacent to the last tile in the list, if it is not then we will ignore.
-            if (movementSelectedTiles.Count > 0)
-            {
-                if ((Mathf.Abs(hit.transform.parent.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 0 &&
-                    Mathf.Abs(hit.transform.parent.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 1) ||
-                    (Mathf.Abs(hit.transform.parent.position.x - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.x) <= 1 &&
-                    Mathf.Abs(hit.transform.parent.position.z - movementSelectedTiles[movementSelectedTiles.Count - 1].transform.position.z) <= 0))
-                {
-
-                }
-
-                else return;
-            }
-
-            else
-            {
-                if ((Mathf.Abs(hit.transform.parent.position.x - selectedUnit.transform.position.x) <= 0 &&
-                    Mathf.Abs(hit.transform.parent.position.z - selectedUnit.transform.position.z) <= 1) ||
-                    (Mathf.Abs(hit.transform.parent.position.x - selectedUnit.transform.position.x) <= 1 &&
-                    Mathf.Abs(hit.transform.parent.position.z - selectedUnit.transform.position.z) <= 0))
-                {
-
-                }
-
-                else return;
-            }
-
-            // d.  Check to see if the player has the action points and update them.
-            if (hit.transform.parent.gameObject.GetComponent<GroundTileController>().terrainIsPassable)
-            {
-                if (actionPointAvailable > 0)
-                {
-                    actionPointAvailable -= 1;
-                }
-
-                else return;
-            }
-
-            // e. Create a movement Selected Tile at the location of the ground tile and add it to the list if the ground tile also has a movement option tile.
-            // If the ground tile is set to not passable, then the list must end here.
-            for (int count = 0; count < movementOptionTiles.Count; count++)
-            {
-                if (hit.transform.parent.position.x == movementOptionTiles[count].transform.position.x && hit.transform.parent.position.z == movementOptionTiles[count].transform.position.z)
-                {
-                    var tempTile = Instantiate(movementSelectedPrefab, new Vector3(hit.transform.parent.position.x, .1f, hit.transform.parent.position.z), Quaternion.identity);
-                    tempTile.transform.SetParent(hit.transform.parent);
-                    movementSelectedTiles.Add(tempTile);
-                }
-
-                if (!hit.transform.parent.gameObject.GetComponent<GroundTileController>().terrainIsPassable) movementSelectionCanContinue = false;
+                // To delete the duplicates we will delete all the tiles in the list after the first duplicate.
+                duplicateIndex = i;
             }
         }
 
+        if (duplicateIndex != -1)
+        {
+            for (int i = movementSelectedTiles.Count - 1; i >= duplicateIndex; i--)
+            {
+                var tempTileToDelete = movementSelectedTiles[i];
+                movementSelectedTiles.RemoveAt(i);
+                Destroy(tempTileToDelete);
+            }
+        }
+
+        // Check to see if the last tile on list is red, if it is, then no more tiles can be added.
+        if (movementSelectedTiles.Count > 0)
+        {
+            if (movementSelectedTiles[movementSelectedTiles.Count - 1].name == "MovementSelectedTileRed(Clone)")
+            {
+                print("Unable to map because last tile is red.");
+                return false;
+            }
+        }
+
+        // Check to see if the unit has enough APs.
+        if (movementSelectedTiles.Count >= selectedUnit.GetComponent<UnitController>().actionPoints)
+        {
+            print("Not enough APs.");
+            return false;
+        }
+
+        // Place movement tile. If the ground title is empty the tile will be green, if it has something like a farm plot then it will be yellow, and if it is not passable it will be red.
+        int indexForMovementTilePrefab = 0;
+
+        if (groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].GetComponent<GroundTileController>().terrainIsPassable == false)
+        {
+            indexForMovementTilePrefab = 1;
+
+            // The only structures that will cause the tile to not be passable are, wall, house, or factory.
+            for (int i = 0; i < groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].transform.childCount; i++)
+            {
+                
+                if (groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].transform.GetChild(i).tag == "Abandoned House" || groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].transform.GetChild(i).tag == "Wall")
+                {
+                    indexForMovementTilePrefab = 2;
+                }
+
+                if (groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].transform.tag == "Holding Factory") indexForMovementTilePrefab = 2;
+            }
+        }
+
+        var tempTile = Instantiate(movementSelectedPrefab[indexForMovementTilePrefab], new Vector3(newTileLocX, .1f, newTileLocZ), Quaternion.identity);
+        tempTile.transform.SetParent(groundTiles[LocateIndexOfGroundTile(newTileLocX, newTileLocZ)].transform);
+        movementSelectedTiles.Add(tempTile);
+
+
+        return true;
 
     }
 
@@ -2715,6 +2799,8 @@ public class MainController : MonoBehaviour
 
         // If the ground title is passable then we can move the unit on to it.
 
+        bool unitShouldContinueToMove = false;
+
         if (movementSelectedTiles[indexForTileArray].transform.parent.GetComponent<GroundTileController>().terrainIsPassable)
         {
 
@@ -2724,7 +2810,7 @@ public class MainController : MonoBehaviour
 
             SpendActionPoint(1, movementSelectedTiles[indexForTileArray].transform.position);
 
-            return true;
+            return unitShouldContinueToMove;
         }
 
         // If the ground tile is not passable it is because the in an object on it.
@@ -2760,7 +2846,7 @@ public class MainController : MonoBehaviour
                 var childTag = child.tag;
 
                 // If the ground tile contains a tree or rock we will harvest.
-                if (childTag == "Tree" || childTag == "Rock") Harvest(child.transform.gameObject);
+                if ((childTag == "Tree" || childTag == "Rock")) Harvest(child.transform.gameObject);
 
 
                 // If the ground title is a Abandoned Structure or Structure we will bring up Interact with Structure Menu.
@@ -2781,12 +2867,14 @@ public class MainController : MonoBehaviour
 
             
 
-            return false;
+            return unitShouldContinueToMove;
         }
     }
 
     public void Harvest(GameObject itemToHarvest)
     {
+        PlayUnitInteract(selectedUnit); // Play the interact with animation.
+
         // If the item is a tree.
         if (itemToHarvest.transform.tag.ToString() == "Tree")
         {
@@ -2955,32 +3043,51 @@ public class MainController : MonoBehaviour
         // Reduce the action points.
         SpendActionPoint(1, selectedUnit.transform.position);
 
-        // This can get more complicated but for now we will just randomly award food.
-        var amtOfFoodToSavanged = UnityEngine.Random.Range(1, 5);
-        food += amtOfFoodToSavanged;
-        InteractWithStructureFeedbackText.text = "+ " + amtOfFoodToSavanged.ToString() + " Food";
+        // There will be a 60% chance that food is found, 10% an item is found, 10% that a human is found, and 20% that nothing is found.
+        int randomNumber = UnityEngine.Random.Range(0, 100);
+
+        // Food
+        if (randomNumber < 60)
+        {
+            var amtOfFoodToSavanged = UnityEngine.Random.Range(1, 5);
+            food += amtOfFoodToSavanged;
+            InteractWithStructureFeedbackText.text = "+ " + amtOfFoodToSavanged.ToString() + " Food";
+            foodText.text = food.ToString();
+        }
+        // Item
+        else if(randomNumber < 70)
+        {
+            CreateItem();
+            InteractWithStructureFeedbackText.text = "New Item Found!";
+        }
+        // Human
+        else if (randomNumber < 80)
+        {
+            if (selectedStructureForUse.tag == "Abandoned House" || selectedStructureForUse.tag == "Abandoned Factory")
+            {
+                if (unitsInPlay.Count < populationCap) DiscoverSurvivorOnScavenge();
+                {
+                    InteractWithStructureFeedbackText.text += "Survivor Found!";
+                }
+            }
+        }
+        // Nothing
+        else
+        {
+            InteractWithStructureFeedbackText.text = "Nothing Found";
+        }
+
+        // Make Panel visible.
         InteractWithStructureFeedBackPanel.SetActive(true);
         SetButtonToSeeThrough(true, scavangeButton);
         SetButtonToSeeThrough(false, ExitInteractWithStructurePanel);
-        foodText.text = food.ToString();
-
-        // And if the structure is a house or factory there is a chance we can get another survivor.
-        if (selectedStructureForUse.tag == "Abandoned House" || selectedStructureForUse.tag == "Abandoned Factory")
-        {
-            if (UnityEngine.Random.Range(0, 10) < 9 && unitsInPlay.Count < populationCap) DiscoverSurvivorOnScavenge();
-            {
-                InteractWithStructureFeedbackText.text += "\nSurvivor Found!";
-            }
-        }
 
         // Destroy objects that should get destroyed.
-        else if (selectedStructureForUse.tag == "Loot Box" || selectedStructureForUse.tag == "Abandoned Vehicle")
+        if (selectedStructureForUse.tag == "Loot Box" || selectedStructureForUse.tag == "Abandoned Vehicle")
         {
             // Play splatter fx.
             StartCoroutine(PlayDirtSplatterFX(selectedStructureForUse.transform.position, selectedStructureForUse));
         }
-        
-
         
     }
 
@@ -4224,6 +4331,26 @@ public class MainController : MonoBehaviour
 
         actionPointunitPanelSlider.value = (float)(unit.GetComponent<UnitController>().actionPoints) / (float)(unit.GetComponent<UnitController>().actionPointsLimit);
         hitPointunitPanelSlider.value = (float)(unit.GetComponent<UnitController>().hitPoints) / (float)(unit.GetComponent<UnitController>().hitPointLimit);
+
+        // Update the images for item.
+        unitItemImagesOnButtons[0].sprite = UIMask;
+        unitItemImagesOnButtons[1].sprite = UIMask;
+
+        for (int i = 0; i < unit.GetComponent<UnitController>().unitBackpack.Length; i++)
+        {
+            string itemName = unit.GetComponent<UnitController>().unitBackpack[i];
+
+            if (itemNames.Contains(itemName))
+            {
+                if (itemName == itemNames[0]) unitItemImagesOnButtons[i].sprite = ItemImages[0];
+                else if (itemName == itemNames[1]) unitItemImagesOnButtons[i].sprite = ItemImages[1];
+                else if (itemName == itemNames[2]) unitItemImagesOnButtons[i].sprite = ItemImages[2];
+                else if (itemName == itemNames[3]) unitItemImagesOnButtons[i].sprite = ItemImages[3];
+
+            }
+
+
+        }
     }
 
     public void ClickNextUnitInfo(bool forward)
@@ -4286,9 +4413,18 @@ public class MainController : MonoBehaviour
     {
         // This function is to be called from the update loop only.
 
-        // Set the amount of action points to reward.
-        rewardActionPoints = 1;
-        rewardActionPoints += ActionPointsRewardFromLivingQuarters(unit);
+        // Set the amount of action points to reward, if the unit has boots then they will get full action points restored.
+        if (unit.GetComponent<UnitController>().DoesUnitHaveItem("Boots"))
+        {
+            rewardActionPoints = unit.GetComponent<UnitController>().actionPointsLimit - unit.GetComponent<UnitController>().actionPoints;
+        }
+
+        else
+        {
+            rewardActionPoints = 1;
+            rewardActionPoints += ActionPointsRewardFromLivingQuarters(unit);
+        }
+        
 
         while (rewardActionPoints > 0)
         {
@@ -4323,8 +4459,13 @@ public class MainController : MonoBehaviour
     {
         // This function is to be called from the update loop only.
 
-        // Set the amount of action points to reward.
-        rewardHitPoints = HitPointsRewardFromMedical(unit);
+        // Set the amount of action points to reward, if the unit has a medkit then full hit points will be restored.
+        if (unit.GetComponent<UnitController>().DoesUnitHaveItem("Medkit"))
+        {
+            rewardHitPoints = unit.GetComponent<UnitController>().hitPointLimit - unit.GetComponent<UnitController>().hitPoints;
+        }
+
+        else rewardHitPoints = HitPointsRewardFromMedical(unit);
         
 
         while (rewardHitPoints >= 5)
@@ -4367,7 +4508,7 @@ public class MainController : MonoBehaviour
         tempFeedAnimation.transform.position = unit.transform.position;
 
         // Reduce Food.
-        food -= 1; ;
+        if (food > 0) food -= 1;
 
         // Play the correct animation.
         tempFeedAnimation.GetComponent<Animator>().Play("Eat");
@@ -4411,7 +4552,7 @@ public class MainController : MonoBehaviour
     #endregion
 
 
-    #region Sound Functions
+    #region Sound and Game Functions
 
     public void SetSliderOnStart(bool loadingGame)
     {
@@ -4431,6 +4572,26 @@ public class MainController : MonoBehaviour
         }
     }
 
+    public void SetGameSettingsOnStart(bool loadingGame)
+    {
+        if (loadingGame)
+        {
+
+        }
+
+        else
+        {
+            // Set the zombie speed for animation
+            ZombieAnimationSpeed = GlobalControl.Instance.ZombieAnimationSpeed;
+            ZombieAnimationSpeedSlider.value = ZombieAnimationSpeed;
+
+            // Set the beginning of day animations
+            BeginningOfDayAnimations = GlobalControl.Instance.BeginningOfDayAnimations;
+            BeginningOfDayAnimationsToggle.isOn = BeginningOfDayAnimations;
+        }
+    }
+
+
     public void AdjustMusicVol(float volume)
     {
         MusicMixer.audioMixer.SetFloat("MusicVol", volume);
@@ -4444,6 +4605,196 @@ public class MainController : MonoBehaviour
     public void PlaySFXClip(AudioClip audioClip)
     {
         SFXSource.PlayOneShot(audioClip);
+    }
+
+    public void ToggleBeginningOfDayAnimations(bool animationOn)
+    {
+        if (animationOn) BeginningOfDayAnimations = true;
+        else BeginningOfDayAnimations = false;
+    }
+
+    public void UpdateZombieAnimationSpeed(bool increase)
+    {
+        if (increase && ZombieAnimationSpeed < 4)
+        {
+            ZombieAnimationSpeed += 1;
+            ZombieAnimationSpeedSlider.value = ZombieAnimationSpeed;
+        }
+
+        else if (!increase && ZombieAnimationSpeed > 1)
+        {
+            ZombieAnimationSpeed -= 1;
+            ZombieAnimationSpeedSlider.value = ZombieAnimationSpeed;
+        }
+    }
+
+    #endregion
+
+
+    #region Items
+
+    public string CreateItem(string itemname = "random")
+    {
+        // This function creates an item, if there is room in the backpack, at random unless the name of an item is given.
+        // Returns the string of the item and changes the image in the backpack. No game object is actually created, just the image.
+
+        int mainBackpackItemIndex = 9;
+       
+
+        // Check to see if there is a free place in the backpack.
+        for (int i = 0; i < MainBackpackImagesOnButtons.Length; i++)
+        {
+            if (MainBackpackImagesOnButtons[i].sprite.name == "UIMask")
+            {
+                mainBackpackItemIndex = i;
+                break;
+            }
+        }
+
+        // If there is room we will create an item.
+        if (mainBackpackItemIndex != 9)
+        {
+            if (itemNames.Contains(itemname)){
+                PlaceItemInBackpack(itemname, mainBackpackItemIndex);
+                return "Pistol";
+            }
+
+            else
+            {
+                PlaceItemInBackpack(itemNames[UnityEngine.Random.Range(0, itemNames.Length)], mainBackpackItemIndex);
+                return "Random";
+            }
+            
+            
+        }
+
+        // Otherwise we will return a string of "No Room In Backpack".
+        else
+        {
+            return "No Room In Backpack";
+        }
+
+        
+    }
+
+    public void PlaceItemInBackpack(string itemname, int indexInBackpack)
+    {
+        if (itemname == "Mealkit")
+        {
+            MainBackpackImagesOnButtons[indexInBackpack].sprite = ItemImages[0];
+        }
+
+        else if (itemname == "Medkit")
+        {
+            MainBackpackImagesOnButtons[indexInBackpack].sprite = ItemImages[1];
+        }
+
+        else if (itemname == "Boots")
+        {
+            MainBackpackImagesOnButtons[indexInBackpack].sprite = ItemImages[2];
+        }
+
+        else if (itemname == "Shovel")
+        {
+            MainBackpackImagesOnButtons[indexInBackpack].sprite = ItemImages[3];
+        }
+
+        else
+        {
+            print("Item name is incorrect when inputed into PlaceItemInBackpack");
+        }
+    }
+
+    public bool MoveItemFromBackpackToUnit(int itemIndex, GameObject unit)
+    {
+        // Check to see if the unit has room.
+        if (unit.GetComponent<UnitController>().UnitHasSpaceForAnItem() == false)
+        {
+            return false;
+        }
+
+        // Check to see if there is an item in the slot.
+        if(MainBackpackImagesOnButtons[itemIndex].sprite.name != "UIMask")
+        {
+            if (MainBackpackImagesOnButtons[itemIndex].sprite.name == "blue23")
+            {
+                unit.GetComponent<UnitController>().AddItem(itemNames[0]);
+            }
+
+            else if (MainBackpackImagesOnButtons[itemIndex].sprite.name == "blue7")
+            {
+                unit.GetComponent<UnitController>().AddItem(itemNames[1]);
+            }
+
+            else if (MainBackpackImagesOnButtons[itemIndex].sprite.name == "graytwo8")
+            {
+                unit.GetComponent<UnitController>().AddItem(itemNames[2]);
+            }
+
+            else if (MainBackpackImagesOnButtons[itemIndex].sprite.name == "graytwo30")
+            {
+                unit.GetComponent<UnitController>().AddItem(itemNames[3]);
+            }
+
+            // Remove the item from the main backpack.
+            MainBackpackImagesOnButtons[itemIndex].sprite = UIMask;
+
+            // Update the unit item icon.
+            ClickNextUnitInfo(true);
+            ClickNextUnitInfo(false);
+
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool MoveItemFromUnitToBackpack(string itemName)
+    {
+        print("Placing " + itemName + " in backpack.");
+        int indexOfFreeSpace = 9;
+
+        for (int i = 0; i < MainBackpackImagesOnButtons.Length; i++)
+        {
+            if (MainBackpackImagesOnButtons[i].sprite.name == "UIMask") indexOfFreeSpace = i;
+        }
+
+        if (indexOfFreeSpace != 9)
+        {
+            if (itemName == "Mealkit") MainBackpackImagesOnButtons[indexOfFreeSpace].sprite = ItemImages[0];
+            else if (itemName == "Medkit") MainBackpackImagesOnButtons[indexOfFreeSpace].sprite = ItemImages[1];
+            else if (itemName == "Boots") MainBackpackImagesOnButtons[indexOfFreeSpace].sprite = ItemImages[2];
+            else if (itemName == "Shovel") MainBackpackImagesOnButtons[indexOfFreeSpace].sprite = ItemImages[3];
+        }
+        return true;
+    }
+
+    public void ClickMoveItemFromBackpack(int buttonIndex)
+    {
+        MoveItemFromBackpackToUnit(buttonIndex, unitsInPlay[currentUnitSelected]);
+    }
+
+    public void ClickMoveItemFromUnitpack(int buttonIndex)
+    {
+        string itemName = "";
+
+        if (unitItemImagesOnButtons[buttonIndex].sprite.name == "blue23") itemName = "Mealkit";
+        else if (unitItemImagesOnButtons[buttonIndex].sprite.name == "blue7") itemName = "Medkit";
+        else if (unitItemImagesOnButtons[buttonIndex].sprite.name == "graytwo8") itemName = "Boots";
+        else if (unitItemImagesOnButtons[buttonIndex].sprite.name == "graytwo30") itemName = "Shovel";
+        else print("Sprite does not match");
+
+        unitsInPlay[currentUnitSelected].GetComponent<UnitController>().RemoveItem(itemName);
+
+        // Update the unit item icon.
+        ClickNextUnitInfo(true);
+        ClickNextUnitInfo(false);
+
+        // Place the item in the main backpack if there is room, otherwise it will be discarded.
+        MoveItemFromUnitToBackpack(itemName);
     }
 
     #endregion

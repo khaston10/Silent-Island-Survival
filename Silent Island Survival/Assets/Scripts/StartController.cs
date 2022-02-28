@@ -28,11 +28,15 @@ public class StartController : MonoBehaviour
 
     #endregion
 
-    #region Variables - Sound
+    #region Variables - Sound And Game
 
     public AudioMixerGroup MusicMixer;
     public AudioMixerGroup SFXMixer;
     public AudioSource SFXSource;
+    public Slider ZombieAnimationSpeedSlider;
+    private int ZombieAnimationSpeed = 1;
+    public Toggle BeginningOfDayAnimationsToggle;
+    private bool BeginningOfDayAnimations;
 
     #region Variables UISounds
     public AudioClip Clack;
@@ -191,9 +195,14 @@ public class StartController : MonoBehaviour
     public void SaveActiveMapName (string path)
     {
         GlobalControl.Instance.ActiveSavePath = path;
+        GlobalControl.Instance.ZombieAnimationSpeed = ZombieAnimationSpeed;
+        GlobalControl.Instance.BeginningOfDayAnimations = BeginningOfDayAnimations;
     }
 
-    #region Sound Functions
+    #endregion
+
+
+    #region Sound And Game Functions
 
     public void AdjustMusicVol(float volume)
     {
@@ -210,9 +219,31 @@ public class StartController : MonoBehaviour
         SFXSource.PlayOneShot(audioClip);
     }
 
-    #endregion
+
+    public void ToggleBeginningOfDayAnimations(bool animationOn)
+    {
+        if (animationOn) BeginningOfDayAnimations = true;
+        else BeginningOfDayAnimations = false;
+    }
+
+    public void UpdateZombieAnimationSpeed(bool increase)
+    {
+        if (increase && ZombieAnimationSpeed < 4)
+        {
+            ZombieAnimationSpeed += 1;
+            ZombieAnimationSpeedSlider.value = ZombieAnimationSpeed;
+        }
+
+        else if (!increase && ZombieAnimationSpeed > 1)
+        {
+            ZombieAnimationSpeed -= 1;
+            ZombieAnimationSpeedSlider.value = ZombieAnimationSpeed;
+        }
+    }
 
     #endregion
+
+
 
     #endregion
 }

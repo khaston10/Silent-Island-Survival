@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Jake
+  sex: M
   unitClass: 0
   actionPoints: 5
   actionPointsLimit: 10
@@ -59,6 +60,9 @@ MonoBehaviour:
   criticalHitPercentage: 0
   cropsAtHarvestMultiplier: 1
   turnsUntilCropsMature: 3
+  unitBackpack:
+  - 
+  - 
 --- !u!65 &7375172646469649764
 BoxCollider:
   m_ObjectHideFlags: 0

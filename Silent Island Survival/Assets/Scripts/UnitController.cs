@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class UnitController : MonoBehaviour
 {
@@ -27,6 +28,13 @@ public class UnitController : MonoBehaviour
     public int cropsAtHarvestMultiplier = 1; // This will be used for upgrades and will either have a value of 1 or 2.
     public int turnsUntilCropsMature = 5; // This will only be updated on farmers.
     private Animator anim;
+    #endregion
+
+    #region Variables - Items
+
+    public string[] unitBackpack = {"", ""};
+
+
     #endregion
 
     void Start()
@@ -115,9 +123,65 @@ public class UnitController : MonoBehaviour
     public void PlayRangedAttack()
     {
         // This function should only get called from the main contoller.
-        anim.Play("m_pistol_draw");
+        anim.Play("m_Mealkit_draw");
         
     }
+
+    #region Functions Items
+
+    public bool UnitHasSpaceForAnItem()
+    {
+        //Returns True if the unit has space for an item.
+        bool spaceAvailable = false;
+
+        for (int i = 0; i < unitBackpack.Length; i++)
+        {
+            if (unitBackpack[i] == "") spaceAvailable = true;
+        }
+
+
+        return spaceAvailable;
+    }
+
+    public void AddItem(string itemName)
+    {
+
+        // Add item to backpack.
+        if (unitBackpack[0] == "")
+        {
+            unitBackpack[0] = itemName;
+        }
+
+        else unitBackpack[1] = itemName;
+    }
+
+    public void RemoveItem(string itemName)
+    {
+        // Update stats based on item.
+        if (unitBackpack.Contains(itemName))
+        {
+            int indexOfItem = System.Array.IndexOf(unitBackpack, itemName);
+
+            // Because the item is already in the backpack we will not bump the stats twice.
+            unitBackpack[indexOfItem] = "";
+
+            if (itemName == "Mealkit")
+            {
+                // Set the attack and range based off of class.
+            }
+        }
+
+        else print("Item not found in backpack");
+
+    }
+
+    public bool DoesUnitHaveItem(string itemName)
+    {
+        if (unitBackpack.Contains(itemName)) return true;
+        else return false;
+    }
+
+    #endregion
 
     #endregion
 

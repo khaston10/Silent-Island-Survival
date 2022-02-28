@@ -60,6 +60,9 @@ MonoBehaviour:
   criticalHitPercentage: 0
   cropsAtHarvestMultiplier: 1
   turnsUntilCropsMature: 3
+  unitBackpack:
+  - 
+  - 
 --- !u!65 &292941025803938968
 BoxCollider:
   m_ObjectHideFlags: 0

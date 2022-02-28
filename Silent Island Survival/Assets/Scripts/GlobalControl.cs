@@ -9,7 +9,8 @@ public class GlobalControl : MonoBehaviour
     #region Global Variables
 
     public string ActiveSavePath;
-
+    public int ZombieAnimationSpeed;
+    public bool BeginningOfDayAnimations;
 
     #endregion
 

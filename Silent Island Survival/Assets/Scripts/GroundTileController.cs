@@ -10,10 +10,9 @@ public class GroundTileController : MonoBehaviour
 
     public int[] location = new int[2]; // {x - location, z - location}
     public bool terrainIsPassable = true;
-    //bool hasPeople = false;
-    //bool hasZombie = false;
-    //bool hasLoot = false;
-    
+
+
+
 
     void Start()
     {
